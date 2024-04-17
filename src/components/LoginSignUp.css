@@ -24,7 +24,7 @@ body, input{
     position: relative;
     width: 100%;
     max-width: 1020px;
-    height: 640px;
+    height: 700px;
     background-color: #fff;
     border-radius: 3.3rem;
     box-shadow: 0 60px 40px -30px rgba(0, 0, 0, 0.27);
@@ -131,6 +131,31 @@ form.ls-sign-up-form{
     font-weight: 500;
     font-size: 0.75rem;
     transition: 0.3s;
+}
+
+.ls-error {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #ffe6e6; /* Red border */
+    border-radius: 10px; /* Rounded corners */
+    color: #ff4d4d; /* Red text */
+    word-wrap: break-word; /* Wrap long words */
+    overflow-wrap: break-word;
+}
+
+.ls-success {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #d2f2d3; /* Red border */
+    border-radius: 10px; /* Rounded corners */
+    color: #359322; /* Red text */
+    word-wrap: break-word; /* Wrap long words */
+    overflow-wrap: break-word;
+}
+  
+  
+.ls-error span {
+    font-size: 13px;
 }
 .ls-login-input-wrap{
     position: relative;
@@ -274,10 +299,30 @@ form.ls-sign-up-form{
     font-size: 0.8rem;
     transition: .3s;
     margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .ls-sign-btn:hover{
     background-color: #b13734;
+}
+
+.ls-ms-sign-in{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ls-ms-btn{
+
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    cursor: pointer;
+}
+
+.ls-ms-btn-img{
+    border-radius: 10px;
 }
 
 main.ls-sign-up-mode form.ls-sign-in-form{
