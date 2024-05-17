@@ -152,6 +152,16 @@ form.ls-sign-up-form{
     word-wrap: break-word; /* Wrap long words */
     overflow-wrap: break-word;
 }
+
+.ls-loading {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #d8e7f5; /* Red border */
+    border-radius: 10px; /* Rounded corners */
+    color: #1f64a5; /* Red text */
+    word-wrap: break-word; /* Wrap long words */
+    overflow-wrap: break-word;
+}
   
   
 .ls-error span {
@@ -191,6 +201,11 @@ form.ls-sign-up-form{
 .ls-login-input-field.active{
     border-bottom-color: #151111;
 }
+
+.ls-error span, .ls-success span, .ls-loading span {
+    font-size: 13px;
+}
+
 
 .ls-login-input-field.active + label{
     font-size: 0.75rem;
