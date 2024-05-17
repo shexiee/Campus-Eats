@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import "./ForgotPassword.css";
+import "./css/ForgotPassword.css";
 import {useAuth} from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 

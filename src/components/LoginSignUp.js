@@ -7,7 +7,7 @@ import {
     signInWithPopup, 
     signOut, 
     sendEmailVerification } from "firebase/auth";
-import "./LoginSignUp.css";
+import "./css/LoginSignUp.css";
 import {useAuth} from "../context/AuthContext";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { set } from "firebase/database";
