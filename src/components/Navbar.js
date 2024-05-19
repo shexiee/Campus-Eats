@@ -15,12 +15,7 @@ const Navbar = () => {
     const [dropdownActive, setDropdownActive] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
-    // useEffect(() => {
-    //     if (!currentUser) {
-    //         navigate('/login');
-    //     }
-    //     console.log(currentUser);
-    // }, [logout, navigate, currentUser]);
+    
     
     const CloseShowModal = () => {
         setShowModal(false);
@@ -79,7 +74,7 @@ const Navbar = () => {
                         </div>
                         <ul className={`nb-profile-dropdown-list ${dropdownActive ? 'active' : ''}`}>
                             <li className="nb-profile-dropdown-list-item">
-                                <Link to="/user-profile">
+                                <Link to="/profile">
                                     <div className='nb-profile-dropdown-list-item-icon'>
                                         <FontAwesomeIcon icon={faUser} style={{ fontSize: '1rem', color: 'white' }} />
                                     </div>
@@ -115,7 +110,7 @@ const Navbar = () => {
 
 
       </div>
-        {currentUser &&
+        
         <div className="nav-side">
             <div className="image-wrapper">
             <Link to="/" style={{textDecoration: 'none'}}>
@@ -124,7 +119,7 @@ const Navbar = () => {
             </div>
             <div className='nav'>
                 <ul>
-                    <li className={`nb-icon ${location.pathname === '/' ? 'active' : ''}`}>
+                    <li className={`nb-icon ${location.pathname === '/home' ? 'active' : ''}`}>
                         <Link to="/">
                             <div className="svg-container">
                                 <img src={'/Assets/dashboard.svg'} alt="Dashboard" className="nb-image" />
@@ -156,7 +151,7 @@ const Navbar = () => {
             </div>
         </div>
         
-        }
+        
       {showModal && <CartModal showModal={showModal} onClose={CloseShowModal} />}
     </div>
   );

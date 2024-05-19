@@ -30,9 +30,9 @@ const Home = () => {
                     <div className="h-card">
                         <div className="h-img">
                             <img src={'/Assets/Panda.png'} className="h-image-cover" alt="store" />
-                            <div className="h-save">
+                            {/* <div className="h-save">
                                 <FontAwesomeIcon className="h-svg" icon={faHeart} />
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="h-text">

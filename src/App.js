@@ -6,6 +6,8 @@ import { AuthProvider } from './context/AuthContext';
 import Home from './components/Home';
 import Order from './components/Order';
 import LandingPage from './components/LandingPage';
+import UserProfile from './components/UserProfile';
+import Shop from './components/Shop';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/orders" element={<Order />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/shop" element={<Shop />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -1,13 +1,23 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import './css/LandingPage.css';
 import Navbar from './Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 
 const LandingPage = () => {
+  const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentUser) {
+        navigate('/home');
+    }
+    console.log(currentUser);
+}, [logout, navigate, currentUser]);
+
   return (
     <div className='landing-page'>
       <Navbar />

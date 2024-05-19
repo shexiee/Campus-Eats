@@ -1,5 +1,18 @@
 
+::-webkit-scrollbar {
+  width: 12px; /* Adjust the width of the scrollbar */
+}
 
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background color of the scrollbar track */
+  border-radius: 10px; /* Optional: rounding the track corners */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; /* Scrollbar color */
+  border-radius: 10px; /* Optional: rounding the scrollbar corners */
+  border: 3px solid #f1f1f1; /* Padding around the scrollbar */
+}
 
 
 .image-container {
