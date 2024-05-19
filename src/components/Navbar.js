@@ -110,7 +110,7 @@ const Navbar = () => {
 
 
       </div>
-        
+        {currentUser && 
         <div className="nav-side">
             <div className="image-wrapper">
             <Link to="/" style={{textDecoration: 'none'}}>
@@ -150,7 +150,7 @@ const Navbar = () => {
                 </ul>
             </div>
         </div>
-        
+        }
         
       {showModal && <CartModal showModal={showModal} onClose={CloseShowModal} />}
     </div>
