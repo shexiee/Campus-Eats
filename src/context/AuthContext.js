@@ -1,11 +1,14 @@
 import React, {useContext, useEffect, useState} from "react";
-import {auth} from "../config/firebase";
+import { doc, setDoc, getDocs, query, where, collection } from "firebase/firestore";
+import { auth, db } from "../config/firebase";
 import { 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
-    signInWithPopup, signOut, 
-    setCustomClaim, 
-    updateProfile 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  signOut,
+  updateEmail,
+  updatePassword,
+  updateProfile,
+  sendPasswordResetEmail
 } from "firebase/auth";
 
 
@@ -28,40 +31,111 @@ export function AuthProvider({ children }) {
         return unsubscribe;
     }, []);
 
-    async function signup(email, password, firstname, lastname) {
-        try {
+    async function signup(email, password, username, firstname, lastname) {
+      try {
+          // Check if username already exists
+          const usernamesQuery = query(collection(db, "users"), where("username", "==", username));
+          console.log("usernamesQuery", usernamesQuery);
+          const querySnapshot = await getDocs(usernamesQuery);
+          console.log("querySnapshot", querySnapshot.empty);
+
+          if (!querySnapshot.empty) {
+              throw new Error('The username is already in use by another account.');
+          }
+  
+          // Proceed with user creation if username is unique
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
-          await updateProfile(user, {
-            displayName: `${firstname} ${lastname}`,
-            photoURL: '/Assets/profile-picture.jpg' // Assuming this is the correct path to your default profile picture
+  
+          const userRef = doc(db, "users", user.uid);
+          await setDoc(userRef, {
+              fullname: `${firstname} ${lastname}`,
+              account_type: "regular",
+              course_yr: null,
+              phone_number: null,
+              username,
+              school_id: null,
+              date_created: new Date(),
+              email,
           });
+  
+          await updateProfile(user, {
+              displayName: username
+          });
+  
           return user;
-        } catch (error) {
+      } catch (error) {
           if (error.code === 'auth/email-already-in-use') {
-            throw new Error('The email address is already in use by another account.');
+              throw new Error('The email address is already in use by another account.');
           } else {
-            throw error;
+              throw error;
           }
-        }
       }
+  }
 
-    async function login(email, password) {
-        try {
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
-      
-          // Check if the user's email is verified
-          if (!user.emailVerified) {
-            throw new Error('Please verify your email before logging in.');
-          }
-      
-          return user;
-        } catch (error) {
-          console.error("Error logging in:", error);
-          throw error; // re-throw the error to propagate it to the caller
+  async function login(identifier, password) {
+    try {
+        let email = identifier;
+
+        // Check if the identifier is a username
+        if (!identifier.includes('@')) {
+            // Query Firestore to get the email associated with the username
+            const usernamesQuery = query(collection(db, "users"), where("username", "==", identifier));
+            const querySnapshot = await getDocs(usernamesQuery);
+            console.log("querySnapshot", querySnapshot.empty);
+
+            if (querySnapshot.empty) {
+                throw new Error('No account found with the provided username.');
+            }
+
+            // Get the email from the query result
+            const userDoc = querySnapshot.docs[0]; // Assuming usernames are unique
+            console.log("userDoc", userDoc);
+            console.log("userDoc.data()", userDoc.data());
+            email = userDoc.data().email;
         }
+
+        // Proceed with email login
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Check if the user's email is verified
+        if (!user.emailVerified) {
+            throw new Error('Please verify your email before logging in.');
+        }
+
+        return user;
+    } catch (error) {
+        console.error("Error logging in:", error);
+        throw error; // re-throw the error to propagate it to the caller
+    }
+  }
+
+  async function resetPassword(email) {
+    try {
+      // Attempt to send the password reset email
+      await sendPasswordResetEmail(auth, email, {
+        url: `http://localhost:3000/login`
+      });
+      console.log('sent');
+    } catch (error) {
+      // Check if the error is due to the user not found
+      if (error.code === 'auth/user-not-found') {
+        // Throw a custom error indicating that the email was not found
+        throw new Error('Email not found.');
       }
+      // If the error is not related to user not found, re-throw the original error
+      throw error;
+    }
+  }
+  async function logout() {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Error logging out:", error);
+      throw error;
+    }
+  }
 
 
 
@@ -96,7 +170,9 @@ export function AuthProvider({ children }) {
     const value = {
         currentUser,
         signup,
-        login
+        login,
+        resetPassword,
+        logout,
     }
 
   return (

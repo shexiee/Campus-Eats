@@ -1,8 +1,13 @@
 import React from "react";
 import { useState, useRef, useEffect} from "react";
 import {auth, microsoftProvider} from "../config/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut, sendEmailVerification } from "firebase/auth";
-import "./LoginSignUp.css";
+import { 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signInWithPopup, 
+    signOut, 
+    sendEmailVerification } from "firebase/auth";
+import "./css/LoginSignUp.css";
 import {useAuth} from "../context/AuthContext";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { set } from "firebase/database";
@@ -14,23 +19,26 @@ const LoginSignUp = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
+
     const [isLoginFormVisible, setIsLoginFormVisible] = useState(location.pathname === '/login');
     useEffect(() => {
-        // Update isLoginFormVisible state when the location changes
-        setIsLoginFormVisible(location.pathname === '/login');
-    }, [location.pathname]);
-
-    useEffect(() => {
-        if (currentUser) {
-          navigate('/');
+        // setIsLoginFormVisible(location.pathname === '/login');
+        if (location.pathname !== '/login' && location.pathname !== '/signup') {
+            navigate('/signup');
         }
-      }, [currentUser, navigate]);
+        // console.log("isLogin",isLoginFormVisible);
+        // // if (currentUser) {
+        // //     navigate('/');
+        // // }
+    }, [currentUser, location.pathname, navigate]);
+
     
     const [activeBulletIndex, setActiveBulletIndex] = useState(0);
+
     const [loginEmail, setLoginEmail] = useState('');
     const [validLoginEmail] = useState(true);
     const [loginEmailFocus, setLoginEmailFocus] = useState(false);
-
+    
     const [loginPwd, setLoginPwd] = useState('');
     const [validLoginPwd] = useState(true);
     const [loginPwdFocus, setLoginPwdFocus] = useState(false);
@@ -39,9 +47,9 @@ const LoginSignUp = () => {
     const [validRegisEmail] = useState(true);
     const [regisEmailFocus, setRegisEmailFocus] = useState(false);
 
-    // const [regisUsername, setRegisUsername] = useState('');
-    // const [validRegisUsername] = useState(true);
-    // const [regisUsernameFocus, setRegisUsernameFocus] = useState(false);
+    const [regisUsername, setRegisUsername] = useState('');
+    const [validRegisUsername] = useState(true);
+    const [regisUsernameFocus, setRegisUsernameFocus] = useState(false);
 
     const [regisFirstname, setRegisFirstname] = useState('');
     const [validRegisFirstname] = useState(true);
@@ -56,6 +64,7 @@ const LoginSignUp = () => {
     const [regisPwdFocus, setRegisPwdFocus] = useState(false);
 
     const [regisConfirmPwd, setRegisConfirmPwd] = useState('');
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [validRegisConfirmPwd] = useState(true);
     const [regisConfirmPwdFocus, setRegisConfirmPwdFocus] = useState(false);
 
@@ -64,9 +73,8 @@ const LoginSignUp = () => {
     const [loading, setLoading] = useState(false);
 
     const toggleForm = () => {
-        const newPath = isLoginFormVisible ? '/signup' : '/login';
         setIsLoginFormVisible(!isLoginFormVisible);
-        navigate(newPath);
+        // console.log("isLoginFormVisible:",isLoginFormVisible);
         setError('');
     };
 
@@ -82,7 +90,7 @@ const LoginSignUp = () => {
             return setError('Passwords do not match');
         }
 
-        if(!regisEmail || !regisFirstname || !regisLastname || !regisPwd || !regisConfirmPwd) {
+        if(!regisEmail || !regisFirstname || !regisLastname || !regisPwd || !regisConfirmPwd || !regisUsername) {
             return setError('Please fill in all fields');
         }
         
@@ -98,14 +106,15 @@ const LoginSignUp = () => {
         try{
             setLoading(true);
             
-            await signup(regisEmail, regisPwd, regisFirstname, regisLastname);
+            await signup(regisEmail, regisPwd, regisUsername, regisFirstname, regisLastname);
 
-            const user = auth.currentUser;console.log("user:",user);
+            const user = auth.currentUser;
             await sendVerificationEmail(user);
             signOut(auth);
             toggleForm();
 
         }catch (e) {
+            setSuccess('');
             setError(e.message);
         }
         setLoading(false);
@@ -122,6 +131,8 @@ const LoginSignUp = () => {
                 console.log("Verification email sent successfully.");
             }
         } catch (error) {
+            setSuccess('');
+            setError('Error sending verification email');
             console.error("Error sending verification email:", error);
             throw error;
         }
@@ -133,31 +144,39 @@ const LoginSignUp = () => {
         setSuccess('');
 
         if(!loginPwd || !loginEmail) {
+            setSuccess('');
             return setError('Please fill in all fields');
         }
         
-        if (!loginEmail.endsWith('@cit.edu')) {
-            return setError('Please use a Microsoft account with the domain "@cit.edu"');
-        }
 
         try{
             setLoading(true);
             
             await login(loginEmail, loginPwd);
+            console.log("Logged in successfully: ", currentUser);
+
+            navigate('/home');
 
         }catch (e) {
             console.log("Error:",e);
-            setError('Invalid email or password', e.message);
+            setSuccess('');
             if (e.message === 'Please verify your email before logging in.') {
                 setError('Please verify your email before logging in.');
-              } else {
-                setError('Invalid email or password');
-              }
+            } else {
+                setError('Invalid Credentials.');
+            }
         }
         setLoading(false);
     }
 
+    const handleForgotPass = async (e) => {
+        navigate('/forgot-password');
+    }
 
+    const handleRegisConfirmPwdChange = (e) => {
+        setRegisConfirmPwd(e.target.value); // Update confirm password state
+        setPasswordsMatch(e.target.value === regisPwd); // Check if confirm password matches password and update state accordingly
+    };
 
     // async function handleSignInWithMicrosoft(e) {
     //     e.preventDefault();
@@ -197,24 +216,24 @@ const LoginSignUp = () => {
     //     }
     // }
 
-    const logout = async () => {
-        console.log("Logging out");
-        try{
-            console.log("Logging out");
-            await signOut(auth);
+    // const logout = async () => {
+    //     console.log("Logging out");
+    //     try{
+    //         console.log("Logging out");
+    //         await signOut(auth);
 
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
     
-    console.log(currentUser?.email);
+    // console.log(currentUser?.email);
 
   return (
     <main className={`ls-main ${isLoginFormVisible ? '' : 'ls-sign-up-mode'}`}>
         <div className="ls-box">
             <div className="ls-inner-box">
-                <button onClick={logout}>Logout</button>
+                {/* <button onClick={logout}>Logout</button> */}
                 <div className="ls-forms-wrap">
                     <form autoComplete="off" className="ls-form ls-sign-in-form">
                         <div className="ls-logo">
@@ -231,13 +250,19 @@ const LoginSignUp = () => {
                                 
                         </div>
 
-                        {error && (
+                        {loading && (
+                            <div className="ls-loading">
+                                <span>Loading...</span>
+                            </div>
+                        )}
+
+                        {!loading && error && (
                             <div className="ls-error">
                                 <span>{error}</span>
                             </div>
                         )}
 
-                        {success && (
+                        {!loading && success && (
                             <div className="ls-success">
                                 <span>{success}</span>
                             </div>
@@ -257,7 +282,7 @@ const LoginSignUp = () => {
                                     onBlur={()=> setLoginEmailFocus(false)}
                                     
                                 />
-                                <label>Email</label>
+                                <label>Username / Email</label>
                             </div>
                             <div className="ls-login-input-wrap">
                                 <input
@@ -273,8 +298,9 @@ const LoginSignUp = () => {
                                 />
                                 <label>Password</label>
                             </div>
-                            <span className="ls-subtext-link">Forgot Password?</span>
+                            
                             <button onClick={handleLoginSubmit} className="ls-sign-btn">Sign In</button>
+                            <span onClick={handleForgotPass} className="ls-subtext-link">Forgot Password?</span>
                             
                             {/* <div className="ls-ms-sign-in">
                                 <span className="ls-subtext">or</span>
@@ -302,13 +328,19 @@ const LoginSignUp = () => {
                             
                         </div>
 
-                        {error && (
+                        {loading && (
+                            <div className="ls-loading">
+                                <span>Loading...</span>
+                            </div>
+                        )}
+
+                        {!loading && error && (
                             <div className="ls-error">
                                 <span>{error}</span>
                             </div>
                         )}
 
-                        {success && (
+                        {!loading && success && (
                             <div className="ls-success">
                                 <span>{success}</span>
                             </div>
@@ -363,7 +395,7 @@ const LoginSignUp = () => {
                                 </div>
                             </div>
 
-                            {/* <div className="ls-regis-input-wrap">
+                            <div className="ls-regis-input-wrap">
                                 <input
                                     type="text"
                                     id="username"
@@ -377,7 +409,7 @@ const LoginSignUp = () => {
                                     
                                 />
                                 <label>Username</label>
-                            </div> */}
+                            </div>
 
                             <div className="ls-regis-input-wrap">
                                 <input
@@ -400,14 +432,15 @@ const LoginSignUp = () => {
                                     id="confirmPwd"
                                     required
                                     className={`ls-regis-input-field ${regisConfirmPwdFocus || regisConfirmPwd ? 'active' : ''}`}
-                                    onChange={(e) => setRegisConfirmPwd(e.target.value)}
+                                    onChange={handleRegisConfirmPwdChange}
                                     aria-invalid={validRegisConfirmPwd ? "false" : "true"}
                                     aria-describedby="uidnote"
                                     onFocus={()=> setRegisConfirmPwdFocus(true)}
                                     onBlur={()=> setRegisConfirmPwdFocus(false)}
                                 />
-                                <label>Confirm Password</label>
+                                <label>Confirm Password</label>  
                             </div>
+                            
                             <button disabled={loading} onClick={handleRegisSubmit} className="ls-sign-btn">Create Account</button>
                             {/* <div className="ls-ms-sign-in">
                                 <span className="ls-subtext">or</span>
