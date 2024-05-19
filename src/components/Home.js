@@ -9,13 +9,20 @@ import Navbar from "./Navbar";
 
 const Home = () => {
     const { currentUser } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!currentUser) {
+            navigate('/login');
+        }
+    }, [currentUser]);
     return (
         <>
          <Navbar />
         
             <div className="h-body">
                 <div className="h-title">
-                    <h2>Good Morning, {currentUser.displayName}!</h2>
+                    <h2>Good Morning, {currentUser?.displayName}!</h2>
                     <p>Start Simplifying Your Campus Cravings!</p>
                 </div>
                 <div className="h-content">

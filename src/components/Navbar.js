@@ -15,12 +15,12 @@ const Navbar = () => {
     const [dropdownActive, setDropdownActive] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
-    useEffect(() => {
-        if (!currentUser) {
-            navigate('/login');
-        }
-        console.log(currentUser);
-    }, [logout, navigate, currentUser]);
+    // useEffect(() => {
+    //     if (!currentUser) {
+    //         navigate('/login');
+    //     }
+    //     console.log(currentUser);
+    // }, [logout, navigate, currentUser]);
     
     const CloseShowModal = () => {
         setShowModal(false);
@@ -51,8 +51,6 @@ const Navbar = () => {
         
     }, []);
 
-
-    
   return (
     <div>
       <div className="nav-top">
@@ -66,53 +64,58 @@ const Navbar = () => {
         </Link>
         
         <div className='right-nav'>
-            
-
-            <div className='nb-profile-dropdown' ref={dropdownRef}>
-                <div className='nb-profile-dropdown-btn' onClick={toggleDropdown}>
-                    <div className='nb-profile-img'>
-                        <img src={profilePicURL} alt="Profile" className="nb-profile-img" />
-                        <FontAwesomeIcon icon={faCircle} style={{ position: 'absolute', bottom: '0.2rem', right: '0', fontSize: '0.7rem', color: '#37be6b' }} />
+            {currentUser ? (
+                <>
+                    <div className='nb-profile-dropdown' ref={dropdownRef}>
+                        <div className='nb-profile-dropdown-btn' onClick={toggleDropdown}>
+                            <div className='nb-profile-img'>
+                                <img src={profilePicURL} alt="Profile" className="nb-profile-img" />
+                                <FontAwesomeIcon icon={faCircle} style={{ position: 'absolute', bottom: '0.2rem', right: '0', fontSize: '0.7rem', color: '#37be6b' }} />
+                            </div>
+                            <span>
+                                {currentUser.displayName}
+                                <FontAwesomeIcon icon={faAngleDown} style={{ padding: '2px 0 0 4px', fontSize: '1rem', color: '#d2627e' }} />
+                            </span>
+                        </div>
+                        <ul className={`nb-profile-dropdown-list ${dropdownActive ? 'active' : ''}`}>
+                            <li className="nb-profile-dropdown-list-item">
+                                <Link to="/user-profile">
+                                    <div className='nb-profile-dropdown-list-item-icon'>
+                                        <FontAwesomeIcon icon={faUser} style={{ fontSize: '1rem', color: 'white' }} />
+                                    </div>
+                                    Edit Profile
+                                </Link>
+                            </li>
+                            <li className="nb-profile-dropdown-list-item">
+                                <a href="#" onClick={logout}>
+                                    <div className='nb-profile-dropdown-list-item-icon'>
+                                        <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '1rem', color: 'white' }} />
+                                    </div>
+                                    Log out
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-
-                    <span>
-                        {currentUser?.displayName}
-                        <FontAwesomeIcon icon={faAngleDown} style={{ padding: '2px 0 0 4px', fontSize: '1rem', color: '#d2627e' }} />
-                    </span>
+                    <div className='nb-cart' onClick={() => setShowModal(!showModal)}>
+                        <div className='nb-cart-icon'>
+                            <img src={'/Assets/cart.png'} alt="Cart" className="nb-image-cart" />
+                        </div>
+                        <div className='nb-cart-count'>
+                            <span>0</span>
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <div className="navbar-buttons">
+                    <button onClick={() => navigate('/signup')} className="signup-button">Sign up</button>
+                    <button onClick={() => navigate('/login')} className="login-button">Login</button>
                 </div>
-
-                <ul className={`nb-profile-dropdown-list ${dropdownActive ? 'active' : ''}`}>
-                    <li className="nb-profile-dropdown-list-item">
-                        <Link to="/user-profile">
-                            <div className='nb-profile-dropdown-list-item-icon'>
-                                <FontAwesomeIcon icon={faUser} style={{ fontSize: '1rem', color: 'white' }} />
-                            </div>
-                            Edit Profile
-                        </Link>
-                    </li>
-                    <li className="nb-profile-dropdown-list-item">
-                        <a href="#" onClick={logout}>
-                            <div className='nb-profile-dropdown-list-item-icon'>
-                                <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '1rem', color: 'white' }} />
-                            </div>
-                            Log out
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div className='nb-cart' onClick={() => setShowModal(!showModal)}>
-                <div className='nb-cart-icon'>
-                    <img src={'/Assets/cart.png'} alt="Cart" className="nb-image-cart" />
-                </div>
-                <div className='nb-cart-count'>
-                    <span> 0 </span>
-                </div>
-            </div>
+            )}
         </div>
 
 
       </div>
-
+        {currentUser &&
         <div className="nav-side">
             <div className="image-wrapper">
             <Link to="/" style={{textDecoration: 'none'}}>
@@ -152,6 +155,8 @@ const Navbar = () => {
                 </ul>
             </div>
         </div>
+        
+        }
       {showModal && <CartModal showModal={showModal} onClose={CloseShowModal} />}
     </div>
   );

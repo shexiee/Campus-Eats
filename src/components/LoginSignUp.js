@@ -155,7 +155,7 @@ const LoginSignUp = () => {
             await login(loginEmail, loginPwd);
             console.log("Logged in successfully: ", currentUser);
 
-            navigate('/');
+            navigate('/home');
 
         }catch (e) {
             console.log("Error:",e);
