@@ -1,0 +1,138 @@
+.h-body{
+    height: 100vh;
+    background-color: #DFD6C5;
+    padding: 100px 50px 0 120px;
+}
+
+.h-item{
+    background-color: #FFFAF1;
+    padding: 15px;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    width: 200px;
+}
+
+.h-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.h-image-store{
+    width: 7rem;
+    height: 7rem;
+    padding: 20px;
+    background-color: #DFD6C5;
+    border-radius: 20px;
+}
+
+
+.h-card {
+    width: 252px;
+    height: 265px;
+    background: #FFFAF1;
+    border-radius: 30px;
+    box-shadow: 7px 7px 22px #bbb4a7,
+               -7px -7px 22px #FFFAF1;
+    transition: 0.2s ease-in-out;
+}
+  
+.h-img {
+    width: 100%;
+    height: 50%;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    background: linear-gradient(#d15d61, #BC4A4D);
+    display: flex;
+    align-items: top;
+    justify-content: right;
+    position: relative;
+}
+.h-image-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+  }
+  
+.h-save {
+    transition: 0.2s ease-in-out;
+    border-radius: 10px;
+    margin: 20px;
+    width: 30px;
+    height: 30px;
+    background-color: #FFFAF1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 999;
+}
+  
+.h-text {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: space-around;
+}
+
+.h-subtext{
+    display: flex;
+    align-items: center;
+    gap: 6px
+
+}
+  
+.h-save .h-svg {
+    transition: 0.2s ease-in-out;
+    width: 15px;
+    height: 15px;
+}
+
+.h-svg2{
+    width: 12px;
+    height: 12px;
+    color: #999999
+}
+
+  
+
+  
+.h-text .h-h3 {
+    font-family: 'Poppins' sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: black;
+}
+  
+.h-text .h-p {
+    font-family: 'Poppins' sans-serif;
+    color: #999999;
+    font-size: 13px;
+}
+  
+ 
+  
+.h-card:hover {
+    cursor: pointer;
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+}
+  
+.h-save:hover {
+    transform: scale(1.1) rotate(10deg);
+}
+
+.h-details{
+    margin-top: 25px;
+}

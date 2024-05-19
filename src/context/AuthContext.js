@@ -128,6 +128,14 @@ export function AuthProvider({ children }) {
       throw error;
     }
   }
+  async function logout() {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Error logging out:", error);
+      throw error;
+    }
+  }
 
 
 
@@ -164,6 +172,7 @@ export function AuthProvider({ children }) {
         signup,
         login,
         resetPassword,
+        logout,
     }
 
   return (
