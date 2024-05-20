@@ -8,7 +8,7 @@ import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
 
 const UserProfile = () => {
-    const { currentUser, logout } = useAuth(); // Make sure to include the logout function
+    const { logout } = useAuth(); // Make sure to include the logout function
     const navigate = useNavigate();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -164,7 +164,7 @@ const UserProfile = () => {
                           </div>
                           <div className="p-info">
                               <div className="p-upgrade-buttons">
-                                  <button className="p-upgrade-button" >Be a Dasher!</button>
+                                  <button className="p-upgrade-button" >Be a Dasher</button>
                                   <button className="p-upgrade-button">Add a Shop</button>
                               </div>
                           </div>

@@ -1,14 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState} from "react";
 import "./css/Shop.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
+import AddToCartModal from "./AddToCartModal";
+
 
 const Shop = () => {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
+    const [showModal, setShowModal] = useState(false);
+
+    const CloseShowModal = () => {
+        setShowModal(false);
+    }
 
     useEffect(() => {
         if (!currentUser) {
@@ -51,7 +58,7 @@ const Shop = () => {
                                         <p className="s-p">Fried Chicken</p>
                                     </div>
                                     <h3>$10.00</h3>
-                                    <div className="s-plus-icon">
+                                    <div className="s-plus-icon" onClick={() => setShowModal(!showModal)}>
                                         <FontAwesomeIcon icon={faPlus} />
                                     </div>
                                 </div>
@@ -59,6 +66,7 @@ const Shop = () => {
                         </div>
                     </div>
                 </div>
+                {showModal && <AddToCartModal showModal={showModal} onClose={CloseShowModal} />}
             </div>
         </>
     );
