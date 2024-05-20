@@ -77,9 +77,7 @@ export function AuthProvider({ children }) {
     try {
         let email = identifier;
 
-        // Check if the identifier is a username
         if (!identifier.includes('@')) {
-            // Query Firestore to get the email associated with the username
             const usernamesQuery = query(collection(db, "users"), where("username", "==", identifier));
             const querySnapshot = await getDocs(usernamesQuery);
             console.log("querySnapshot", querySnapshot.empty);
@@ -88,18 +86,15 @@ export function AuthProvider({ children }) {
                 throw new Error('No account found with the provided username.');
             }
 
-            // Get the email from the query result
-            const userDoc = querySnapshot.docs[0]; // Assuming usernames are unique
+            const userDoc = querySnapshot.docs[0];
             console.log("userDoc", userDoc);
             console.log("userDoc.data()", userDoc.data());
             email = userDoc.data().email;
         }
 
-        // Proceed with email login
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Check if the user's email is verified
         if (!user.emailVerified) {
             throw new Error('Please verify your email before logging in.');
         }
@@ -107,24 +102,20 @@ export function AuthProvider({ children }) {
         return user;
     } catch (error) {
         console.error("Error logging in:", error);
-        throw error; // re-throw the error to propagate it to the caller
+        throw error;
     }
   }
 
   async function resetPassword(email) {
     try {
-      // Attempt to send the password reset email
       await sendPasswordResetEmail(auth, email, {
         url: `http://localhost:3000/login`
       });
       console.log('sent');
     } catch (error) {
-      // Check if the error is due to the user not found
       if (error.code === 'auth/user-not-found') {
-        // Throw a custom error indicating that the email was not found
         throw new Error('Email not found.');
       }
-      // If the error is not related to user not found, re-throw the original error
       throw error;
     }
   }

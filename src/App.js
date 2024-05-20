@@ -6,7 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 import Home from './components/Home';
 import Order from './components/Order';
 import LandingPage from './components/LandingPage';
-import UserProfile from './components/UserProfile';
+import UserProfile from './components/Userprofile';
 import Shop from './components/Shop';
 
 function App() {
