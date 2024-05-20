@@ -1,10 +1,10 @@
 import React, {useState} from "react";
-import "./css/RunnerApplication.css";
+import "./css/DasherApplication.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
 
-const RunnerApplication = () => {
+const DasherApplication = () => {
     const [uploadedImage, setUploadedImage] = useState(null);
     const [dragOver, setDragOver] = useState(false);
 
@@ -122,4 +122,4 @@ const RunnerApplication = () => {
     );
 };
 
-export default RunnerApplication;
+export default DasherApplication;

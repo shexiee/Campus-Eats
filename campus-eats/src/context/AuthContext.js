@@ -49,7 +49,8 @@ export function AuthProvider({ children }) {
   
           const userRef = doc(db, "users", user.uid);
           await setDoc(userRef, {
-              fullname: `${firstname} ${lastname}`,
+              firstname,
+              lastname,
               account_type: "regular",
               course_yr: null,
               phone_number: null,
@@ -62,7 +63,7 @@ export function AuthProvider({ children }) {
           await updateProfile(user, {
               displayName: username
           });
-  
+
           return user;
       } catch (error) {
           if (error.code === 'auth/email-already-in-use') {

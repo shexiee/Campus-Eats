@@ -9,6 +9,7 @@ import LandingPage from './components/LandingPage';
 import UserProfile from './components/UserProfile';
 import Shop from './components/Shop';
 import ShopApplication from './components/ShopApplication';
+import DasherApplication from './components/DasherApplication';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/shop-application" element={<ShopApplication />} />
+          <Route path="/dasher-application" element={<DasherApplication />} />
         </Routes>
       </Router>
     </AuthProvider>
