@@ -8,6 +8,7 @@ import Order from './components/Order';
 import LandingPage from './components/LandingPage';
 import UserProfile from './components/UserProfile';
 import Shop from './components/Shop';
+import ShopApplication from './components/ShopApplication';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/shop-application" element={<ShopApplication />} />
         </Routes>
       </Router>
     </AuthProvider>

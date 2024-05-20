@@ -1,22 +1,35 @@
-import React from "react";
+import React, {useState} from "react";
 import "./css/ShopApplication.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
 
 const ShopApplication = () => {
+    const [uploadedImage, setUploadedImage] = useState(null);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setUploadedImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+        }
+    };
+
     return (
         <>
             <Navbar />
 
-            <div className="o-body">
+            <div className="p-body">
                 <div className="p-content-current">
                     <div className="p-card-current">
                         <div className="p-container">
                             <div className="p-content">
                                 <div className="p-text">
                                     <h3>Shop Application</h3>
-                                    <h4>Partner with DoorDash to help drive growth and take your business to the next level.</h4>
+                                    <h4>Partner with CampusEats to help drive growth and take your business to the next level.</h4>
                                 </div>
                             </div>
                             <div className="p-info">
@@ -66,19 +79,36 @@ const ShopApplication = () => {
                                 </div>
 
                                 <div className="p-two">
-                                  <div className="p-field-two">
-                                      <div className="p-label-two">
-                                          <div className="p-label-icon">
-                                            <h3>Upload GovID</h3>
-                                          </div>
-                                          <label htmlFor="govID" className="govID">Upload Photo</label>
-                                          <input type="file" id="govID" className="govID-input" />
-                                      </div>
-                                  </div>
+                                    <div className="sa-upload">
+                                        <div className="sa-label-upload">
+                                        <h3>Upload GovID</h3>
+                                        </div>
+                                        <div className="sa-upload-container">
+                                        <label htmlFor="sa-govID" className="sa-drop-area">
+                                            <input
+                                            type="file"
+                                            hidden
+                                            id="sa-govID"
+                                            className="sa-govID-input"
+                                            onChange={handleFileChange}
+                                            />
+                                            <div className="sa-img-view">
+                                            {uploadedImage ? (
+                                                <img src={uploadedImage} alt="Uploaded" style={{ width: '100%', height: '100%', borderRadius: '20px', objectFit: 'cover' }} />
+                                            ) : (
+                                                <>
+                                                <FontAwesomeIcon icon={faUpload} className="sa-upload-icon" />
+                                                <p>Drag and Drop or click here <br /> to upload image</p>
+                                                </>
+                                            )}
+                                            </div>
+                                        </label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="p-buttons">
-                                    <button className="p-cancel-button">Cancel</button>
-                                    <button className="p-submit-button">Submit</button>
+                                    <button className="p-logout-button">Cancel</button>
+                                    <button className="p-save-button">Submit</button>
                                 </div>
                             </div>
                         </div>
