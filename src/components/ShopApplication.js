@@ -6,9 +6,30 @@ import Navbar from "./Navbar";
 
 const ShopApplication = () => {
     const [uploadedImage, setUploadedImage] = useState(null);
+    const [dragOver, setDragOver] = useState(false);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
+        processFile(file);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setDragOver(true);
+    };
+
+    const handleDragLeave = () => {
+        setDragOver(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setDragOver(false);
+        const file = e.dataTransfer.files[0];
+        processFile(file);
+    };
+
+    const processFile = (file) => {
         if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -83,7 +104,12 @@ const ShopApplication = () => {
                                         <div className="sa-label-upload">
                                         <h3>Upload GovID</h3>
                                         </div>
-                                        <div className="sa-upload-container">
+                                        <div
+                                        className={`sa-upload-container ${dragOver ? 'drag-over' : ''}`}
+                                        onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={handleDrop}
+                                        >
                                         <label htmlFor="sa-govID" className="sa-drop-area">
                                             <input
                                             type="file"

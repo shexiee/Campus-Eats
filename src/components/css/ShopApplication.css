@@ -41,3 +41,8 @@
     color: #777676;
   }
   
+
+  .sa-upload-container.drag-over .sa-img-view {
+    background-color: #e0e0e0;
+    border: 2px dashed #a14447;
+  }
