@@ -1,0 +1,80 @@
+.adl-body {
+    height: 100%;
+    padding: 70px 50px 0 120px;
+}
+
+.adl-title {
+    padding-top: 30px;
+}
+
+.adl-row-container,
+.adl-row-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    color: #515050;
+    background-color: #BC4A4D;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.adl-word,
+.adl-word {
+    font-size: 12px;
+    color: #fff;
+    flex: 1;
+    text-align: center;
+}
+
+.adl-box,
+.adl-box {
+    background: #FFFAF1;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: 0.2s ease-in-out;
+    width: 100%;
+}
+
+.adl-box-content,
+.adl-box-content {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.adl-box-content > div,
+.adl-box-content > div {
+    text-align: center;
+    padding: 10px 0;
+    color: #4d4d4d;
+    flex: 1;
+}
+
+.adl-box-content > div:nth-child(n+2),
+.adl-box-content > div:nth-child(n+2) {
+    border-left: 1px solid #ddd;
+}
+
+.adl-box-content div:nth-child(7),
+.adl-box-content div:nth-child(7) {
+    font-weight: 600;
+}
+
+.adl-box-content div:nth-child(7) {
+    color: green;
+}
+
+.adl-box-content div:nth-child(7) {
+    color: red;
+}
+
+.adl-title {
+    margin-top: 5px;
+    padding-top: 30px;
+}
+
+.dashers-title {
+    margin-top: 150px;
+}

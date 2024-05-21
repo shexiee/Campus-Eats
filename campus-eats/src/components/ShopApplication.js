@@ -15,9 +15,11 @@ const ShopApplication = () => {
   const [shopName, setShopName] = useState("");
   const [shopDesc, setShopDesc] = useState("");
   const [shopAddress, setShopAddress] = useState("");
-  const [googleLink, setGoogleLink] = useState("");
+  const [googleLink, setGoogleLink] = useState("https://maps.app.goo.gl/");
   const [shopOpen, setShopOpen] = useState(null);
   const [shopClose, setShopClose] = useState(null);
+  const [GCASHName, setGCASHName] = useState("");
+  const [GCASHNumber, setGCASHNumber] = useState("");
   const [categories, setCategories] = useState({
     food: false,
     drinks: false,
@@ -37,22 +39,18 @@ const ShopApplication = () => {
     breakfast: false,
   });
   const navigate = useNavigate();
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setImageFile(file);
     processFile(file);
   };
-
   const handleDragOver = (e) => {
     e.preventDefault();
     setDragOver(true);
   };
-
   const handleDragLeave = () => {
     setDragOver(false);
   };
-
   const handleDrop = (e) => {
     e.preventDefault();
     setDragOver(false);
@@ -60,7 +58,6 @@ const ShopApplication = () => {
     setImageFile(file);
     processFile(file);
   };
-
   const processFile = (file) => {
     if (file) {
       const reader = new FileReader();
@@ -70,32 +67,33 @@ const ShopApplication = () => {
       reader.readAsDataURL(file);
     }
   };
-
   const handleCategoryChange = (category) => {
     setCategories({
       ...categories,
       [category]: !categories[category],
     });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const hasCategorySelected = Object.values(categories).some(
       (selected) => selected
     );
-
     if (!hasCategorySelected) {
       alert("Please select at least one category.");
       return;
     }
-
     if (!uploadedImage) {
       alert("Please upload a government ID image.");
       return;
     }
 
-    if (!googleLink.startsWith("https://maps.google.com")) {
+    if (!googleLink.startsWith("https://maps.app.goo.gl/")) {
       alert("Please provide a valid Google Maps address link.");
+      return;
+    }
+
+    if (!GCASHNumber.startsWith(9)) {
+      alert("Please provide a valid GCASH Number.");
       return;
     }
 
@@ -103,7 +101,6 @@ const ShopApplication = () => {
       alert("Shop close time must be later than shop open time.");
       return;
     }
-
     const formData = new FormData();
     formData.append("shopName", shopName);
     formData.append("shopDesc", shopDesc);
@@ -112,9 +109,14 @@ const ShopApplication = () => {
     formData.append("categories", JSON.stringify(categories));
     formData.append("image", imageFile);
     formData.append("uid", currentUser.uid);
+    formData.append("shopOpen", shopOpen);
+    formData.append("shopClose", shopClose);
+    formData.append("GCASHName", GCASHName);
+    formData.append("GCASHNumber", GCASHNumber);
+    formData.append("displayName", currentUser.displayName);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/shop", formData, {
+      const response = await axios.post("http://localhost:5000/api/shop-application", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -122,15 +124,24 @@ const ShopApplication = () => {
       alert(response.data.message);
       navigate("/profile");
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Error submitting form");
+      if (error.response && error.response.data.error === 'You have already submitted a dasher application') {
+          alert('You have already submitted a dasher application.');
+          return;
+      }
+
+      if (error.response && error.response.data.error === 'You have already submitted a shop application') {
+          alert('You have already submitted a shop application.');
+          return;
+      }else {
+          console.error("Error submitting form:", error);
+          alert("Error submitting form");
+      }
     }
   };
 
   return (
     <>
       <Navbar />
-
       <div className="p-body">
         <div className="p-content-current">
           <div className="p-card-current">
@@ -203,6 +214,35 @@ const ShopApplication = () => {
                         />
                       </div>
                     </div>
+                  </div>
+                  <div className="p-two">
+                    <div className="p-field-two">
+                      <div className="p-label-two">
+                        <h3>GCASH Name</h3>
+                        <input
+                          type="text"
+                          className="gcash-name"
+                          value={GCASHName}
+                          onChange={(e) => setGCASHName(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="p-field-two">
+                      <div className="p-label-two">
+                        <h3>GCASH Number</h3>
+                        <div className="gcash-input-container">
+                          <span className="gcash-prefix">+63 </span>
+                          <input
+                            type="number"
+                            className="gcash-num"
+                            value={GCASHNumber}
+                            onChange={(e) => setGCASHNumber(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+                      </div>
                   </div>
                   <div className="p-two">
                     <div className="p-field-two">
@@ -317,5 +357,4 @@ const ShopApplication = () => {
     </>
   );
 };
-
 export default ShopApplication;
