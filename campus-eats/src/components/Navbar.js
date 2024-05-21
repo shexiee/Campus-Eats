@@ -125,7 +125,7 @@ const Navbar = () => {
 
 
       </div>
-        {currentUser && 
+        {currentUser && userAccountType==='regular' && 
         <div className="nav-side">
             <div className="image-wrapper">
             <Link to="/" style={{textDecoration: 'none'}}>
@@ -165,6 +165,126 @@ const Navbar = () => {
                 </ul>
             </div>
         </div>
+        }
+
+        {currentUser && userAccountType==='admin' && 
+            <div className="nav-side">
+                <div className="image-wrapper">
+                <Link to="/" style={{textDecoration: 'none'}}>
+                    <img src={'/Assets/logo.svg'} alt="Logo" className="nb-logo" />
+                </Link>
+                </div>
+                <div className='nav'>
+                    <ul>
+                        <li className={`nb-icon ${location.pathname === '/admin-dashboard' ? 'active' : ''}`}>
+                            <Link to="/admin-dashboard">
+                                <div className="svg-container">
+                                    <img src={'/Assets/dashboard-icon.svg'} alt="Dashboard" className="nb-image" />
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`nb-icon ${location.pathname === '/admin-incoming-order' ? 'active' : ''}`}>
+                            <Link to="/admin-incoming-order">
+                                <div className="svg-container">
+                                    <img src={'/Assets/incoming-icons.svg'} alt="Incoming" className={`nb-image ${location.pathname === '/admin-incoming-order' ? 'active' : ''}`} />
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`nb-icon ${location.pathname === '/admin-order-history' ? 'active' : ''}`}>
+                            <Link to="/admin-order-history">
+                                <div className="svg-container">
+                                    <img src={'/Assets/orders.svg'} alt="Orders" className={`nb-image ${location.pathname === '/admin-order-history' ? 'active' : ''}`} />
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`nb-icon ${location.pathname === '/admin-dashers' ? 'active' : ''}`}>
+                            <Link to="/admin-dashers">
+                                <div className="svg-container">
+                                    <img src={'/Assets/dashers-icon.svg'} alt="Dashers" className={`nb-image ${location.pathname === '/admin-dashers' ? 'active' : ''}`} />
+                                </div>
+                            </Link>
+                        </li>
+
+                        <li className={`nb-icon ${location.pathname === '/admin-shops' ? 'active' : ''}`}>
+                            <Link to="/admin-shops">
+                                <div className="svg-container">
+                                    <img src={'/Assets/shop.svg'} alt="shops" className={`nb-image ${location.pathname === '/admin-shops' ? 'active' : ''}`} />
+                                </div>
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        }
+
+        {currentUser && userAccountType==='dasher' && 
+            <div className="nav-side">
+                <div className="image-wrapper">
+                <Link to="/" style={{textDecoration: 'none'}}>
+                    <img src={'/Assets/logo.svg'} alt="Logo" className="nb-logo" />
+                </Link>
+                </div>
+                <div className='nav'>
+                    <ul>
+                        <li className={`nb-icon ${location.pathname === '/shop-dashboard' ? 'active' : ''}`}>
+                            <Link to="/shop-dashboard">
+                                <div className="svg-container">
+                                    <img src={'/Assets/dashboard-icon.svg'} alt="Dashboard" className="nb-image" />
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`nb-icon ${location.pathname === '/dasher-incoming-order' ? 'active' : ''}`}>
+                            <Link to="/dasher-incoming-order">
+                                <div className="svg-container">
+                                    <img src={'/Assets/incoming-icons.svg'} alt="Incoming" className={`nb-image ${location.pathname === '/dasher-incoming-order' ? 'active' : ''}`} />
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`nb-icon ${location.pathname === '/dasher-order-history' ? 'active' : ''}`}>
+                            <Link to="/dasher-order-history">
+                                <div className="svg-container">
+                                    <img src={'/Assets/orders.svg'} alt="Orders" className={`nb-image ${location.pathname === '/dasher-order-history' ? 'active' : ''}`} />
+                                </div>
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        }
+
+        {currentUser && userAccountType==='shop' && 
+            <div className="nav-side">
+                <div className="image-wrapper">
+                <Link to="/" style={{textDecoration: 'none'}}>
+                    <img src={'/Assets/logo.svg'} alt="Logo" className="nb-logo" />
+                </Link>
+                </div>
+                <div className='nav'>
+                    <ul>
+                        <li className={`nb-icon ${location.pathname === '/shop-dashboard' ? 'active' : ''}`}>
+                            <Link to="/shop-dashboard">
+                                <div className="svg-container">
+                                    <img src={'/Assets/dashboard-icon.svg'} alt="Dashboard" className="nb-image" />
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`nb-icon ${location.pathname === '/shop-add-item' ? 'active' : ''}`}>
+                            <Link to="/shop-add-item">
+                                <div className="svg-container">
+                                    <img src={'/Assets/add-item.svg'} alt="add item" className={`nb-image ${location.pathname === '/shop-add-item' ? 'active' : ''}`} />
+                                </div>
+                            </Link>
+                        </li>
+                        <li className={`nb-icon ${location.pathname === '/shop-manage-item' ? 'active' : ''}`}>
+                            <Link to="/shop-manage-item">
+                                <div className="svg-container">
+                                    <img src={'/Assets/manage-items.svg'} alt="Orders" className={`nb-image ${location.pathname === '/shop-manage-item' ? 'active' : ''}`} />
+                                </div>
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         }
         
       {showModal && <CartModal showModal={showModal} onClose={CloseShowModal} />}

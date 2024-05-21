@@ -21,7 +21,6 @@ admin.initializeApp({
 });
  
 const db = admin.firestore();
-const bucket = admin.storage().bucket();
  
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -252,13 +251,13 @@ app.get('/api/shops', async (req, res) => {
 
 app.get('/api/shop/:shopId', async (req, res) => {
   const shopId = req.params.shopId;
-
+ 
   try {
     const shopDoc = await db.collection('shops').doc(shopId).get();
     if (!shopDoc.exists) {
       return res.status(404).json({ error: 'Shop not found' });
     }
-
+ 
     const shopData = shopDoc.data();
     return res.status(200).json(shopData);
   } catch (error) {
