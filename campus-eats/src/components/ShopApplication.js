@@ -15,9 +15,11 @@ const ShopApplication = () => {
   const [shopName, setShopName] = useState("");
   const [shopDesc, setShopDesc] = useState("");
   const [shopAddress, setShopAddress] = useState("");
-  const [googleLink, setGoogleLink] = useState("");
+  const [googleLink, setGoogleLink] = useState("https://maps.app.goo.gl/");
   const [shopOpen, setShopOpen] = useState(null);
   const [shopClose, setShopClose] = useState(null);
+  const [GCASHName, setGCASHName] = useState("");
+  const [GCASHNumber, setGCASHNumber] = useState("");
   const [categories, setCategories] = useState({
     food: false,
     drinks: false,
@@ -94,8 +96,13 @@ const ShopApplication = () => {
       return;
     }
 
-    if (!googleLink.startsWith("https://maps.google.com")) {
+    if (!googleLink.startsWith("https://maps.app.goo.gl/")) {
       alert("Please provide a valid Google Maps address link.");
+      return;
+    }
+
+    if (!GCASHNumber.startsWith(9)) {
+      alert("Please provide a valid GCASH Number.");
       return;
     }
 
@@ -112,9 +119,14 @@ const ShopApplication = () => {
     formData.append("categories", JSON.stringify(categories));
     formData.append("image", imageFile);
     formData.append("uid", currentUser.uid);
+    formData.append("shopOpen", shopOpen);
+    formData.append("shopClose", shopClose);
+    formData.append("GCASHName", GCASHName);
+    formData.append("GCASHNumber", GCASHNumber);
+    formData.append("displayName", currentUser.displayName);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/shop", formData, {
+      const response = await axios.post("http://localhost:5000/api/shop-application", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -122,8 +134,18 @@ const ShopApplication = () => {
       alert(response.data.message);
       navigate("/profile");
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Error submitting form");
+      if (error.response && error.response.data.error === 'You have already submitted a dasher application') {
+          alert('You have already submitted a dasher application.');
+          return;
+      }
+        
+      if (error.response && error.response.data.error === 'You have already submitted a shop application') {
+          alert('You have already submitted a shop application.');
+          return;
+      }else {
+          console.error("Error submitting form:", error);
+          alert("Error submitting form");
+      }
     }
   };
 
@@ -203,6 +225,35 @@ const ShopApplication = () => {
                         />
                       </div>
                     </div>
+                  </div>
+                  <div className="p-two">
+                    <div className="p-field-two">
+                      <div className="p-label-two">
+                        <h3>GCASH Name</h3>
+                        <input
+                          type="text"
+                          className="gcash-name"
+                          value={GCASHName}
+                          onChange={(e) => setGCASHName(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="p-field-two">
+                      <div className="p-label-two">
+                        <h3>GCASH Number</h3>
+                        <div className="gcash-input-container">
+                          <span className="gcash-prefix">+63 </span>
+                          <input
+                            type="number"
+                            className="gcash-num"
+                            value={GCASHNumber}
+                            onChange={(e) => setGCASHNumber(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+                      </div>
                   </div>
                   <div className="p-two">
                     <div className="p-field-two">
