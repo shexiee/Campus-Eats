@@ -173,7 +173,9 @@ const Navbar = () => {
                 <Link to="/" style={{textDecoration: 'none'}}>
                     <img src={'/Assets/logo.svg'} alt="Logo" className="nb-logo" />
                 </Link>
+                
                 </div>
+                <p>{userAccountType}</p>
                 <div className='nav'>
                     <ul>
                         <li className={`nb-icon ${location.pathname === '/admin-dashboard' ? 'active' : ''}`}>
@@ -224,10 +226,11 @@ const Navbar = () => {
                     <img src={'/Assets/logo.svg'} alt="Logo" className="nb-logo" />
                 </Link>
                 </div>
+                <p>{userAccountType}</p>
                 <div className='nav'>
                     <ul>
-                        <li className={`nb-icon ${location.pathname === '/shop-dashboard' ? 'active' : ''}`}>
-                            <Link to="/shop-dashboard">
+                        <li className={`nb-icon ${location.pathname === '/dasher-dashboard' ? 'active' : ''}`}>
+                            <Link to="/dasher-dashboard">
                                 <div className="svg-container">
                                     <img src={'/Assets/dashboard-icon.svg'} alt="Dashboard" className="nb-image" />
                                 </div>
@@ -258,6 +261,7 @@ const Navbar = () => {
                 <Link to="/" style={{textDecoration: 'none'}}>
                     <img src={'/Assets/logo.svg'} alt="Logo" className="nb-logo" />
                 </Link>
+                <p>{userAccountType}</p>
                 </div>
                 <div className='nav'>
                     <ul>

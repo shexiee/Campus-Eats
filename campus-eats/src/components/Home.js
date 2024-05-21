@@ -20,7 +20,6 @@ const Home = () => {
     }, [currentUser]);
  
     const fetchShops = async () => {
-        console.log('Fetching shops...');
         try {
             const response = await fetch('/api/shops'); // Assuming this is your endpoint
             if (!response.ok) {
@@ -28,7 +27,6 @@ const Home = () => {
             }
             const data = await response.json();
             setShops(data);
-            console.log('Shops fetched:', data);
         } catch (error) {
             console.error('Error fetching shops:', error);
         }
@@ -61,7 +59,6 @@ const Home = () => {
                 </div>
                 <div className="h-content">
                     {shops.map((shop, index) => (
-                        console.log(shop),
                         <div key={index} className="h-card" onClick={() => handleCardClick(shop.shopId)}>
                             <div className="h-img">
                             <img src={shop.govId} className="h-image-cover" alt="store" />

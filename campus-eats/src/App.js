@@ -27,7 +27,7 @@ function App() {
           <Route path="/forgot-password" element={<PublicRoute Component={ForgotPassword} />} />
           <Route path="/login" element={<PublicRoute Component={LoginSignUp} />} />
           <Route path="/signup" element={<PublicRoute Component={LoginSignUp} />} />
-          <Route path="/" element={<PublicRoute Component={LandingPage} />} />
+          <Route path="/" element={<LandingPage/>} />
           <Route path="/orders" element={<PrivateRoute Component={Order} />} />
           <Route path="/home" element={<PrivateRoute Component={Home} />} />
           <Route path="/profile" element={<PrivateRoute Component={UserProfile} />} />
