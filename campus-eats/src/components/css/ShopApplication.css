@@ -7,11 +7,10 @@
   
   .sa-upload {
     padding: 18px;
-    width: 50%;
   }
   
   .sa-upload-container {
-    width: 75%;
+    width: 500px;
     height: 200px;
     border-radius: 20px;
     text-align: center;
@@ -46,4 +45,30 @@
   .sa-upload-container.drag-over .sa-img-view {
     background-color: #e0e0e0;
     border: 2px dashed #a14447;
+  }
+
+  .sa-shop-categories{
+    padding: 18px;
+  }
+
+  .sa-shop-categories h3 {
+    font-weight: 600;
+    font-size: 12px;
+    color: #777676;
+    margin-bottom: 10px;
+  }
+
+  .sa-category-item {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 5px 10px 0 0;
+    border-radius: 10px;
+    background-color: #ccc;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  
+  .sa-category-item.selected {
+    background-color: #d15d61;
+    color: #fff;
   }

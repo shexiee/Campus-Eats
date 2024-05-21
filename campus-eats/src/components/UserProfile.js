@@ -110,6 +110,18 @@ const UserProfile = () => {
 
           if (response.ok) {
               alert("Profile updated successfully");
+              setEditMode(false);
+              setEditUsername(false);
+                setInitialData({
+                    firstname: firstName,
+                    lastname: lastName,
+                    phone_number: contactNumber,
+                    dob: dob,
+                    course_yr: courseYear,
+                    school_id: schoolId,
+                    username: username
+                });
+
           } else {
               console.error("Error updating profile:", data.error);
               alert("Error updating profile: " + data.error);
