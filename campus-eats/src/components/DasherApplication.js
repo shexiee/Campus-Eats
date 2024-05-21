@@ -3,10 +3,12 @@ import "./css/DasherApplication.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
+import { useNavigate } from "react-router-dom";
 
 const DasherApplication = () => {
     const [uploadedImage, setUploadedImage] = useState(null);
     const [dragOver, setDragOver] = useState(false);
+    const navigate = useNavigate();
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -49,7 +51,7 @@ const DasherApplication = () => {
                         <div className="p-container">
                             <div className="p-content">
                                 <div className="p-text">
-                                    <h3>Runner Application</h3>
+                                    <h3>Dasher Application</h3>
                                     <h4>Partner with CampusEats to help drive growth and take your business to the next level.</h4>
                                 </div>
                             </div>
@@ -110,7 +112,7 @@ const DasherApplication = () => {
                                 </div>
 
                                 <div className="p-buttons">
-                                    <button className="p-logout-button">Cancel</button>
+                                    <button onClick={() => navigate("/profile")} className="p-logout-button">Cancel</button>
                                     <button className="p-save-button">Submit</button>
                                 </div>
                             </div>

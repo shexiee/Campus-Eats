@@ -6,9 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
 import { auth, db } from "../config/firebase";
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword  } from "firebase/auth";
+
 
 const UserProfile = () => {
-    const { logout, currentUser } = useAuth();
+    const { logout, currentUser, changePassword } = useAuth();
     const navigate = useNavigate();
     const [initialData, setInitialData] = useState({});
     const [firstName, setFirstName] = useState('');
@@ -79,15 +81,19 @@ const UserProfile = () => {
     }
 
       try {
-          if (pwd) {
-              // Reauthenticate user
-              const user = auth.currentUser;
-              const credential = auth.EmailAuthProvider.credential(currentUser.email, oldPwd);
-              await user.reauthenticateWithCredential(credential);
-
-              // Update password
-              await user.updatePassword(pwd);
-          }
+        console.log(oldPwd);
+            if (pwd) {
+                // Reauthenticate user
+                const user = auth.currentUser;
+                const credential = EmailAuthProvider.credential(currentUser.email, oldPwd);
+                
+                await reauthenticateWithCredential(user, credential);
+                await changePassword(pwd);
+                console.log("Password updated successfully");
+                setConfirmpwd('');
+                setPwd('');
+                setOldPwd('');
+            }
 
           // Update other user data in Firestore
           const response = await fetch(`http://localhost:5000/api/user/${currentUser.uid}`, {
@@ -107,11 +113,11 @@ const UserProfile = () => {
           });
 
           const data = await response.json();
-
-          if (response.ok) {
-              alert("Profile updated successfully");
-              setEditMode(false);
-              setEditUsername(false);
+          
+            if (response.ok) {
+                alert("Profile updated successfully");
+                setEditMode(false);
+                setEditUsername(false);
                 setInitialData({
                     firstname: firstName,
                     lastname: lastName,

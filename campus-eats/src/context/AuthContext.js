@@ -128,6 +128,25 @@ export function AuthProvider({ children }) {
       throw error;
     }
   }
+  function changeEmail(email) {
+    return updateEmail(currentUser, email);
+  }
+
+  function changePassword(password) {
+    return updatePassword(currentUser, password);
+  }
+
+  function changeProfileDisplayName(displayName) {
+    return updateProfile(currentUser, {
+      displayName
+    }); 
+  }
+
+  function changeProfilePhotoURL(photoURL) {
+    return updateProfile(currentUser, {
+      photoURL
+    });
+  }
 
 
 
@@ -165,6 +184,10 @@ export function AuthProvider({ children }) {
         login,
         resetPassword,
         logout,
+        changeEmail,
+        changePassword,
+        changeProfileDisplayName,
+        changeProfilePhotoURL,
     }
 
   return (
