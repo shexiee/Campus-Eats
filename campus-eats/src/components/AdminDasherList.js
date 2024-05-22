@@ -39,9 +39,9 @@ const AdminDasherList = () => {
                     </div>
                 </div>
 
-                {/* New Orders Table */}
+                {/* New Dashers Table */}
                 <div className="dashers-title">
-                    <h2>Orders</h2>
+                    <h2>Pending Dashers</h2>
                 </div>
 
                 <div className="adl-row-container">

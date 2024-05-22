@@ -1,14 +1,14 @@
-.adl-body {
+.as-body {
     height: 100%;
     padding: 70px 50px 0 120px;
 }
 
-.adl-title {
+.as-title {
     padding-top: 30px;
 }
 
-.adl-row-container,
-.adl-row-container {
+.as-row-container,
+.as-row-container {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
@@ -18,16 +18,16 @@
     border-top-right-radius: 10px;
 }
 
-.adl-word,
-.adl-word {
+.as-word,
+.as-word {
     font-size: 12px;
     color: #fff;
     flex: 1;
     text-align: center;
 }
 
-.adl-box,
-.adl-box {
+.as-box,
+.as-box {
     background: #FFFAF1;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -36,45 +36,45 @@
     width: 100%;
 }
 
-.adl-box-content,
-.adl-box-content {
+.as-box-content,
+.as-box-content {
     display: flex;
     flex: 1;
     justify-content: space-between;
     align-items: center;
 }
 
-.adl-box-content > div,
-.adl-box-content > div {
+.as-box-content > div,
+.as-box-content > div {
     text-align: center;
     padding: 10px 0;
     color: #4d4d4d;
     flex: 1;
 }
 
-.adl-box-content > div:nth-child(n+2),
-.adl-box-content > div:nth-child(n+2) {
+.as-box-content > div:nth-child(n+2),
+.as-box-content > div:nth-child(n+2) {
     border-left: 1px solid #ddd;
 }
 
-.adl-box-content div:nth-child(7),
-.adl-box-content div:nth-child(7) {
+.as-box-content div:nth-child(7),
+.as-box-content div:nth-child(7) {
     font-weight: 600;
-    color: green;
-
 }
 
-.adl-box-content div:nth-child(7) {
+.as-box-content div:nth-child(7) {
+    color: green;
+}
+
+.as-box-content div:nth-child(7) {
     color: red;
 }
 
-.adl-title {
+.as-title {
     margin-top: 5px;
     padding-top: 30px;
 }
 
-.dashers-title {
+.shops-title {
     margin-top: 150px;
 }
-
-

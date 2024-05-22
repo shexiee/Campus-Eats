@@ -39,6 +39,10 @@ const AdminIncomingOrder = () => {
         setMessage3(event.target.value);
     };
 
+    const handleButtonClick = (e) => {
+        e.stopPropagation();
+    };
+
     return (
         <>
             <Navbar />
@@ -57,8 +61,8 @@ const AdminIncomingOrder = () => {
                                 <p>Order #12345</p>
                             </div>
                             <div className="ao-buttons">
-                                <button className="ao-decline">Decline</button>
-                                <button className="ao-acceptorder">Accept Order</button>
+                            <button className="ao-decline" onClick={handleButtonClick}>Decline</button>
+                            <button className="ao-acceptorder" onClick={handleButtonClick}>Accept Order</button>
                             </div>
                             <div className="ao-toggle-content">
                                 <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen1 ? 180 : 0} />

@@ -17,6 +17,7 @@ const Navbar = () => {
     const [showModal, setShowModal] = useState(false);
     const [userAccountType, setUserAccountType] = useState('');
     useEffect(() => {
+        if(currentUser){
         const fetchUserRole = async () => {
           try {
             const response = await axios.get(`http://localhost:5000/api/user-role/${currentUser.uid}`);
@@ -28,7 +29,8 @@ const Navbar = () => {
         };
 
         fetchUserRole();
-      }, [currentUser.uid]);
+        }
+      }, []);
 
     
     

@@ -5,7 +5,7 @@ const multer = require('multer');
 const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
-const serviceAccount = require("D:\\3rd Yr @nd Sem\\capstone\\campus-eats-7db76-firebase-adminsdk-2uijc-87ecb35284.json");
+const serviceAccount = require("C:\\Users\\carro\\Downloads\\campus-eats-7db76-firebase-adminsdk-2uijc-7c19b0be9b.json");
 app.use(cors());
 app.use(express.json());
 admin.initializeApp({
