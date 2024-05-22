@@ -17,18 +17,22 @@ const Navbar = () => {
     const [showModal, setShowModal] = useState(false);
     const [userAccountType, setUserAccountType] = useState('');
     useEffect(() => {
-        const fetchUserRole = async () => {
-          try {
-            const response = await axios.get(`http://localhost:5000/api/user-role/${currentUser.uid}`);
-            setUserAccountType(response.data.accountType);
-            console.log(response.data.accountType);
-          } catch (error) {
-            console.error('Error fetching user role:', error);
-          }
-        };
+        if(currentUser){
 
+        
+            const fetchUserRole = async () => {
+                try {
+                const response = await axios.get(`http://localhost:5000/api/user-role/${currentUser.uid}`);
+                setUserAccountType(response.data.accountType);
+                console.log(response.data.accountType);
+                } catch (error) {
+                console.error('Error fetching user role:', error);
+                }
+            };
+        
         fetchUserRole();
-      }, [currentUser.uid]);
+        }
+      }, []);
 
     
     

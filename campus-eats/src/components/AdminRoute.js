@@ -53,7 +53,7 @@ const AdminRoute = ({ Component }) => {
     // return <ShopDashboard />;
   }
 
-  return <LandingPage />;
+  return <Home />;
 };
 
 export default AdminRoute;
