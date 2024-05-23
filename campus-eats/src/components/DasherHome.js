@@ -9,12 +9,39 @@ import Navbar from "./Navbar";
 
 const DasherHome = () => {
     const { currentUser } = useAuth();
+    const [isActive, setIsActive] = useState(false);
 
-    const [status, setStatus] = useState(""); // State to track the status button
+    const toggleButton = () => {
+        setIsActive(!isActive);
+    };
+
+    const navigate = useNavigate();
+
+    const [currentStatus, setCurrentStatus] = useState(""); 
+    const [buttonClicked, setButtonClicked] = useState({
+        preparing: false,
+        onTheWay: false,
+        arrived: false,
+        delivered: false
+    });
 
     const handleStatusChange = (newStatus) => {
-        setStatus(newStatus);
+        
+        if (
+            (newStatus === "preparing" && !buttonClicked.preparing) ||
+            (newStatus === "onTheWay" && buttonClicked.preparing && !buttonClicked.onTheWay) ||
+            (newStatus === "arrived" && buttonClicked.onTheWay && !buttonClicked.arrived) ||
+            (newStatus === "delivered" && buttonClicked.arrived && !buttonClicked.delivered)
+        ) {
+            setCurrentStatus(newStatus);
+            
+            setButtonClicked(prevState => ({
+                ...prevState,
+                [newStatus]: true
+            }));
+        }
     };
+
 
 
     return (
@@ -82,10 +109,10 @@ const DasherHome = () => {
                             <div className="j-order-status-container">
                                 <p>Status</p>
                                 <div className="j-order-status-buttons">
-                                    <button className={`j-status-button preparing ${status === "preparing" ? "active" : ""}`} onClick={() => handleStatusChange("preparing")}>Preparing</button>
-                                    <button className={`j-status-button on-the-way ${status === "on-the-way" ? "active" : ""}`} onClick={() => handleStatusChange("on-the-way")}>On the way</button>
-                                    <button className={`j-status-button arrived ${status === "arrived" ? "active" : ""}`} onClick={() => handleStatusChange("arrived")}>Arrived</button>
-                                    <button className={`j-status-button delivered ${status === "delivered" ? "active" : ""}`} onClick={() => handleStatusChange("delivered")}>Delivered</button>
+                                <button disabled={buttonClicked.preparing || currentStatus !== ""} className={`j-status-button preparing ${currentStatus === "preparing" ? "active" : ""}`} onClick={() => handleStatusChange("preparing")}>Preparing {currentStatus === "preparing" && "✓"}</button>
+                        <button disabled={!buttonClicked.preparing || buttonClicked.onTheWay || currentStatus !== "preparing"} className={`j-status-button on-the-way ${currentStatus === "onTheWay" ? "active" : ""}`} onClick={() => handleStatusChange("onTheWay")}>On the way {currentStatus === "onTheWay" && "✓"}</button>
+                        <button disabled={!buttonClicked.onTheWay || buttonClicked.arrived || currentStatus !== "onTheWay"} className={`j-status-button arrived ${currentStatus === "arrived" ? "active" : ""}`} onClick={() => handleStatusChange("arrived")}>Arrived {currentStatus === "arrived" && "✓"}</button>
+                        <button disabled={!buttonClicked.arrived || buttonClicked.delivered || currentStatus !== "arrived"} className={`j-status-button delivered ${currentStatus === "delivered" ? "active" : ""}`} onClick={() => handleStatusChange("delivered")}>Delivered {currentStatus === "delivered" && "✓"}</button>
                                 </div>
                             </div>
                         </div>
@@ -141,10 +168,19 @@ const DasherHome = () => {
                                         <h4>$3.00</h4>
                                     </div>
                                 <div className="j-past-subtext">
-                                    
-                                    <p>Delivered on May 27, 2024</p> 
-                                    <p>Order #asdfsf </p>
-                                    <p>Cash on Delivery</p> 
+                                    <div className="j-past-subtext-right">
+                                        <p>Delivered on May 27, 2024</p> 
+                                        <p>Order #asdfsf </p>
+                                        <p>Cash on Delivery</p> 
+                                    </div>                                        
+                                    <div className="j-active-buton">
+                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
+                                        
+                                        </button>
+                                        <div className="j-button-text">
+                                        {isActive ? 'Active' : 'Not Active'}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -165,10 +201,19 @@ const DasherHome = () => {
                                         <h4>$3.00</h4>
                                     </div>
                                 <div className="j-past-subtext">
-                                    
-                                    <p>Delivered on May 27, 2024</p> 
-                                    <p>Order #asdfsf </p>
-                                    <p>Cash on Delivery</p> 
+                                <div className="j-past-subtext-right">
+                                        <p>Delivered on May 27, 2024</p> 
+                                        <p>Order #asdfsf </p>
+                                        <p>Cash on Delivery</p> 
+                                    </div>                                        
+                                    <div className="j-active-buton">
+                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
+                                        
+                                        </button>
+                                        <div className="j-button-text">
+                                        {isActive ? 'Active' : 'Not Active'}
+                                        </div>
+                                    </div> 
                                 </div>
                             </div>
                         </div>
@@ -189,10 +234,19 @@ const DasherHome = () => {
                                         <h4>$3.00</h4>
                                     </div>
                                 <div className="j-past-subtext">
-                                    
-                                    <p>Delivered on May 27, 2024</p> 
-                                    <p>Order #asdfsf </p>
-                                    <p>Cash on Delivery</p> 
+                                <div className="j-past-subtext-right">
+                                        <p>Delivered on May 27, 2024</p> 
+                                        <p>Order #asdfsf </p>
+                                        <p>Cash on Delivery</p> 
+                                    </div>                                        
+                                    <div className="j-active-buton">
+                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
+                                        
+                                        </button>
+                                        <div className="j-button-text">
+                                        {isActive ? 'Active' : 'Not Active'}
+                                        </div>
+                                    </div> 
                                 </div>
                             </div>
                         </div>
@@ -213,10 +267,19 @@ const DasherHome = () => {
                                         <h4>$3.00</h4>
                                     </div>
                                 <div className="j-past-subtext">
-                                    
-                                    <p>Delivered on May 27, 2024</p> 
-                                    <p>Order #asdfsf </p>
-                                    <p>Cash on Delivery</p> 
+                                <div className="j-past-subtext-right">
+                                        <p>Delivered on May 27, 2024</p> 
+                                        <p>Order #asdfsf </p>
+                                        <p>Cash on Delivery</p> 
+                                    </div>                                        
+                                    <div className="j-active-buton">
+                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
+                                        
+                                        </button>
+                                        <div className="j-button-text">
+                                        {isActive ? 'Active' : 'Not Active'}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -237,10 +300,19 @@ const DasherHome = () => {
                                         <h4>$3.00</h4>
                                     </div>
                                 <div className="j-past-subtext">
-                                    
-                                    <p>Delivered on May 27, 2024</p> 
-                                    <p>Order #asdfsf </p>
-                                    <p>Cash on Delivery</p> 
+                                <div className="j-past-subtext-right">
+                                        <p>Delivered on May 27, 2024</p> 
+                                        <p>Order #asdfsf </p>
+                                        <p>Cash on Delivery</p> 
+                                    </div>                                        
+                                    <div className="j-active-buton">
+                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
+                                        
+                                        </button>
+                                        <div className="j-button-text">
+                                        {isActive ? 'Active' : 'Not Active'}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -261,10 +333,19 @@ const DasherHome = () => {
                                         <h4>$3.00</h4>
                                     </div>
                                 <div className="j-past-subtext">
-                                    
-                                    <p>Delivered on May 27, 2024</p> 
-                                    <p>Order #asdfsf </p>
-                                    <p>Cash on Delivery</p> 
+                                    <div className="j-past-subtext-right">
+                                        <p>Delivered on May 27, 2024</p> 
+                                        <p>Order #asdfsf </p>
+                                        <p>Cash on Delivery</p> 
+                                    </div>                                        
+                                    <div className="j-active-buton">
+                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
+                                        
+                                        </button>
+                                        <div className="j-button-text">
+                                        {isActive ? 'Active' : 'Not Active'}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
