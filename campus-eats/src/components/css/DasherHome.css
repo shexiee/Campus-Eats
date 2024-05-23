@@ -45,6 +45,25 @@ body{
     box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
 }
 
+.j-card-current-j-card-small {
+    background: #FFFAF1;
+    border-radius: 30px;
+    box-shadow: 7px 7px 22px #bbb4a7, -7px -7px 22px #FFFAF1;
+    transition: 0.2s ease-in-out;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}
+
+.j-card-current-j-card-small h5 {
+    padding-top: 8px;
+    padding-left: 8px;
+}
+
+.j-card-current-j-card-small:hover {
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+}
+
 .j-card-small {
     width: 30%;
 }
@@ -331,12 +350,13 @@ body{
     background-color: #f5f5f5; /* Light background color */
     padding: 7px;
     border-radius: 25px;
-    width: 115px;
+    width: 120px;
     height: 35px;
     font-weight: 600;
     font-size: 10px;
     color: #515050;
     gap: 10px;
+    border: 2px solid #E2DFDF;
 }
 
 /* CSS for the toggle switch */
@@ -366,18 +386,18 @@ body{
     width: 17px;
     height: 17px;
     border-radius: 50%;
-    top: 1.5px;
+    top: 1px;
     left: 2px;
     background-color: white;
     transition: transform 0.3s;
 }
 
 .j-active-buton .button-active::before {
-    transform: translateX(14.5px); /* Move the circle to the right */
+    transform: translateX(14px); /* Move the circle to the right */
 }
 
 .j-active-buton .button-inactive::before {
-    transform: translateX(-0.5px); /* Keep the circle on the left */
+    transform: translateX(0px); /* Keep the circle on the left */
 }
 
 /* CSS for the text next to the toggle switch */

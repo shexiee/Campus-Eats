@@ -118,36 +118,19 @@ const DasherHome = () => {
                         </div>
                     </div>
                 </div>
-                <div className="j-card-current j-card-small">
-                    <div className="j-text">
-                        <p>Arriving in</p>
-                        <h2>5 — 10 mins</h2>
-                        <div className="loader">
-                            <div className="circle">
-                                <div className="dot"></div>
-                                <div className="outline"></div>
-                            </div>
-                            <div className="circle">
-                                <div className="dot"></div>
-                                <div className="outline"></div>
-                            </div>
-                            <div className="circle">
-                                <div className="dot"></div>
-                                <div className="outline"></div>
-                            </div>
-                            <div className="circle">
-                                <div className="dot"></div>
-                                <div className="outline"></div>
-                            </div>
-                        </div>
-                        <div className="j-subtext-current">
-                            <h4>Order is being prepared</h4>
-                        </div>
+                <div className="j-card-current-j-card-small">
+                    <h5>Dasher Status</h5>
+                <div className="j-active-buton">
+                                            <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
+                                            
+                                            </button>
+                                            <div className="j-button-text">
+                                            {isActive ? 'Active' : 'Not Active'}
+                                            </div>
+                                        </div> 
                     </div>
-                    <img src='/Assets/active-img.png' alt="food" className="j-left-current-img"/>
                 </div>
-            </div>
-            <div className="j-title">
+                <div className="j-title">
                 <h2>Past Orders</h2>
             </div>
 
@@ -173,14 +156,7 @@ const DasherHome = () => {
                                         <p>Order #asdfsf </p>
                                         <p>Cash on Delivery</p> 
                                     </div>                                        
-                                    <div className="j-active-buton">
-                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
-                                        
-                                        </button>
-                                        <div className="j-button-text">
-                                        {isActive ? 'Active' : 'Not Active'}
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -206,14 +182,7 @@ const DasherHome = () => {
                                         <p>Order #asdfsf </p>
                                         <p>Cash on Delivery</p> 
                                     </div>                                        
-                                    <div className="j-active-buton">
-                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
-                                        
-                                        </button>
-                                        <div className="j-button-text">
-                                        {isActive ? 'Active' : 'Not Active'}
-                                        </div>
-                                    </div> 
+                                    
                                 </div>
                             </div>
                         </div>
@@ -239,14 +208,7 @@ const DasherHome = () => {
                                         <p>Order #asdfsf </p>
                                         <p>Cash on Delivery</p> 
                                     </div>                                        
-                                    <div className="j-active-buton">
-                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
-                                        
-                                        </button>
-                                        <div className="j-button-text">
-                                        {isActive ? 'Active' : 'Not Active'}
-                                        </div>
-                                    </div> 
+                                    
                                 </div>
                             </div>
                         </div>
@@ -272,14 +234,7 @@ const DasherHome = () => {
                                         <p>Order #asdfsf </p>
                                         <p>Cash on Delivery</p> 
                                     </div>                                        
-                                    <div className="j-active-buton">
-                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
-                                        
-                                        </button>
-                                        <div className="j-button-text">
-                                        {isActive ? 'Active' : 'Not Active'}
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -305,14 +260,7 @@ const DasherHome = () => {
                                         <p>Order #asdfsf </p>
                                         <p>Cash on Delivery</p> 
                                     </div>                                        
-                                    <div className="j-active-buton">
-                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
-                                        
-                                        </button>
-                                        <div className="j-button-text">
-                                        {isActive ? 'Active' : 'Not Active'}
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -338,14 +286,7 @@ const DasherHome = () => {
                                         <p>Order #asdfsf </p>
                                         <p>Cash on Delivery</p> 
                                     </div>                                        
-                                    <div className="j-active-buton">
-                                        <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}>
-                                        
-                                        </button>
-                                        <div className="j-button-text">
-                                        {isActive ? 'Active' : 'Not Active'}
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
