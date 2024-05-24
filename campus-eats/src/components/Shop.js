@@ -13,6 +13,8 @@ const Shop = () => {
     const { shopId } = useParams(); // Get shopId from URL parameters
     const [shop, setShop] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [items, setItems] = useState([]);
+    const [selectedItem, setSelectedItem] = useState(null); // Add state for selected item
 
     const fetchShop = async (shopId) => {
         try {
@@ -27,16 +29,36 @@ const Shop = () => {
         }
     };
 
+    const fetchShopItems = async (shopId) => {
+        try {
+            const response = await fetch(`/api/shop/${shopId}/items`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch shop items');
+            }
+            const data = await response.json();
+            setItems(data);
+            console.log("items", data);
+        } catch (error) {
+            console.error('Error fetching shop items:', error);
+        }
+    };
+
     useEffect(() => {
         if (!currentUser) {
             navigate('/login');
         } else {
-            fetchShop(shopId); // Fetch shop when component mounts
+            fetchShop(shopId);
+            fetchShopItems(shopId);
         }
     }, [currentUser, shopId]);
 
     const CloseShowModal = () => {
         setShowModal(false);
+    }
+
+    const openModalWithItem = (item) => {
+        setSelectedItem(item);
+        setShowModal(true);
     }
 
     if (!shop) {
@@ -56,7 +78,7 @@ const Shop = () => {
                 <div className="s-container">
                     <div className="s-title-container">
                         <div className="s-photo">
-                            <img src={shop.govId} alt="store" className="s-photo-image" />
+                            <img src={shop.shopImage} alt="store" className="s-photo-image" />
                         </div>
                         <div className="s-title">
                             <h2>{shop.shopName}</h2>
@@ -74,25 +96,27 @@ const Shop = () => {
                     <div className="s-items-container">
                         <h2>Items</h2>
                         <div className="s-content">
-                            <div className="s-card">
-                                <div className="s-img">
-                                    <img src={'/Assets/Panda.png'} className="s-image-cover" alt="store" />
-                                </div>
-                                <div className="s-text">
-                                    <div className="s-subtext">
-                                        <p className="s-h3">Jabe ni Xianna</p>
-                                        <p className="s-p">Fried Chicken</p>
+                            {items.map(item => (
+                                <div key={item.id} className="s-card" onClick={() => openModalWithItem(item)}>
+                                    <div className="s-img">
+                                        <img src={item.imageUrl || '/Assets/Panda.png'} className="s-image-cover" alt="store" />
                                     </div>
-                                    <h3>$10.00</h3>
-                                    <div className="s-plus-icon" onClick={() => setShowModal(!showModal)}>
-                                        <FontAwesomeIcon icon={faPlus} />
+                                    <div className="s-text">
+                                        <div className="s-subtext">
+                                            <p className="s-h3">{item.name}</p>
+                                            <p className="s-p">{item.description}</p>
+                                        </div>
+                                        <h3>₱{item.price.toFixed(2)}</h3>
+                                        <div className="s-plus-icon">
+                                            <FontAwesomeIcon icon={faPlus} />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>
-                {showModal && <AddToCartModal showModal={showModal} onClose={CloseShowModal} />}
+                {showModal && <AddToCartModal item={selectedItem} showModal={showModal} onClose={CloseShowModal} />}
             </div>
         </>
     );

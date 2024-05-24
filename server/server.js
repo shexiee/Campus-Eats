@@ -5,6 +5,7 @@ const multer = require('multer');
 const dotenv = require('dotenv');
 dotenv.config();
 const { initializeApp } = require('firebase/app');
+const { collection, addDoc } = require('firebase/firestore');
 const { getStorage, ref, uploadBytes, getDownloadURL } = require('firebase/storage');
  
 const app = express();
@@ -116,8 +117,7 @@ app.post('/api/shop-application', upload.single('image'), async (req, res) => {
     shopOpen,
     shopClose,
     GCASHName,
-    GCASHNumber,
-    displayName
+    GCASHNumber
   } = req.body;
  
   const file = req.file;
@@ -142,7 +142,7 @@ app.post('/api/shop-application', upload.single('image'), async (req, res) => {
     }
  
     // Upload image to Firebase Storage under shop/govID folder
-    const fileName = `shop/govID/${displayName}_${uid}.png`;
+    const fileName = `shop/images/${uid}_${shopName}.png`;
     const fileRef = ref(storage, fileName);
  
     // Upload the file
@@ -156,13 +156,13 @@ app.post('/api/shop-application', upload.single('image'), async (req, res) => {
       shopAddress,
       googleLink,
       categories: JSON.parse(categories),
-      govId: imageURL,
+      shopImage: imageURL,
       status: 'pending',
       shopOpen,
       shopClose,
       GCASHName,
       GCASHNumber,
-      deliveryFee: 10,
+      deliveryFee: parseFloat(10),
       shopId: uid
     });
  
@@ -265,6 +265,196 @@ app.get('/api/shop/:shopId', async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.post('/api/shop-add-item', upload.single('image'), async (req, res) => {
+  const {
+    name,
+    price,
+    qty,
+    desc,
+    uid,
+    categories
+  } = req.body;
+
+  const file = req.file;
+
+  if (!uid) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  try {
+    const existingItemsSnapshot = await db.collection('items').where('name', '==', name).get();
+    if (!existingItemsSnapshot.empty) {
+      return res.status(400).json({ error: 'An item with this name already exists.' });
+    }
+    let imageURL = null;
+
+    if (file) {
+      const fileName = `shop/items/${uid}/${name}.png`;
+      const fileRef = ref(storage, fileName);
+
+      const snapshot = await uploadBytes(fileRef, file.buffer);
+      imageURL = await getDownloadURL(snapshot.ref);
+    }
+
+    const itemData = {
+      name,
+      price: parseFloat(price),
+      quantity: parseInt(qty),
+      description: desc,
+      shopID: uid,
+      categories: JSON.parse(categories),
+      imageUrl: imageURL,
+      createdAt: new Date(),
+    };
+    const docRef = await db.collection('items').add(itemData);
+
+    return res.status(200).json({ message: 'Item created successfully', itemId: docRef.id });
+  } catch (error) {
+    console.error('Error creating shop:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/api/shop/:shopId/items', async (req, res) => {
+  const { shopId } = req.params;
+
+  try {
+    const itemsSnapshot = await db.collection('items').where('shopID', '==', shopId).get();
+    if (itemsSnapshot.empty) {
+      return res.status(404).json({ error: 'No items found for this shop.' });
+    }
+
+    const items = [];
+    itemsSnapshot.forEach(doc => {
+      items.push({ id: doc.id, ...doc.data() });
+    });
+    return res.status(200).json(items);
+  } catch (error) {
+    console.error('Error fetching shop items:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/add-to-cart', async (req, res) => {
+  try {
+    const { item, totalPrice, userQuantity, uid, shopID } = req.body;
+
+    // Check if all required data is provided
+    if (!item || !totalPrice || !userQuantity || !shopID) {
+      return res.status(400).json({ error: 'Missing required data' });
+    }
+
+    const shopSnapshot = await db.collection('shops').doc(shopID).get();
+    if (!shopSnapshot.exists) {
+      return res.status(404).json({ error: 'Shop not found' });
+    }
+
+    const cartSnapshot = await db.collection('carts').doc(uid).get();
+    let cartData;
+    let cartRef = db.collection('carts').doc(uid); // Get reference to the cart document
+
+    if (!cartSnapshot.exists) {
+      // If cart doesn't exist, create a new one
+      cartData = { 
+        items: [], 
+        totalPrice: 0, 
+        shopID: shopID
+      };
+      await cartRef.set(cartData); // Set the initial data for the cart
+    } else {
+      // If cart exists, get its data
+      cartData = cartSnapshot.data();
+
+      // Check if the shop ID of the item matches the shop ID of the cart
+      if (cartData.shopID !== shopID) {
+        return res.status(400).json({ error: 'Item is from a different shop' });
+      }
+    }
+
+    const newItemIndex = cartData.items.findIndex(existingItem => existingItem.id === item.id);
+
+    if (newItemIndex !== -1) {
+      // If the item already exists, just update the quantity
+      cartData.items[newItemIndex].quantity += userQuantity;
+    } else {
+      // If the item does not exist, add it to the items array
+      const newItem = {
+        id: item.id,
+        name: item.name,
+        unitPrice: item.price,
+        price: item.price * userQuantity,
+        quantity: userQuantity
+      };
+      cartData.items.push(newItem);
+    }
+
+    cartData.totalPrice += totalPrice;
+
+    await cartRef.update(cartData);
+
+    return res.status(200).json({ message: 'Item added to cart successfully', cartId: uid });
+  } catch (error) {
+    console.error('Error adding item to cart:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/api/cart', async (req, res) => {
+  try {
+    const { uid } = req.query;
+
+    if (!uid) {
+      return res.status(400).json({ error: 'Missing user ID' });
+    }
+
+    const cartSnapshot = await db.collection('carts').doc(uid).get();
+
+    if (!cartSnapshot.exists) {
+      return res.status(404).json({ error: 'Cart not found' });
+    }
+
+    const cartData = cartSnapshot.data();
+
+    const promises = cartData.items.map(async (item) => {
+      const itemSnapshot = await db.collection('items').doc(item.id).get();
+      if (itemSnapshot.exists) {
+        const itemData = itemSnapshot.data();
+        return {
+          ...item,
+          itemQuantity: itemData.quantity // Assuming quantity is stored in the 'quantity' field of the item document
+        };
+        
+      } else {
+        // Handle case where item is not found in items collection
+        return item;
+      }
+    });
+
+    const updatedItems = await Promise.all(promises);
+    console.log(updatedItems);
+    const shopSnapshot = await db.collection('shops').doc(cartData.shopID).get();
+    if (!shopSnapshot.exists) {
+      return res.status(404).json({ error: 'Shop not found' });
+    }
+
+    const shopData = shopSnapshot.data();
+
+    const response = {
+      ...cartData,
+      items: updatedItems,
+      shopName: shopData.shopName,
+      shopAddress: shopData.shopAddress,
+      shopDeliveryFee: parseFloat(shopData.deliveryFee)
+    };
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
  
 app.listen(5000, () => console.log('Server running on http://localhost:5000'));

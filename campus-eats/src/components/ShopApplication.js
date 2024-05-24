@@ -6,10 +6,12 @@
   import { useNavigate } from "react-router-dom";
   import axios from "axios";
   import { useAuth } from "../context/AuthContext";
+import { set } from "firebase/database";
 
   const ShopApplication = () => {
     
     const { currentUser } = useAuth();
+    const [loading, setLoading] = useState(false);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [dragOver, setDragOver] = useState(false);
@@ -76,30 +78,36 @@
     };
     const handleSubmit = async (e) => {
       e.preventDefault();
+      setLoading(true);
       const hasCategorySelected = Object.values(categories).some(
         (selected) => selected
       );
       if (!hasCategorySelected) {
         alert("Please select at least one category.");
+        setLoading(false);
         return;
       }
       if (!uploadedImage) {
-        alert("Please upload a government ID image.");
+        alert("Please upload a shop image.");
+        setLoading(false);
         return;
       }
 
       if (!googleLink.startsWith("https://maps.app.goo.gl/")) {
         alert("Please provide a valid Google Maps address link.");
+        setLoading(false);
         return;
       }
 
-      if (!GCASHNumber.startsWith(9)) {
+      if (!GCASHNumber.startsWith('9') || GCASHNumber.length !== 10) {
         alert("Please provide a valid GCASH Number.");
+        setLoading(false);
         return;
       }
 
       if (shopOpen >= shopClose) {
         alert("Shop close time must be later than shop open time.");
+        setLoading(false);
         return;
       }
 
@@ -116,7 +124,6 @@
       formData.append("shopClose", shopClose);
       formData.append("GCASHName", GCASHName);
       formData.append("GCASHNumber", GCASHNumber);
-      formData.append("displayName", currentUser.displayName);
 
       try {
         const response = await axios.post("http://localhost:5000/api/shop-application", formData, {
@@ -126,18 +133,23 @@
         });
         alert(response.data.message);
         navigate("/profile");
+        setLoading(false);
       } catch (error) {
         if (error.response && error.response.data.error === 'You have already submitted a dasher application') {
             alert('You have already submitted a dasher application.');
+            setLoading(false);
             return;
         }
 
         if (error.response && error.response.data.error === 'You have already submitted a shop application') {
             alert('You have already submitted a shop application.');
+            setLoading(false);
             return;
+
         }else {
             console.error("Error submitting form:", error);
             alert("Error submitting form");
+            setLoading(false);
         }
       }
     };
@@ -145,12 +157,12 @@
     return (
       <>
         <Navbar />
-        <div className="p-body">
-          <div className="p-content-current">
-            <div className="p-card-current">
-              <div className="p-container">
-                <div className="p-content">
-                  <div className="p-text">
+        <div className="sa-body">
+          <div className="sa-content-current">
+            <div className="sa-card-current">
+              <div className="sa-container">
+                <div className="sa-content">
+                  <div className="sa-text">
                     <h3>Shop Application</h3>
                     <h4>
                       Partner with CampusEats to help drive growth and take your
@@ -158,11 +170,11 @@
                     </h4>
                   </div>
                 </div>
-                <div className="p-info">
+                <div className="sa-info">
                   <form onSubmit={handleSubmit}>
-                    <div className="p-two">
-                      <div className="p-field-two">
-                        <div className="p-label-two">
+                    <div className="sa-two">
+                      <div className="sa-field-two">
+                        <div className="sa-label-two">
                           <h3>Shop Name</h3>
                           <input
                             type="text"
@@ -173,8 +185,8 @@
                           />
                         </div>
                       </div>
-                      <div className="p-field-two">
-                        <div className="p-label-two">
+                      <div className="sa-field-two">
+                        <div className="sa-label-two">
                           <h3>Shop Description</h3>
                           <input
                             type="text"
@@ -186,9 +198,9 @@
                         </div>
                       </div>
                     </div>
-                    <div className="p-two">
-                      <div className="p-field-two">
-                        <div className="p-label-two">
+                    <div className="sa-two">
+                      <div className="sa-field-two">
+                        <div className="sa-label-two">
                           <h3>Shop Address</h3>
                           <input
                             type="text"
@@ -199,8 +211,8 @@
                           />
                         </div>
                       </div>
-                      <div className="p-field-two">
-                        <div className="p-label-two">
+                      <div className="sa-field-two">
+                        <div className="sa-label-two">
                           <h3>Google Address Link
                             <FontAwesomeIcon 
                               icon={faInfoCircle} 
@@ -218,9 +230,9 @@
                         </div>
                       </div>
                     </div>
-                    <div className="p-two">
-                      <div className="p-field-two">
-                        <div className="p-label-two">
+                    <div className="sa-two">
+                      <div className="sa-field-two">
+                        <div className="sa-label-two">
                           <h3>GCASH Name</h3>
                           <input
                             type="text"
@@ -231,8 +243,8 @@
                           />
                         </div>
                       </div>
-                      <div className="p-field-two">
-                        <div className="p-label-two">
+                      <div className="sa-field-two">
+                        <div className="sa-label-two">
                           <h3>GCASH Number</h3>
                           <div className="gcash-input-container">
                             <span className="gcash-prefix">+63 </span>
@@ -247,21 +259,21 @@
                         </div>
                         </div>
                     </div>
-                    <div className="p-two">
-                      <div className="p-field-two">
-                        <div className="p-label-two">
+                    <div className="sa-two">
+                      <div className="sa-field-two">
+                        <div className="sa-label-two">
                           <h3>Shop Open Time</h3>
                           <input
                             type="time"
-                            className="shop-open"
+                            className="shosa-open"
                             value={shopOpen}
                             onChange={(e) => setShopOpen(e.target.value)}
                             required
                           />
                         </div>
                       </div>
-                      <div className="p-field-two">
-                        <div className="p-label-two">
+                      <div className="sa-field-two">
+                        <div className="sa-label-two">
                           <h3>Shop Close Time</h3>
                           <input
                             type="time"
@@ -273,10 +285,10 @@
                         </div>
                       </div>
                     </div>
-                    <div className="p-two">
+                    <div className="sa-two">
                       <div className="sa-upload">
                         <div className="sa-label-upload">
-                          <h3>Government ID</h3>
+                          <h3>Shop Logo/Banner</h3>
                         </div>
                         <div
                           className={`sa-upload-container ${
@@ -347,7 +359,7 @@
                       >
                         Cancel
                       </button>
-                      <button type="submit" className="p-save-button">
+                      <button type="submit" disabled={loading} className="p-save-button">
                         Submit
                       </button>
                     </div>

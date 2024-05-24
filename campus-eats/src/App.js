@@ -17,6 +17,8 @@ import AdminOrderHistory from './components/AdminOrderHistory';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import PublicRoute from './components/PublicRoute';
+import AddItem from './components/AddItem';
+import ShopRoute from './components/ShopRoute';
 
 
 function App() {
@@ -43,6 +45,10 @@ function App() {
           <Route path="/admin-dashboard" element={<AdminRoute Component={AdminDashboard} />} />
           <Route path="/admin-incoming-order" element={<AdminRoute Component={AdminIncomingOrder} />} />
           <Route path="/admin-order-history" element={<AdminRoute Component={AdminOrderHistory} />} />
+        </Routes>
+
+        <Routes>
+          <Route path="/shop-add-item" element={<ShopRoute Component={AddItem} />} />
         </Routes>
       </Router>
     </AuthProvider>

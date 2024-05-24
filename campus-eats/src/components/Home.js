@@ -61,7 +61,7 @@ const Home = () => {
                     {shops.map((shop, index) => (
                         <div key={index} className="h-card" onClick={() => handleCardClick(shop.shopId)}>
                             <div className="h-img">
-                            <img src={shop.govId} className="h-image-cover" alt="store" />
+                            <img src={shop.shopImage} className="h-image-cover" alt="store" />
                             </div>
                             <div className="h-text">
                                 <p className="h-h3">{shop.shopName}</p>
