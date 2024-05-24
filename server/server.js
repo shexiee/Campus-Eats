@@ -251,7 +251,6 @@ app.get('/api/shops', async (req, res) => {
 
 app.get('/api/shop/:shopId', async (req, res) => {
   const shopId = req.params.shopId;
- 
   try {
     const shopDoc = await db.collection('shops').doc(shopId).get();
     if (!shopDoc.exists) {
@@ -377,14 +376,16 @@ app.post('/api/add-to-cart', async (req, res) => {
     if (newItemIndex !== -1) {
       // If the item already exists, just update the quantity
       cartData.items[newItemIndex].quantity += userQuantity;
+      cartData.items[newItemIndex].price += userQuantity * cartData.items[newItemIndex].price;
     } else {
       // If the item does not exist, add it to the items array
       const newItem = {
         id: item.id,
         name: item.name,
-        unitPrice: item.price,
-        price: item.price * userQuantity,
-        quantity: userQuantity
+        unitPrice: parseFloat(item.price),
+        price: parseFloat(item.price * userQuantity),
+        quantity: userQuantity,
+        itemQuantity: item.quantity
       };
       cartData.items.push(newItem);
     }
@@ -416,41 +417,69 @@ app.get('/api/cart', async (req, res) => {
 
     const cartData = cartSnapshot.data();
 
-    const promises = cartData.items.map(async (item) => {
-      const itemSnapshot = await db.collection('items').doc(item.id).get();
-      if (itemSnapshot.exists) {
-        const itemData = itemSnapshot.data();
-        return {
-          ...item,
-          itemQuantity: itemData.quantity // Assuming quantity is stored in the 'quantity' field of the item document
-        };
-        
-      } else {
-        // Handle case where item is not found in items collection
-        return item;
-      }
-    });
-
-    const updatedItems = await Promise.all(promises);
-    console.log(updatedItems);
-    const shopSnapshot = await db.collection('shops').doc(cartData.shopID).get();
-    if (!shopSnapshot.exists) {
-      return res.status(404).json({ error: 'Shop not found' });
-    }
-
-    const shopData = shopSnapshot.data();
-
-    const response = {
-      ...cartData,
-      items: updatedItems,
-      shopName: shopData.shopName,
-      shopAddress: shopData.shopAddress,
-      shopDeliveryFee: parseFloat(shopData.deliveryFee)
-    };
-
-    return res.status(200).json(response);
+    return res.status(200).json(cartData);
   } catch (error) {
     console.error('Error fetching cart:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.post('/api/update-cart-item', async (req, res) => {
+  try {
+    const { uid, itemId, action } = req.body;
+    if (!uid || !itemId || !action) {
+      return res.status(400).json({ error: 'Missing required data' });
+    }
+
+    const cartSnapshot = await db.collection('carts').doc(uid).get();
+    if (!cartSnapshot.exists) {
+      return res.status(404).json({ error: 'Cart not found' });
+    }
+
+    const cartData = cartSnapshot.data();
+
+    const itemSnapshot = await db.collection('items').doc(itemId).get();
+    if (!itemSnapshot.exists) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    const itemData = itemSnapshot.data();
+
+    const itemIndex = cartData.items.findIndex(item => item.id === itemId);
+
+
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: 'Item not found in cart' });
+    }
+
+    let updatedItem = cartData.items[itemIndex];
+    if (action === 'increase') {
+      if (updatedItem.quantity < itemData.quantity) {
+        updatedItem.quantity++;
+        updatedItem.price += updatedItem.unitPrice;
+      } else {
+        return res.status(400).json({ error: 'Quantity limit reached' });
+      }
+    } else if (action === 'decrease') {
+      if (updatedItem.quantity > 1) {
+        updatedItem.quantity--;
+        updatedItem.price -= updatedItem.unitPrice;
+      } else {
+        cartData.items.splice(itemIndex, 1);
+      }
+    } else if (action === 'remove') {
+      cartData.items.splice(itemIndex, 1);
+    } else {
+      return res.status(400).json({ error: 'Invalid action' });
+    }
+
+    cartData.totalPrice = cartData.items.reduce((total, item) => total + item.price, 0);
+
+    await db.collection('carts').doc(uid).update(cartData);
+    return res.status(200).json({ message: 'Cart updated successfully', cartData });
+  } catch (error) {
+    console.error('Error updating cart:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
