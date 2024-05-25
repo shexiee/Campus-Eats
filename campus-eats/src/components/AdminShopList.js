@@ -41,7 +41,7 @@ const AdminShopList = () => {
 
                 {/* New Shops Table */}
                 <div className="shops-title">
-                    <h2>Orders</h2>
+                    <h2>Pending Shops</h2>
                 </div>
 
                 <div className="as-row-container">
@@ -57,13 +57,13 @@ const AdminShopList = () => {
                 <div className="adl-container">
                     <div className="adl-box">
                         <div className="adl-box-content">
-                            <div>67890</div>
-                            <div>Jane Doe</div>
-                            <div>2024-05-21</div>
-                            <div>John Smith</div>
-                            <div>₱200.00</div>
-                            <div>₱40.00</div>
-                            <div>Pending</div>
+                            <div>12345</div>
+                            <div>Jerry's</div>
+                            <div>Front Gate</div>
+                            <div>09089393324</div>
+                            <div>8:00 AM</div>
+                            <div>6:00 PM</div>
+                            <div>Open</div>
                         </div>
                     </div>
                 </div>

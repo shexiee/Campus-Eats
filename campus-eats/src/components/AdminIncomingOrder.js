@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import Navbar from "./Navbar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import DeclineOrderModal from './DeclineOrderModal';
 
 const AdminIncomingOrder = () => {
     const { currentUser } = useAuth();
@@ -14,7 +15,8 @@ const AdminIncomingOrder = () => {
     const [message2, setMessage2] = useState(""); 
     const [message3, setMessage3] = useState(""); 
     const [isProgressModalOpen, setIsProgressModalOpen] = useState(true); 
-    
+    const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false); // New state for decline modal
+
     const toggleAccordion1 = () => {
         setIsAccordionOpen1(prevState => !prevState);
     };
@@ -39,8 +41,18 @@ const AdminIncomingOrder = () => {
         setMessage3(event.target.value);
     };
 
-    const handleButtonClick = (e) => {
+    const handleDeclineClick = (e) => {
         e.stopPropagation();
+        setIsDeclineModalOpen(true); 
+    };
+
+    const closeModal = () => {
+        setIsDeclineModalOpen(false);
+    };
+
+    const confirmDecline = () => {
+        // Handle decline order logic here
+        closeModal();
     };
 
     return (
@@ -61,8 +73,8 @@ const AdminIncomingOrder = () => {
                                 <p>Order #12345</p>
                             </div>
                             <div className="ao-buttons">
-                            <button className="ao-decline" onClick={handleButtonClick}>Decline</button>
-                            <button className="ao-acceptorder" onClick={handleButtonClick}>Accept Order</button>
+                                <button className="ao-decline" onClick={handleDeclineClick}>Decline</button>
+                                <button className="ao-acceptorder" onClick={() => alert('Order Accepted')}>Accept Order</button>
                             </div>
                             <div className="ao-toggle-content">
                                 <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen1 ? 180 : 0} />
@@ -89,14 +101,11 @@ const AdminIncomingOrder = () => {
                                 </div>   
                                 <div className="ao-order-summary">
                                     <div className="ao-order-summary-total-container">
-                                    <div className="ao-subtotal">
-                                        <h5>Sisig</h5>
-                                        <h4>₱55.00</h4>
+                                        <div className="ao-subtotal">
+                                            <h5>Sisig</h5>
+                                            <h4>₱55.00</h4>
+                                        </div>
                                     </div>
-                                    </div>
-                                </div>
-                                <div className="ao-order-summary">
-                                
                                 </div>
                             </div>
                         )}
@@ -106,7 +115,7 @@ const AdminIncomingOrder = () => {
                 {/* Second Accordion */}
                 <div className="ao-content-current">
                     <div className="ao-card-current ao-card-large">
-                        <div className="ao-card-content">
+                        <div className="ao-card-content" onClick={toggleAccordion2}>
                             <div className="ao-order-img-holder">
                                 <img src='/Assets/Panda.png' alt="food" className="ao-order-img" />
                             </div>
@@ -115,10 +124,10 @@ const AdminIncomingOrder = () => {
                                 <p>Order #12345</p>
                             </div>
                             <div className="ao-buttons">
-                                <button className="ao-decline">Decline</button>
-                                <button className="ao-acceptorder">Accept Order</button>
+                                <button className="ao-decline" onClick={handleDeclineClick}>Decline</button>
+                                <button className="ao-acceptorder" onClick={() => alert('Order Accepted')}>Accept Order</button>
                             </div>
-                            <div className="ao-toggle-content" onClick={toggleAccordion2}>
+                            <div className="ao-toggle-content">
                                 <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen2 ? 180 : 0} />
                             </div>
                         </div>
@@ -140,7 +149,7 @@ const AdminIncomingOrder = () => {
                 {/* Third Accordion */}
                 <div className="ao-content-current">
                     <div className="ao-card-current ao-card-large">
-                        <div className="ao-card-content">
+                        <div className="ao-card-content" onClick={toggleAccordion3}>
                             <div className="ao-order-img-holder">
                                 <img src='/Assets/Panda.png' alt="food" className="ao-order-img" />
                             </div>
@@ -149,10 +158,10 @@ const AdminIncomingOrder = () => {
                                 <p>Order #12345</p>
                             </div>
                             <div className="ao-buttons">
-                                <button className="ao-decline">Decline</button>
-                                <button className="ao-acceptorder">Accept Order</button>
+                                <button className="ao-decline" onClick={handleDeclineClick}>Decline</button>
+                                <button className="ao-acceptorder" onClick={() => alert('Order Accepted')}>Accept Order</button>
                             </div>
-                            <div className="ao-toggle-content" onClick={toggleAccordion3}>
+                            <div className="ao-toggle-content">
                                 <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen3 ? 180 : 0} />
                             </div>
                         </div>
@@ -193,6 +202,13 @@ const AdminIncomingOrder = () => {
                         </div>
                     </div>
                 )}
+
+                {/* Decline Order Modal */}
+                <DeclineOrderModal 
+                    isOpen={isDeclineModalOpen}
+                    closeModal={closeModal}
+                    confirmDecline={confirmDecline}
+                />
             </div>
         </>
     );

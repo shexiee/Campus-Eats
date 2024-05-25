@@ -18,6 +18,7 @@ import AdminOrderHistory from './components/AdminOrderHistory';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import PublicRoute from './components/PublicRoute';
+import DeclineOrderModal from './components/DeclineOrderModal';
 
 
 function App() {

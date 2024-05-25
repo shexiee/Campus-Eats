@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "./Navbar";
 import "./css/AdminDasherLists.css"; 
@@ -6,6 +7,13 @@ import "./css/AdminDasherLists.css";
 const AdminDasherList = () => {
     const { currentUser } = useAuth();
     console.log(currentUser);
+    const [isActive, setIsActive] = useState(false);
+
+    const toggleButton = () => {
+        setIsActive(!isActive);
+    };
+
+    
     return (
         <>
             <Navbar />
@@ -34,7 +42,15 @@ const AdminDasherList = () => {
                             <div>Student</div>
                             <div>1:00 PM</div>
                             <div>3:00 PM</div>
-                            <div>Available</div>
+                            <div className="adl-status-container">
+                                <p><span className="adl-satus">{isActive ? 'Active' : 'Not Active'}</span></p>
+                                <div className="j-active-buton">
+                                    <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}></button>
+                                    <div className="j-button-text">
+                                        {isActive ? 'Active' : 'Not Active'}
+                                    </div>
+                                </div> 
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -63,7 +79,15 @@ const AdminDasherList = () => {
                             <div>John Smith</div>
                             <div>₱200.00</div>
                             <div>₱40.00</div>
-                            <div>Pending</div>
+                            <div className="adl-status-container">
+                                <p><span className="adl-satus">{isActive ? 'Active' : 'Not Active'}</span></p>
+                                <div className="j-active-buton">
+                                    <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}></button>
+                                    <div className="j-button-text">
+                                        {isActive ? 'Active' : 'Not Active'}
+                                    </div>
+                                </div> 
+                            </div>
                         </div>
                     </div>
                 </div>
