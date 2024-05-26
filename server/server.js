@@ -504,12 +504,30 @@ app.delete('/api/remove-cart', async (req, res) => {
 app.post('/api/place-order', async (req, res) => {
   try {
     const order = req.body;
-    console.log("Received order:", order);
 
-    // Add the order to Firestore with status "waiting_for_admin"
+    // Ensure order contains the uid
+    if (!order.uid) {
+      return res.status(400).json({ error: 'User ID (uid) is required' });
+    }
+
+    // Fetch orders with the same uid
+    const existingOrdersSnapshot = await db.collection('orders')
+      .where('uid', '==', order.uid)
+      .get();
+
+    // Check if there's an order with status that starts with "active"
+    const activeOrder = existingOrdersSnapshot.docs.find(doc => doc.data().status.startsWith('active'));
+
+    if (activeOrder) {
+      console.log('Active order found:', activeOrder.id);
+      return res.status(400).json({ error: 'An active order already exists for this user' });
+    }
+
+    // Add the new order to Firestore with status "waiting_for_admin"
     const docRef = await db.collection('orders').add({
       ...order,
-      status: 'waiting_for_admin'
+      status: 'active_waiting_for_admin',
+      createdAt: new Date()
     });
 
     console.log("Order placed successfully. Order ID:", docRef.id);
@@ -520,6 +538,35 @@ app.post('/api/place-order', async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.get('/api/orders/:uid', async (req, res) => {
+  const { uid } = req.params;
+  try {
+    const ordersSnapshot = await db.collection('orders').where('uid', '==', uid).get();
+    
+    if (ordersSnapshot.empty) {
+      return res.status(404).json({ error: 'No orders found for this user' });
+    }
+
+    const orders = [];
+    const activeOrders = [];
+
+    ordersSnapshot.forEach(doc => {
+      const order = doc.data();
+      if (order.status.startsWith('active')) {
+        activeOrders.push({ id: doc.id, ...order });
+      } else {
+        orders.push({ id: doc.id, ...order });
+      }
+    });
+
+    return res.status(200).json({ orders, activeOrders });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 
 

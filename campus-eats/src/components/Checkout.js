@@ -96,6 +96,11 @@ const Checkout = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if(changeFor<cart.totalPrice){
+            alert("Change for must be greater than or equal to the total price");
+            setLoading(false);
+            return;
+        }
         setLoading(true);
         console.log("Submitting order...");
         const order = {
@@ -119,13 +124,41 @@ const Checkout = () => {
                 },
                 body: JSON.stringify(order),
             });
-            if (!response.ok) {
+            if(response.status === 400){
+                alert("An active order already exists for this user");
+                setLoading(false);
+                return;
+            } else if (!response.ok) {
                 throw new Error("Failed to place order");
             }
             const data = await response.json();
+            console.log("Order placed:", data);
         } catch (error) {
             console.error("Error placing order:", error);
+            
         }
+
+        // try {
+        //     const response = await fetch('/api/remove-cart', {
+        //         method: 'DELETE',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({ uid: currentUser.uid })
+        //     });
+
+        //     if (!response.ok) {
+        //         alert(`Error: ${response.statusText}`);
+        //         return;
+        //     }
+
+        //     const data = await response.json();
+        //     setCart(null);
+        // } catch (error) {
+        //     console.error('Error removing cart:', error);
+        // }
+
+        // navigate("/orders");
         setLoading(false);
     };
 
@@ -289,22 +322,22 @@ const Checkout = () => {
                                             <p>{item.quantity}x</p>
                                             <p>{item.name}</p>
                                         </div>
-                                        <p>{item.price.toFixed(2)}</p>
+                                        <p>₱{item.price.toFixed(2)}</p>
                                     </div>
                                 ))}
                                 <div className="co-order-summary-total-container">
                                     <div className="co-order-summary-subtotal">
                                         <h4>Subtotal</h4>
-                                        <h4>{cart.totalPrice.toFixed(2)}</h4>
+                                        <h4>₱{cart.totalPrice.toFixed(2)}</h4>
                                     </div>
                                     <div className="co-order-summary-subtotal">
                                         <h4>Delivery Fee</h4>
                                         
-                                        <h4>{cart.deliveryFee ? cart.deliveryFee.toFixed(2) : '0.00'}</h4>
+                                        <h4>₱{cart.deliveryFee ? cart.deliveryFee.toFixed(2) : '0.00'}</h4>
                                     </div>
                                     <div className="co-order-summary-total">
                                         <h4>Total</h4>
-                                        <h4>{(cart.totalPrice + (cart.deliveryFee || 0)).toFixed(2)}</h4>
+                                        <h4>₱{(cart.totalPrice + (cart.deliveryFee || 0)).toFixed(2)}</h4>
                                     </div>
                                 </div>
                             </div>
