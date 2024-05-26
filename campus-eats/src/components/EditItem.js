@@ -1,11 +1,11 @@
-import "./css/AddItem.css";
+import "./css/EditItem.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTimes, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 
-const AddItem = () => {
+const EditItem = () => {
     const [uploadedImage, setUploadedImage] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [dragOver, setDragOver] = useState(false);
@@ -79,56 +79,56 @@ const AddItem = () => {
         <>
             <Navbar />
 
-            <div className="ai-body">
-                <div className="ai-content-current">
-                    <div className="ai-card-current">
-                        <div className="ai-container">
-                            <div className="ai-info">
-                                <h1>Add New Item</h1>
-                                <div className="ai-two">
-                                    <div className="ai-field-two">
-                                        <div className="ai-label-two">
+            <div className="aei-body">
+                <div className="aei-content-current">
+                    <div className="aei-card-current">
+                        <div className="aei-container">
+                            <div className="aei-info">
+                                <h1>Edit Item</h1>
+                                <div className="aei-two">
+                                    <div className="aei-field-two">
+                                        <div className="aei-label-two">
                                             <h3>Item Name</h3>
                                             <input
                                                 type="text"
-                                                className="ai-item-name"
+                                                className="aei-item-name"
                                                 value="John"
                                                 disabled
                                             />
                                         </div>
                                     </div>
-                                    <div className="ai-field-two">
-                                        <div className="ai-label-two">
+                                    <div className="aei-field-two">
+                                        <div className="aei-label-two">
                                             <h3>Item Description</h3>
                                             <input
                                                 type="text"
-                                                className="ai-item-desc"
+                                                className="aei-item-desc"
                                                 value="Wala ko kabalo"
                                                 disabled
                                             />
                                         </div>
                                     </div>
                                 </div>
-                                <div className="ai-two">
-                                    <div className="ai-field-two">
-                                        <div className="ai-label-two">
+                                <div className="aei-two">
+                                    <div className="aei-field-two">
+                                        <div className="aei-label-two">
                                             <h3>Item Price</h3>
                                             <input
                                                 type="text"
-                                                className="ai-item-price"
+                                                className="aei-item-price"
                                                 value="P1000"
                                                 disabled
                                             />
                                         </div>
                                     </div>
-                                    <div className="ai-field-two">
-                                        <div className="ai-shop-categories">
+                                    <div className="aei-field-two">
+                                        <div className="aei-shop-categories">
                                             <h3>Shop Categories</h3>
-                                            <div className="ai-category-checkboxes">
+                                            <div className="aei-category-checkboxes">
                                                 {Object.keys(categories).map((category, index) => (
                                                     <div
                                                         key={index}
-                                                        className={`ai-category-item ${
+                                                        className={`aei-category-item ${
                                                             categories[category] ? "selected" : ""
                                                         }`}
                                                         onClick={() => handleCategoryChange(category)}
@@ -141,16 +141,16 @@ const AddItem = () => {
                                     </div>
                                 </div>
 
-                                <div className="ai-two-qty">
-                                    <div className="ai-field-two-qty">
-                                        <div className="ai-label-two-qty">
+                                <div className="aei-two-qty">
+                                    <div className="aei-field-two-qty">
+                                        <div className="aei-label-two-qty">
                                             <h3>Item Quantity</h3>
-                                            <div className="ai-quantity-controls">
-                                                <button className="ai-quantity-button" onClick={decreaseQuantity}>
+                                            <div className="aei-quantity-controls">
+                                                <button className="aei-quantity-button" onClick={decreaseQuantity}>
                                                     <FontAwesomeIcon icon={faMinus} />
                                                 </button>
-                                                <span className="ai-quantity-number">{quantity}</span>
-                                                <button className="ai-quantity-button" onClick={increaseQuantity}>
+                                                <span className="aei-quantity-number">{quantity}</span>
+                                                <button className="aei-quantity-button" onClick={increaseQuantity}>
                                                     <FontAwesomeIcon icon={faPlus} />
                                                 </button>
                                             </div>
@@ -158,9 +158,9 @@ const AddItem = () => {
                                     </div>
                                 </div>
 
-                                <div className="ai-buttons">
-                                    <button className="ai-cancel-button" onClick={() => navigate('/shop-seller')}>Cancel</button>
-                                    <button className="ai-save-button" disabled>Submit</button>
+                                <div className="aei-buttons">
+                                    <button className="aei-logout-button" onClick={() => navigate('/shop-seller')}>Cancel</button>
+                                    <button className="aei-save-button" disabled>Save</button>
                                 </div>
                             </div>
                         </div>
@@ -172,4 +172,4 @@ const AddItem = () => {
     );
 };
 
-export default AddItem;
+export default EditItem;

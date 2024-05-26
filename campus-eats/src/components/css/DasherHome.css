@@ -383,17 +383,17 @@ body{
 .j-active-buton button::before {
     content: "";
     position: absolute;
-    width: 17px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-    top: 1px;
+    top: 2px;
     left: 2px;
     background-color: white;
     transition: transform 0.3s;
 }
 
 .j-active-buton .button-active::before {
-    transform: translateX(14px); /* Move the circle to the right */
+    transform: translateX(15px); /* Move the circle to the right */
 }
 
 .j-active-buton .button-inactive::before {

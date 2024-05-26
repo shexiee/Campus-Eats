@@ -1,4 +1,4 @@
-.ai-content-current {
+.aei-content-current {
     display: flex;
     justify-content: center;
     margin: 120px 0 50px 0;
@@ -6,12 +6,12 @@
     width: 100%;
 }
 
-.ai-body {
+.aei-body {
     display: flex;
     padding: 0 50px 0 120px;
 }
 
-.ai-card-current {
+.aei-card-current {
     background: #FFFAF1;
     border-radius: 20px;
     transition: 0.2s ease-in-out;
@@ -20,23 +20,23 @@
     width: 95%;
 }
 
-.ai-container {
+.aei-container {
     margin: 20px 60px;
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-.ai-info {
+.aei-info {
     padding: 20px 0;
 }
 
-.ai-two {
+.aei-two {
     display: flex;
     width: 100%;
 }
 
-.ai-field-two {
+.aei-field-two {
     display: flex;
     padding: 18px;
     align-items: center;
@@ -45,20 +45,20 @@
     border-bottom: solid 1px #dad9d9;
 }
 
-.ai-label-two {
+.aei-label-two {
     width: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.ai-label-two h3 {
+.aei-label-two h3 {
     font-weight: 600;
     font-size: 12px;
     color: #777676;
     margin-bottom: 10px;
 }
 
-.ai-label-two input {
+.aei-label-two input {
     width: 100%;
     padding: 10px;
     border-radius: 10px;
@@ -67,18 +67,18 @@
     background-color: #f0f0f0;
 }
 
-.ai-shop-categories {
+.aei-shop-categories {
     padding: 18px;
 }
 
-.ai-shop-categories h3 {
+.aei-shop-categories h3 {
     font-weight: 600;
     font-size: 12px;
     color: #777676;
     margin-bottom: 10px;
 }
 
-.ai-category-item {
+.aei-category-item {
     display: inline-block;
     padding: 5px 10px;
     margin: 5px 10px 0 0;
@@ -88,12 +88,12 @@
     font-size: 12px;
 }
 
-.ai-category-item.selected {
+.aei-category-item.selected {
     background-color: #d15d61;
     color: #fff;
 }
 
-.ai-buttons {
+.aei-buttons {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -101,8 +101,8 @@
     margin-top: 15px;
 }
 
-.ai-save-button,
-.ai-cancel-button {
+.aei-save-button,
+.aei-logout-button {
     font-weight: 700;
     font-family: Helvetica, "sans-serif";
     transition: all 0.2s;
@@ -115,38 +115,38 @@
     cursor: pointer;
 }
 
-.ai-save-button {
+.aei-save-button {
     background: #cc514f;
     color: #fff;
 }
 
-.ai-save-button:hover {
+.aei-save-button:hover {
     background: #A83332;
 }
 
-.ai-save-button:active {
+.aei-save-button:active {
     transform: scale(0.95);
 }
 
-.ai-cancel-button {
+.aei-logout-button {
     background: #a8a8a8;
     color: #fff;
 }
 
-.ai-cancel-button:hover {
+.aei-logout-button:hover {
     background: #919191;
 }
 
-.ai-cancel-button:active {
+.aei-logout-button:active {
     transform: scale(0.95);
 }
 
-.ai-two-qty {
+.aei-two-qty {
     display: flex;
     width: 100%;
 }
 
-.ai-field-two-qty {
+.aei-field-two-qty {
     display: flex;
     padding: 18px;
     align-items: center;
@@ -154,7 +154,7 @@
     justify-content: space-between;
 }
 
-.ai-quantity-button {
+.aei-quantity-button {
     background-color: transparent;
     border: none;
     color: #333; /* Default icon color */
@@ -164,8 +164,9 @@
     transition: color 0.3s ease;
 }
 
-.ai-quantity-button:hover {
+.aei-quantity-button:hover {
     color: #a14447; /* Color on hover */
     background-color: var(--secondary-light-2);
     box-shadow: var(--shadow);
 }
+
