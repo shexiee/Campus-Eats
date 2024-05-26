@@ -54,16 +54,18 @@
     font-weight: 500;
     font-size: 15px;
     cursor: pointer;
-    transition: all .2s;    
+    transition: all .2s;  
+    border-radius: 8px;  
 }
 
 
 .dom-confirm {
-    background: green;
+    background: #5AC064;
     color: #fff;
     font-family: Helvetica, "sans-serif";
     font-weight: 500;
     font-size: 15px;
     cursor: pointer;
     transition: all .2s;   
+    border-radius: 8px;
 }
