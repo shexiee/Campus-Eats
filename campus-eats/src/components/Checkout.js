@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import "./css/Checkout.css";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { set } from "firebase/database";
 
+
 const Checkout = () => {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
+    const { uid, shopId } = useParams();
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [mobileNum, setMobileNum] = useState("");
@@ -28,7 +30,7 @@ const Checkout = () => {
         setLoading(true);
         const fetchUserData = async () => {
             try {
-                const response = await fetch(`/api/user/${currentUser.uid}`);
+                const response = await fetch(`/api/user/${uid}`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch user data");
                 }
@@ -45,7 +47,7 @@ const Checkout = () => {
 
         const fetchCartData = async () => {
             try {
-                const response = await fetch(`/api/cart?uid=${currentUser.uid}`);
+                const response = await fetch(`/api/cart?uid=${uid}`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch cart data");
                 }
@@ -74,9 +76,9 @@ const Checkout = () => {
     useEffect(() => {
         setLoading(true);
         const fetchShopData = async () => {
-            if (cart && cart.shopID) {
+            if (shopId) {
                 try {
-                    const response = await fetch(`/api/shop/${cart.shopID}`);
+                    const response = await fetch(`/api/shop/${shopId}`);
                     if (!response.ok) {
                         throw new Error('Failed to fetch shop data');
                     }
@@ -94,6 +96,7 @@ const Checkout = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         console.log("Submitting order...");
         const order = {
             uid: currentUser.uid,
@@ -123,6 +126,7 @@ const Checkout = () => {
         } catch (error) {
             console.error("Error placing order:", error);
         }
+        setLoading(false);
     };
 
     return (
@@ -265,7 +269,7 @@ const Checkout = () => {
                                 </div>
                                 <div className="p-buttons">
                                     <button onClick={()=>navigate('/home')}className="p-logout-button">Cancel</button>
-                                    <button type="submit" className="p-save-button">Place Order</button>
+                                    <button type="submit" className="p-save-button" disabled={loading}>Place Order</button>
                                 </div>
                             </form>
                         </div>

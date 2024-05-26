@@ -4,11 +4,13 @@ import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from 'react-router-dom';
 
 const CartModal = ({ showModal, onClose }) => {
     const { currentUser } = useAuth();
     const [cartData, setCartData] = useState(null);
     const [shopData, setShopData] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCartData = async () => {
@@ -62,7 +64,7 @@ const CartModal = ({ showModal, onClose }) => {
                 if (response.status === 400) {
                     alert('Quantity limit reached');
                 } else {
-                    alert(`Error: ${data.error}`);
+                    alert(`Error: ${response.statusText}`);
                 }
                 return;
             }
@@ -70,7 +72,6 @@ const CartModal = ({ showModal, onClose }) => {
             const data = await response.json();
             setCartData(data.cartData);
         } catch (error) {
-            
             console.error('Error updating cart item:', error);
         }
     };
@@ -85,14 +86,37 @@ const CartModal = ({ showModal, onClose }) => {
 
     const handleItemRemove = (item) => {
         if (window.confirm(`Are you sure you want to remove ${item.name} from your cart?`)) {
-            updateCartItem(item.id, 'remove');
+            
         }
     };
 
-    const handleShopRemove = (item) => {
+    const handleShopRemove = async () => {
         if (window.confirm(`Are you sure you want to remove ${shopData.name}? This will remove all items in your cart.`)) {
-            updateCartItem(item.id, 'remove');
+            try {
+                const response = await fetch('/api/remove-cart', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ uid: currentUser.uid })
+                });
+    
+                if (!response.ok) {
+                    alert(`Error: ${response.statusText}`);
+                    return;
+                }
+    
+                const data = await response.json();
+                alert(data.message);
+                setCartData(null);  // Clear the cart data from state
+            } catch (error) {
+                console.error('Error removing cart:', error);
+            }
         }
+    };
+
+    const handleProceedToCheckout = () => {
+        navigate(`/checkout/${currentUser.uid}/${cartData.shopID}`);
     };
 
     return (
@@ -117,7 +141,7 @@ const CartModal = ({ showModal, onClose }) => {
                                         </div>
                                         <div className="cm-item-right">
                                             <div className="cm-store-button">
-                                                <Button className="cm-store-btn">Remove</Button>
+                                                <Button className="cm-store-btn" onClick={handleShopRemove}>Remove</Button>
                                             </div>
                                         </div>
                                     </div>
@@ -168,7 +192,13 @@ const CartModal = ({ showModal, onClose }) => {
                         <h5>Total</h5>
                         <h4>₱{cartData && shopData ? (cartData.totalPrice + shopData.deliveryFee).toFixed(2) : '0.00'}</h4>
                     </div>
-                    <button disabled={!cartData || cartData.items.length === 0} className="cm-proceed-button">Proceed to Checkout</button>
+                    <button
+                        disabled={!cartData || cartData.items.length === 0}
+                        className="cm-proceed-button"
+                        onClick={handleProceedToCheckout}
+                    >
+                        Proceed to Checkout
+                    </button>
                 </div>
             </div>
         </div>

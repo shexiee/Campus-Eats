@@ -484,6 +484,23 @@ app.post('/api/update-cart-item', async (req, res) => {
   }
 });
 
+app.delete('/api/remove-cart', async (req, res) => {
+  const { uid } = req.body;
+
+  if (!uid) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  try {
+    const cartRef = db.collection('carts').doc(uid);
+    await cartRef.delete();
+    return res.status(200).json({ message: 'Cart removed successfully' });
+  } catch (error) {
+    console.error('Error removing cart:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.post('/api/place-order', async (req, res) => {
   try {
     const order = req.body;
