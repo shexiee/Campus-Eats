@@ -16,6 +16,7 @@ const Navbar = () => {
     const [dropdownActive, setDropdownActive] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [userAccountType, setUserAccountType] = useState('');
+    const [cartData, setCartData] = useState(null);
     useEffect(() => {
         if(currentUser){
 
@@ -33,6 +34,26 @@ const Navbar = () => {
         fetchUserRole();
         }
       }, []);
+
+      useEffect(() => {
+        const fetchCartData = async () => {
+            try {
+                const response = await fetch(`/api/cart?uid=${currentUser.uid}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch cart data');
+                }
+                const data = await response.json();
+                setCartData(data);
+                console.log("navbar data: ",data);
+            } catch (error) {
+                console.error('Error fetching cart data:', error);
+            }
+        };
+
+        if (currentUser) {
+            fetchCartData();
+        }
+    }, [currentUser]);
 
     
     
@@ -115,7 +136,8 @@ const Navbar = () => {
                             <img src={'/Assets/cart.png'} alt="Cart" className="nb-image-cart" />
                         </div>
                         <div className='nb-cart-count'>
-                            <span>0</span>
+                            <span>{cartData ? cartData.items.length : 0}</span>
+
                         </div>
                     </div>
                 </>

@@ -89,6 +89,12 @@ const CartModal = ({ showModal, onClose }) => {
         }
     };
 
+    const handleShopRemove = (item) => {
+        if (window.confirm(`Are you sure you want to remove ${shopData.name}? This will remove all items in your cart.`)) {
+            updateCartItem(item.id, 'remove');
+        }
+    };
+
     return (
         <div className={`cart-modal ${showModal ? 'show' : ''}`}>
             <div className="cm-modal">

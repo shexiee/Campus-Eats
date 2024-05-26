@@ -19,6 +19,7 @@ import AdminRoute from './components/AdminRoute';
 import PublicRoute from './components/PublicRoute';
 import AddItem from './components/AddItem';
 import ShopRoute from './components/ShopRoute';
+import Checkout from './components/Checkout';
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/shop/:shopId" element={<PrivateRoute Component={Shop} />} />
           <Route path="/shop-application" element={<PrivateRoute Component={ShopApplication} />} />
           <Route path="/dasher-application" element={<PrivateRoute Component={DasherApplication} />} />
+          <Route path="/checkout" element={<PrivateRoute Component={Checkout} />} />
           
           
         </Routes>

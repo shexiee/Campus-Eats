@@ -65,7 +65,6 @@ const AddToCartModal = ({ showModal, onClose, item }) => {
             if (!response.ok) {
                 throw new Error('Failed to add item to cart');
             }
-            alert('Item added to cart');
             onClose();
             window.location.reload();
         } catch (error) {
