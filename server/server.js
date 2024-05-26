@@ -172,6 +172,63 @@ app.post('/api/shop-application', upload.single('image'), async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.post('/api/shop-update/:uid', upload.single('image'), async (req, res) => {
+  const {
+    shopName,
+    shopDesc,
+    shopAddress,
+    googleLink,
+    categories,
+    shopOpen,
+    shopClose,
+    GCASHName,
+    GCASHNumber
+  } = req.body;
+  const { uid } = req.params;
+  const file = req.file;
+
+  if (!uid) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  try {
+    const shopDoc = await db.collection('shops').doc(uid).get();
+    if (!shopDoc.exists) {
+      return res.status(404).json({ error: 'Shop not found' });
+    }
+
+    let imageURL = shopDoc.data().shopImage;
+
+    if (file) {
+      const fileName = `shop/images/${uid}_${shopName}.png`;
+      const fileRef = ref(storage, fileName);
+
+      const snapshot = await uploadBytes(fileRef, file.buffer);
+      imageURL = await getDownloadURL(snapshot.ref);
+    }
+
+    await db.collection('shops').doc(uid).update({
+      shopName,
+      shopDesc,
+      shopAddress,
+      googleLink,
+      categories: JSON.parse(categories),
+      shopImage: imageURL,
+      shopOpen,
+      shopClose,
+      GCASHName,
+      GCASHNumber,
+      updatedAt: new Date()
+    });
+
+    return res.status(200).json({ message: 'Shop updated successfully' });
+  } catch (error) {
+    console.error('Error updating shop:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
  
 // Add new dasher with image upload
 app.post('/api/dasher-application', upload.single('image'), async (req, res) => {
@@ -315,6 +372,54 @@ app.post('/api/shop-add-item', upload.single('image'), async (req, res) => {
   }
 });
 
+app.post('/api/shop-update-item/:itemId', upload.single('image'), async (req, res) => {
+  const { itemId } = req.params;
+  const { name, price, qty, desc, uid, categories } = req.body;
+  const file = req.file;
+
+  if (!uid) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  try {
+    const itemRef = db.collection('items').doc(itemId);
+    const itemSnapshot = await itemRef.get();
+
+    if (!itemSnapshot.exists) {
+      return res.status(404).json({ error: 'Item not found.' });
+    }
+
+    let imageURL = itemSnapshot.data().imageUrl;
+
+    if (file) {
+      const fileName = `shop/items/${uid}/${name}.png`;
+      const fileRef = ref(storage, fileName);
+
+      const snapshot = await uploadBytes(fileRef, file.buffer);
+      imageURL = await getDownloadURL(snapshot.ref);
+    }
+
+    const updatedItemData = {
+      name,
+      price: parseFloat(price),
+      quantity: parseInt(qty),
+      description: desc,
+      shopID: uid,
+      categories: JSON.parse(categories),
+      imageUrl: imageURL,
+      updatedAt: new Date(),
+    };
+
+    await itemRef.update(updatedItemData);
+
+    return res.status(200).json({ message: 'Item updated successfully', itemId: itemId });
+  } catch (error) {
+    console.error('Error updating item:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 app.get('/api/shop/:shopId/items', async (req, res) => {
   const { shopId } = req.params;
 
@@ -331,6 +436,23 @@ app.get('/api/shop/:shopId/items', async (req, res) => {
     return res.status(200).json(items);
   } catch (error) {
     console.error('Error fetching shop items:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/api/items/:itemId', async (req, res) => {
+  const { itemId } = req.params;
+  console.log(itemId);
+  try {
+    const itemSnapshot = await db.collection('items').doc(itemId).get();
+    if (!itemSnapshot.exists) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    const itemData = itemSnapshot.data();
+    return res.status(200).json(itemData);
+  } catch (error) {
+    console.error('Error fetching item:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });

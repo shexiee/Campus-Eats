@@ -20,6 +20,9 @@ import PublicRoute from './components/PublicRoute';
 import AddItem from './components/AddItem';
 import ShopRoute from './components/ShopRoute';
 import Checkout from './components/Checkout';
+import ShopManage from './components/ShopManage';
+import UpdateItem from './components/UpdateItem';
+import UpdateShop from './components/UpdateShop';
 
 
 function App() {
@@ -35,6 +38,7 @@ function App() {
           <Route path="/home" element={<PrivateRoute Component={Home} />} />
           <Route path="/profile" element={<PrivateRoute Component={UserProfile} />} />
           <Route path="/shop/:shopId" element={<PrivateRoute Component={Shop} />} />
+          
           <Route path="/shop-application" element={<PrivateRoute Component={ShopApplication} />} />
           <Route path="/dasher-application" element={<PrivateRoute Component={DasherApplication} />} />
           <Route path="/checkout/:uid/:shopId" element={<PrivateRoute Component={Checkout} />} />
@@ -51,6 +55,9 @@ function App() {
 
         <Routes>
           <Route path="/shop-add-item" element={<ShopRoute Component={AddItem} />} />
+          <Route path="/shop-manage-item" element={<ShopRoute Component={ShopManage} />} />
+          <Route path="/edit-shop" element={<ShopRoute Component={UpdateShop} />} />
+          <Route path="/edit-item/:itemId" element={<ShopRoute Component={UpdateItem} />} />
         </Routes>
       </Router>
     </AuthProvider>

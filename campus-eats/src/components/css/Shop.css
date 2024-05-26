@@ -71,6 +71,10 @@
     margin: 30px 0 0 400px;
 }
 
+.sm-items-container {
+    margin: 30px 0 0 0;
+}
+
 .s-content {
      /* Adjust based on the width of the fixed title container and padding */
     display: flex;
@@ -172,6 +176,33 @@
     align-items: center;
     justify-content: center;
     transition: background 0.2s ease-in-out;
+}
+
+.sm-plus-icon {
+    position: absolute;
+    bottom: 30px;
+    right: 20px;
+    background: #d15d61;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease-in-out;
+}
+
+.sm-plus-icon:hover {
+    background: #BC4A4D;
+    cursor: pointer;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.sm-plus-icon svg {
+    color: white;
+    width: 15px;
+    height: 15px;
 }
 
 .s-plus-icon:hover {
