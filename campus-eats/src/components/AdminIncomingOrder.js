@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import Navbar from "./Navbar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
-import DeclineOrderModal from './DeclineOrderModal';
+import DeclineOrderModal from './AdminDeclineOrderModal';
 
 const AdminIncomingOrder = () => {
     const { currentUser } = useAuth();
@@ -15,7 +15,7 @@ const AdminIncomingOrder = () => {
     const [message2, setMessage2] = useState(""); 
     const [message3, setMessage3] = useState(""); 
     const [isProgressModalOpen, setIsProgressModalOpen] = useState(true); 
-    const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false); // New state for decline modal
+    const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false); 
 
     const toggleAccordion1 = () => {
         setIsAccordionOpen1(prevState => !prevState);

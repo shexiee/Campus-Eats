@@ -1,5 +1,5 @@
 import React from 'react';
-import './css/DeclineOrderModal.css';
+import './css/AdminDeclineOrderModal.css';
 import { useAuth } from "../context/AuthContext";
 import Navbar from "./Navbar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

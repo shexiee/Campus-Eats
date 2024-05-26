@@ -1,18 +1,26 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState } from "react"; // Added useState
 import { useAuth } from "../context/AuthContext";
 import Navbar from "./Navbar";
 import "./css/AdminDasherLists.css"; 
+import AdminAcceptDasherModal from "./AdminAcceptDasherModal"; // Import the modal component
 
 const AdminDasherList = () => {
     const { currentUser } = useAuth();
     console.log(currentUser);
     const [isActive, setIsActive] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false); 
 
     const toggleButton = () => {
         setIsActive(!isActive);
     };
 
+    const handleDeclineClick = () => {
+        alert('Order Declined');
+    };
+
+    const handleAcceptClick = () => {
+        setIsModalOpen(true); 
+    };
     
     return (
         <>
@@ -79,19 +87,17 @@ const AdminDasherList = () => {
                             <div>John Smith</div>
                             <div>₱200.00</div>
                             <div>₱40.00</div>
-                            <div className="adl-status-container">
-                                <p><span className="adl-satus">{isActive ? 'Active' : 'Not Active'}</span></p>
-                                <div className="j-active-buton">
-                                    <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}></button>
-                                    <div className="j-button-text">
-                                        {isActive ? 'Active' : 'Not Active'}
-                                    </div>
-                                </div> 
+                            <div className="adl-buttons">
+                                <button className="adl-decline" onClick={handleDeclineClick}>Decline</button>
+                                <button className="adl-acceptorder" onClick={handleAcceptClick}>Accept</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Accept Dasher  */}
+            <AdminAcceptDasherModal isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)} />
         </>
     );
 };

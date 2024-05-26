@@ -129,3 +129,42 @@
     transform: translateX(0px); 
 }
 
+.adl-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; 
+    margin-left: auto;
+}
+
+.adl-decline,
+.adl-acceptorder {
+    font-weight: 300;
+    font-family: Helvetica, "sans-serif";
+    transition: all 0.2s;
+    padding: 8px 20px; 
+    border-radius: 5px; 
+    border: 1px solid transparent;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.adl-decline {
+    background-color: #E25659; 
+    color: #fff;
+}
+
+.adl-decline:hover {
+    background-color: #E25659; 
+}
+
+.adl-acceptorder {
+    background-color: #5AC064; 
+    color: #fff;
+}
+
+.adl-acceptorder:hover {
+    background-color: #5AC064; 
+}
+
+
