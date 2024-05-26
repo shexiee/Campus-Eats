@@ -31,7 +31,7 @@ function App() {
           <Route path="/signup" element={<PublicRoute Component={LoginSignUp} />} />
           <Route path="/" element={<PublicRoute Component={LandingPage} />} />
           <Route path="/orders" element={<PrivateRoute Component={Order} />} />
-          <Route path="/home" element={<PrivateRoute Component={AdminDasherList} />} />
+          <Route path="/home" element={<PrivateRoute Component={Home} />} />
           <Route path="/profile" element={<PrivateRoute Component={UserProfile} />} />
           <Route path="/shop" element={<PrivateRoute Component={Shop} />} />
           <Route path="/shop-application" element={<PrivateRoute Component={ShopApplication} />} />
