@@ -484,6 +484,27 @@ app.post('/api/update-cart-item', async (req, res) => {
   }
 });
 
+app.post('/api/place-order', async (req, res) => {
+  try {
+    const order = req.body;
+    console.log("Received order:", order);
+
+    // Add the order to Firestore with status "waiting_for_admin"
+    const docRef = await db.collection('orders').add({
+      ...order,
+      status: 'waiting_for_admin'
+    });
+
+    console.log("Order placed successfully. Order ID:", docRef.id);
+
+    return res.status(200).json({ message: 'Order placed successfully', id: docRef.id });
+  } catch (error) {
+    console.error('Error placing order:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 
  
 app.listen(5000, () => console.log('Server running on http://localhost:5000'));

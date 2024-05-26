@@ -6,7 +6,7 @@ body{
 }
 .co-body{
     height: 100%;
-    padding: 70px 200px 0 270px;
+    padding: 70px 200px 100px 270px;
 }
 
 .co-title{
@@ -47,6 +47,7 @@ body{
 
 .co-card-small {
     width: 30%; /* Adjust this value to your desired width */
+    flex-direction: column;
 }
 
 .co-card-large {
@@ -65,7 +66,7 @@ body{
 .co-subtext-current h4{
    color: #999999;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 300;
 }
 
 
@@ -99,19 +100,18 @@ body{
 .co-order-text {
     display: flex;
     flex-direction: column;
-    padding: 10px;
 }
 
-.co-order-text h3 {
+.co-order-text h4 {
     margin: 0;
-    font-size: 18px; /* Adjust as needed */
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: normal;
 }
 
 .co-order-text p {
     margin: 0;
     color: #999999;
-    font-size: 14px; /* Adjust as needed */
+    font-size: 12px; /* Adjust as needed */
 }
 
 .co-order-subtext{
@@ -148,6 +148,7 @@ body{
     flex-direction: column;
     width: 100%;
     padding: 40px;
+    border-bottom: 2px solid #cfcece;
 }
 
 .co-order-summary-item{
@@ -181,7 +182,7 @@ body{
 .co-order-summary-total{
     display: flex;
     justify-content: space-between;
-    font-weight: 600;
+    font-weight: 300;
     font-size: 20px;
     color: #000000;
     margin-top: 10px;
@@ -299,11 +300,112 @@ body{
   border-bottom: solid 1px #dad9d9;
 }
 
+/* Add the necessary CSS for the payment method section */
+.payment-method {
+  margin: 30px 0;
+}
+
+.payment-options {
+  display: flex;
+  gap: 20px;
+  
+  padding: 18px;
+}
+
+.payment-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.payment-card {
+  padding: 10px 20px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.payment-option input[type="radio"] {
+  display: none;
+}
+
+.payment-option.selected .payment-card {
+  border: 2px solid #000;
+}
+
+.change-for-input {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.change-for-input label {
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.change-for-input input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
 
+.co-save-button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.co-label-two {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.co-label-two h3 {
+  font-weight: 600;
+  font-size: 12px;
+  color: #777676;
+  margin-bottom: 10px;
+}
+.co-label-two textarea {
+  width: 100%;
+  min-height: 40px;
+  max-height: 200px; /* Set a maximum height */
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f0f0f0;
+  resize: vertical; /* Allow vertical resizing */
+}
 
 
+.info-icon {
+  margin-left: 5px;
+  cursor: pointer;
+}
 
+.tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  z-index: 9999; /* Ensure tooltip is above other elements */
+  white-space: nowrap; /* Prevent tooltip from wrapping */
+}
+
+/* Adjust tooltip position */
+.tooltip.beside {
+
+  left: calc(100% + 20px); /* Adjust the distance from the icon */
+}
 
 
 
