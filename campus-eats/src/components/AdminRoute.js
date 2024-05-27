@@ -3,7 +3,6 @@ import { useAuth } from "../context/AuthContext";
 import LoginSignUp from "./LoginSignUp";
 import Home from "./Home";
 import axios from 'axios';
-import LandingPage from "./LandingPage";
 
 const AdminRoute = ({ Component }) => {
   const { currentUser } = useAuth();
@@ -39,18 +38,6 @@ const AdminRoute = ({ Component }) => {
 
   if (accountType === 'admin') {
     return <Component />;
-  }
-
-  if (accountType === 'regular') {
-    return <Home />;
-  }
-
-  if (accountType === 'dasher') {
-    // return <AdminDashboard />;
-  }
-
-  if (accountType === 'shop') {
-    // return <ShopDashboard />;
   }
 
   return <Home />;

@@ -181,7 +181,7 @@
 }
 
 .ao-accordion {
-  margin-left: 15px; /* Adjust margin as needed to align with the buttons */
+  padding: 0 40px;  /* Adjust margin as needed to align with the buttons */
 }
 
 .message-box {

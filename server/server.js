@@ -288,6 +288,18 @@ app.post('/api/dasher-application', upload.single('image'), async (req, res) => 
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.get('/api/active-dashers', async (req, res) => {
+  try {
+    // Fetch active dashers from the dashers collection where status is 'active'
+    const activeDashersSnapshot = await db.collection('dashers').where('status', '==', 'active').get();
+    const activeDashers = activeDashersSnapshot.docs.map(doc => doc.data());
+    return res.status(200).json(activeDashers);
+  } catch (error) {
+    console.error('Error fetching active dashers:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
  
 app.get('/api/shops', async (req, res) => {
   try {
@@ -661,6 +673,21 @@ app.post('/api/place-order', async (req, res) => {
   }
 });
 
+app.post('/api/update-order-status', async (req, res) => {
+  try {
+    const { orderId, status } = req.body;
+
+    // Update the status of the order in the Firestore database
+    await db.collection('orders').doc(orderId).update({ status });
+
+    return res.status(200).json({ message: 'Order status updated successfully' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 app.get('/api/orders/:uid', async (req, res) => {
   const { uid } = req.params;
   try {
@@ -688,6 +715,56 @@ app.get('/api/orders/:uid', async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.get('/api/orders', async (req, res) => {
+  try {
+    const ordersSnapshot = await db.collection('orders').get();
+    
+    if (ordersSnapshot.empty) {
+      return res.status(404).json({ error: 'No orders found' });
+    }
+
+    const activeOrders = [];
+
+    ordersSnapshot.forEach(doc => {
+      const order = doc.data();
+      if (order.status && order.status.startsWith('active_waiting_for_admin')) {
+        activeOrders.push({ id: doc.id, ...order });
+      }
+    });
+
+    return res.status(200).json(activeOrders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/api/completed-orders', async (req, res) => {
+  try {
+    const ordersSnapshot = await db.collection('orders').get();
+    
+    if (ordersSnapshot.empty) {
+      return res.status(404).json({ error: 'No orders found' });
+    }
+
+    const completedOrders = [];
+
+    ordersSnapshot.forEach(doc => {
+      const order = doc.data();
+      if (!order.status || !order.status.startsWith('active')) {
+        completedOrders.push({ id: doc.id, ...order });
+      }
+    });
+
+    return res.status(200).json(completedOrders);
+  } catch (error) {
+    console.error('Error fetching completed orders:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 
 
 
