@@ -1,103 +1,151 @@
-import React, { useState } from "react"; // Added useState
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "./Navbar";
-import "./css/AdminDasherLists.css"; 
-import AdminAcceptDasherModal from "./AdminAcceptDasherModal"; // Import the modal component
+import "./css/AdminDasherLists.css";
+
+import axios from "axios";
 
 const AdminDasherList = () => {
     const { currentUser } = useAuth();
-    console.log(currentUser);
-    const [isActive, setIsActive] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false); 
+    const [pendingDashers, setPendingDashers] = useState([]);
+    const [currentDashers, setCurrentDashers] = useState([]);
 
-    const toggleButton = () => {
-        setIsActive(!isActive);
+    const handleDeclineClick = async (dasherId) => {
+        if (window.confirm("Are you sure you want to decline this dasher?")) {
+            try {
+                await axios.post('/api/update-dasher-status', { dasherId, status: 'declined' });
+                alert('Order status updated successfully');
+                window.location.reload();
+            } catch (error) {
+                console.error('Error updating dasher status:', error);
+                alert('Error updating dasher status');
+            }
+        }
     };
 
-    const handleDeclineClick = () => {
-        alert('Order Declined');
+    const handleAcceptClick = async (dasherId) => {
+        if (window.confirm("Are you sure you want to accept this dasher?")) {
+            try {
+                await axios.post('/api/update-dasher-status', { dasherId, status: 'active' });
+                alert('Order status updated successfully');
+                window.location.reload();
+            } catch (error) {
+                console.error('Error updating dasher status:', error);
+                alert('Error updating dasher status');
+            }
+        }
     };
 
-    const handleAcceptClick = () => {
-        setIsModalOpen(true); 
-    };
-    
+    useEffect(() => {
+        const fetchDashers = async () => {
+            try {
+                const response = await axios.get('/api/dasher-lists');
+                const pendingDashersHold = response.data.pendingDashers;
+                const currentDashersHold = response.data.currentDashers;
+                const pendingDashersData = await Promise.all(
+                    pendingDashersHold.map(async (dasher) => {
+                        const pendingDashersDataResponse = await axios.get(`/api/user/${dasher.id}`);
+                        const pendingDashersData = pendingDashersDataResponse.data;
+                        return { ...dasher, userData: pendingDashersData }; // Renamed to userData for clarity
+                    })
+                );
+              
+                const currentDashersData = await Promise.all(
+                    currentDashersHold.map(async (dasher) => {
+                        const currentDashersDataResponse = await axios.get(`/api/user/${dasher.id}`);
+                        const currentDashersData = currentDashersDataResponse.data;
+                        return { ...dasher, userData: currentDashersData }; // Renamed to userData for clarity
+                    })
+                );
+
+                setPendingDashers(pendingDashersData);
+                setCurrentDashers(currentDashersData);
+            } catch (error) {
+                console.error('Error fetching dashers:', error);
+            }
+        };
+
+        fetchDashers();
+    }, []);
+
     return (
         <>
             <Navbar />
 
             <div className="adl-body">
                 <div className="adl-title">
-                    <h2>Active Dashers</h2>
-                </div>
-
-                <div className="adl-row-container">
-                    <div className="adl-word">Runner ID#</div>
-                    <div className="adl-word">Name</div>
-                    <div className="adl-word">Contact Number</div>
-                    <div className="adl-word">Role</div>
-                    <div className="adl-word">Shift Start</div>
-                    <div className="adl-word">Shift End</div>
-                    <div className="adl-word">Status</div>
-                </div>
-
-                <div className="adl-container">
-                    <div className="adl-box">
-                        <div className="adl-box-content">
-                            <div>12345</div>
-                            <div>John Doe</div>
-                            <div>09089393324</div>
-                            <div>Student</div>
-                            <div>1:00 PM</div>
-                            <div>3:00 PM</div>
-                            <div className="adl-status-container">
-                                <p><span className="adl-satus">{isActive ? 'Active' : 'Not Active'}</span></p>
-                                <div className="j-active-buton">
-                                    <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}></button>
-                                    <div className="j-button-text">
-                                        {isActive ? 'Active' : 'Not Active'}
-                                    </div>
-                                </div> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* New Dashers Table */}
-                <div className="dashers-title">
                     <h2>Pending Dashers</h2>
                 </div>
-
-                <div className="adl-row-container">
-                    <div className="adl-word">Order ID#</div>
-                    <div className="adl-word">Customer</div>
-                    <div className="adl-word">Created</div>
-                    <div className="adl-word">Runner</div>
-                    <div className="adl-word">Customer Total</div>
-                    <div className="adl-word">Profit</div>
-                    <div className="adl-word">Status</div>
-                </div>
-
-                <div className="adl-container">
-                    <div className="adl-box">
-                        <div className="adl-box-content">
-                            <div>67890</div>
-                            <div>Jane Doe</div>
-                            <div>2024-05-21</div>
-                            <div>John Smith</div>
-                            <div>₱200.00</div>
-                            <div>₱40.00</div>
-                            <div className="adl-buttons">
-                                <button className="adl-decline" onClick={handleDeclineClick}>Decline</button>
-                                <button className="adl-acceptorder" onClick={handleAcceptClick}>Accept</button>
-                            </div>
+                {pendingDashers && pendingDashers.length > 0 ? (
+                    <>
+                        <div className="adl-row-container">
+                            <div className="adl-word">Dasher Name</div>
+                            <div className="adl-word">Days Available</div>
+                            <div className="adl-word">Start Time</div>
+                            <div className="adl-word">End Time</div>
+                            <div className="adl-word">School ID</div>
+                            <div className="adl-word">Actions</div>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            {/* Accept Dasher  */}
-            <AdminAcceptDasherModal isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)} />
+                        <div className="adl-container">
+                            {pendingDashers.map(dasher => (
+                                <div key={dasher.id} className="adl-box">
+                                    <div className="adl-box-content">
+                                        <div>{dasher.userData.firstname + " " + dasher.userData.lastname}</div>
+                                        <div>{dasher.daysAvailable.join(', ')}</div>
+                                        <div>{dasher.availableStartTime}</div>
+                                        <div>{dasher.availableEndTime}</div>
+                                        <div>
+                                            <img src={dasher.schoolId} alt="School ID" className="adl-list-pic" />
+                                        </div>
+                                        <div className="adl-buttons">
+                                            <button className="adl-decline" onClick={() => handleDeclineClick(dasher.id)}>Decline</button>
+                                            <button className="adl-acceptorder" onClick={() => handleAcceptClick(dasher.id)}>Accept</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                ) : (
+                    <div>No pending dashers</div>
+                )}
+
+                <div className="adl-title">
+                    <h2>Dashers</h2>
+                </div>
+                {currentDashers && currentDashers.length > 0 ? (
+                    <>
+                        <div className="adl-row-container">
+                            <div className="adl-word">Dasher Name</div>
+                            <div className="adl-word">Days Available</div>
+                            <div className="adl-word">Start Time</div>
+                            <div className="adl-word">End Time</div>
+                            <div className="adl-word">School ID</div>
+                            <div className="adl-word">Status</div>
+                        </div>
+
+                        <div className="adl-container">
+                            {currentDashers.map(dasher => (
+                                <div key={dasher.id} className="adl-box">
+                                    <div className="adl-box-content">
+                                        <div>{dasher.userData.firstname + " " + dasher.userData.lastname}</div>
+                                        <div>{dasher.daysAvailable.join(', ')}</div>
+                                        <div>{dasher.availableStartTime}</div>
+                                        <div>{dasher.availableEndTime}</div>
+                                        <div>
+                                            <img src={dasher.schoolId} alt="School ID" className="adl-list-pic" />
+                                        </div>
+                                        <div>{dasher.status}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                ) : (
+                    <div>No current dashers</div>
+                )}
+            </div>
         </>
     );
 };

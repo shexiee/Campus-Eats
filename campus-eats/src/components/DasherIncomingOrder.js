@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import DeclineOrderModal from './AdminDeclineOrderModal';
 
-const AdminIncomingOrder = () => {
+const DasherIncomingOrder = () => {
   const { currentUser } = useAuth();
   const [orders, setOrders] = useState([]);
   const [isAccordionOpen, setIsAccordionOpen] = useState({});
@@ -19,17 +19,12 @@ const AdminIncomingOrder = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('/api/orders');
+        const response = await axios.get('/api/incoming-orders/dasher');
         const ordersWithShopData = await Promise.all(response.data.map(async order => {
           const shopDataResponse = await axios.get(`/api/shop/${order.shopID}`);
           const shopData = shopDataResponse.data;
           return { ...order, shopData };
         }));
-        // const ordersWithDasherData = await Promise.all(ordersWithShopData.map(async order => {
-        //     const dasherDataResponse = await axios.get(`/api/dasher/${order.shopID}`);
-        //     const shopData = shopDataResponse.data;
-        //     return { ...order, shopData };
-        //   }));
         setOrders(ordersWithShopData);
       } catch (error) {
         console.error('Error fetching orders:', error);
@@ -37,21 +32,7 @@ const AdminIncomingOrder = () => {
     };
 
     
-    const fetchActiveDashers = async () => {
-        try {
-          const response = await axios.get('/api/active-dashers');
-          const dasherUser = await Promise.all(response.data.map(async dasher => {
-            const dasherUserResponse = await axios.get(`/api/user/${dasher.dasherId}`);
-            const dasherData = dasherUserResponse.data;
-            return { ...dasher, dasherData };
-          }));
-          setActiveDashers(dasherUser);
-        } catch (error) {
-          console.error('Error fetching active dashers:', error);
-        }
-      };
         fetchOrders();
-      fetchActiveDashers();
   }, []);
 
   const toggleAccordion = (orderId) => {
@@ -61,46 +42,31 @@ const AdminIncomingOrder = () => {
     }));
   };
 
-//   const handleMessageChange = (orderId, event) => {
-//     setMessages((prevState) => ({
-//       ...prevState,
-//       [orderId]: event.target.value
-//     }));
-//   };
-
-  const handleDeclineClick = (orderId) => {
-    setSelectedOrder(orderId);
-    setIsDeclineModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsDeclineModalOpen(false);
-    setSelectedOrder(null);
-  };
-
-  const confirmDecline = () => {
-    // Handle decline order logic here
-    closeModal();
-  };
 
   const handleSubmit = async (orderId) => {
     try {
-      // Make a POST request to update the order status
-      await axios.post('/api/update-order-status', { orderId, status: 'active_waiting_for_dasher' });
-      // Optionally, you can also update the local state if needed
-      setOrders(prevOrders => {
-        return prevOrders.map(order => {
-          if (order.id === orderId) {
-            return { ...order, status: 'active_waiting_for_dasher' };
-          } else {
-            return order;
-          }
+      // Make a POST request to check and update the order
+      const response = await axios.post('/api/assign-dasher', { orderId, dasherId: currentUser.uid });
+      console.log(response.data.success);
+      if (response.data.success) {
+        alert('Dasher assigned successfully');
+        // Optionally update local state if needed
+        await axios.post('/api/update-order-status', { orderId, status: 'active_heading' });
+        setOrders(prevOrders => {
+          return prevOrders.map(order => {
+            if (order.id === orderId) {
+              return { ...order, dasherId: currentUser.uid, status: 'active_heading' };
+            } else {
+              return order;
+            }
+          });
         });
-      });
-      alert('Order status updated successfully');
-      window.location.reload();
+        window.location.reload();
+      } else {
+        alert(response.data.message);
+      }
     } catch (error) {
-      console.error('Error updating order status:', error);
+      console.error('Error assigning dasher:', error);
     }
   };
 
@@ -124,7 +90,7 @@ const AdminIncomingOrder = () => {
                   <p>{`Order #${order.id}`}</p>
                 </div>
                 <div className="ao-buttons">
-                  <button className="i-logout-button" onClick={() => handleDeclineClick(order.id)}>Decline</button>
+                  
                   <button className="i-save-button" onClick={() => handleSubmit(order.id)}>Accept Order</button>
                 </div>
                 <div className="ao-toggle-content">
@@ -166,37 +132,9 @@ const AdminIncomingOrder = () => {
             </div>
           </div>
         ))}
-
-        <div className="ao-progress-modal">
-            <h3 className="ao-modal-title">Active Dashers</h3>
-            <div className="ao-modal-body">
-                <div className="ao-items">
-                {activeDashers.map((dasher, index) => (
-                    <div key={index} className="ao-item">
-                    <div className="ao-item-left">
-                        <div className="ao-item-title">
-                        <h4>{dasher.dasherData.firstname} &nbsp; {dasher.dasherData.lastname}</h4>
-                        <p>{dasher.status}</p>
-                        </div>
-                    </div>
-                    <div className="cm-item-right">
-                        {/* Additional content for right side if needed */}
-                    </div>
-                    </div>
-                ))}
-                </div>
-            </div>
-            </div>
-
-
-        <DeclineOrderModal 
-          isOpen={isDeclineModalOpen}
-          closeModal={closeModal}
-          confirmDecline={confirmDecline}
-        />
       </div>
     </>
   );
 }
 
-export default AdminIncomingOrder;
+export default DasherIncomingOrder;

@@ -23,6 +23,9 @@ import Checkout from './components/Checkout';
 import ShopManage from './components/ShopManage';
 import UpdateItem from './components/UpdateItem';
 import UpdateShop from './components/UpdateShop';
+import AdminShopList from './components/AdminShopList';
+import DasherRoute from './components/DasherRoute';
+import DasherIncomingOrder from './components/DasherIncomingOrder';
 
 
 function App() {
@@ -48,6 +51,7 @@ function App() {
 
         <Routes>
           <Route path="/admin-dashers" element={<AdminRoute Component={AdminDasherList} />} />
+          <Route path="/admin-shops" element={<AdminRoute Component={AdminShopList} />} />
           <Route path="/admin-dashboard" element={<AdminRoute Component={AdminDashboard} />} />
           <Route path="/admin-incoming-order" element={<AdminRoute Component={AdminIncomingOrder} />} />
           <Route path="/admin-order-history" element={<AdminRoute Component={AdminOrderHistory} />} />
@@ -58,6 +62,11 @@ function App() {
           <Route path="/shop-manage-item" element={<ShopRoute Component={ShopManage} />} />
           <Route path="/edit-shop" element={<ShopRoute Component={UpdateShop} />} />
           <Route path="/edit-item/:itemId" element={<ShopRoute Component={UpdateItem} />} />
+        </Routes>
+
+        <Routes>
+          <Route path="/dasher-incoming-order" element={<DasherRoute Component={DasherIncomingOrder} />} />
+          
         </Routes>
       </Router>
     </AuthProvider>

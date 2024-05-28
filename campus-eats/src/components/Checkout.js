@@ -138,27 +138,27 @@ const Checkout = () => {
             
         }
 
-        // try {
-        //     const response = await fetch('/api/remove-cart', {
-        //         method: 'DELETE',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify({ uid: currentUser.uid })
-        //     });
+        try {
+            const response = await fetch('/api/remove-cart', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ uid: currentUser.uid })
+            });
 
-        //     if (!response.ok) {
-        //         alert(`Error: ${response.statusText}`);
-        //         return;
-        //     }
+            if (!response.ok) {
+                alert(`Error: ${response.statusText}`);
+                return;
+            }
 
-        //     const data = await response.json();
-        //     setCart(null);
-        // } catch (error) {
-        //     console.error('Error removing cart:', error);
-        // }
+            const data = await response.json();
+            setCart(null);
+        } catch (error) {
+            console.error('Error removing cart:', error);
+        }
 
-        // navigate("/orders");
+        navigate("/orders");
         setLoading(false);
     };
 

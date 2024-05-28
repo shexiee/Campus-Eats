@@ -300,6 +300,113 @@ app.get('/api/active-dashers', async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.get('/api/dasher-lists', async (req, res) => {
+  try {
+    const dashersSnapshot = await db.collection('dashers').get();
+    
+    if (dashersSnapshot.empty) {
+      return res.status(404).json({ error: 'No dashers found' });
+    }
+
+    const pendingDashers = [];
+    const currentDashers = [];
+
+    dashersSnapshot.forEach(doc => {
+      const dasher = doc.data();
+      if (!dasher.status || !dasher.status.startsWith('pending')) {
+        currentDashers.push({ id: doc.id, ...dasher });
+      } else {
+        pendingDashers.push({ id: doc.id, ...dasher });
+      }
+    });
+    return res.status(200).json({pendingDashers, currentDashers});
+  } catch (error) {
+    console.error('Error fetching completed orders:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/update-dasher-status', async (req, res) => {
+  try {
+    const { dasherId, status } = req.body;
+    // Update the status of the order in the Firestore database
+    await db.collection('dashers').doc(dasherId).update({ status });
+    return res.status(200).json({ message: 'Order status updated successfully' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+app.get('/api/dasher/:dasherId', async (req, res) => {
+  const dasherId = req.params.dasherId;
+  try {
+    const dasherDoc = await db.collection('dashers').doc(dasherId).get();
+    if (!dasherDoc.exists) {
+      return res.status(404).json({ error: 'Dasher not found' });
+    }
+ 
+    const dasherData = dasherDoc.data();
+    return res.status(200).json(dasherData);
+  } catch (error) {
+    console.error('Error fetching dasher:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/api/shop-lists', async (req, res) => {
+  try {
+    const shopsSnapshot = await db.collection('shops').get();
+    
+    if (shopsSnapshot.empty) {
+      return res.status(404).json({ error: 'No shops found' });
+    }
+
+    const pendingShops = [];
+    const currentShops = [];
+
+    shopsSnapshot.forEach(doc => {
+      const shop = doc.data();
+      if (!shop.status || !shop.status.startsWith('pending')) {
+        currentShops.push({ id: doc.id, ...shop });
+      } else {
+        pendingShops.push({ id: doc.id, ...shop });
+      }
+    });
+    return res.status(200).json({pendingShops, currentShops});
+  } catch (error) {
+    console.error('Error fetching completed orders:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/update-shop-status', async (req, res) => {
+  try {
+    const { shopId, status } = req.body;
+    // Update the status of the order in the Firestore database
+    await db.collection('shops').doc(shopId).update({ status });
+    return res.status(200).json({ message: 'shop status updated successfully' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/update-shop-df', async (req, res) => {
+  try {
+    const { shopId, deliveryFee } = req.body;
+    // Update the status of the order in the Firestore database
+    await db.collection('shops').doc(shopId).update({ deliveryFee: parseFloat(deliveryFee) });
+    
+    return res.status(200).json({ message: 'shop status updated successfully' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
  
 app.get('/api/shops', async (req, res) => {
   try {
@@ -452,9 +559,9 @@ app.get('/api/shop/:shopId/items', async (req, res) => {
   }
 });
 
+
 app.get('/api/items/:itemId', async (req, res) => {
   const { itemId } = req.params;
-  console.log(itemId);
   try {
     const itemSnapshot = await db.collection('items').doc(itemId).get();
     if (!itemSnapshot.exists) {
@@ -653,7 +760,6 @@ app.post('/api/place-order', async (req, res) => {
     const activeOrder = existingOrdersSnapshot.docs.find(doc => doc.data().status.startsWith('active'));
 
     if (activeOrder) {
-      console.log('Active order found:', activeOrder.id);
       return res.status(400).json({ error: 'An active order already exists for this user' });
     }
 
@@ -661,10 +767,10 @@ app.post('/api/place-order', async (req, res) => {
     const docRef = await db.collection('orders').add({
       ...order,
       status: 'active_waiting_for_admin',
-      createdAt: new Date()
+      createdAt: new Date(),
+      dasherId: null
     });
 
-    console.log("Order placed successfully. Order ID:", docRef.id);
 
     return res.status(200).json({ message: 'Order placed successfully', id: docRef.id });
   } catch (error) {
@@ -686,6 +792,36 @@ app.post('/api/update-order-status', async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.post('/api/assign-dasher', async (req, res) => {
+  try {
+    const { orderId, dasherId } = req.body;
+
+    // const ordersAssignedSnapshot = await db.collection('orders')
+    //   .where('dasherId', '!==', null)
+    //   .get();
+    // Check if there is any order with the current dasherId and a status starting with "active"
+    const ordersSnapshot = await db.collection('orders')
+      .where('dasherId', '==', dasherId)
+      .get();
+
+    const ongoingOrder = ordersSnapshot.docs.find(doc => doc.data().status.startsWith('active'));
+    console.log(ongoingOrder);
+    if (ongoingOrder) {
+      console.log('There is already an ongoing order for this dasher.');
+      return res.status(400).json({ success: false, message: 'There is already an ongoing order for this dasher.' });
+    }
+
+    // If no ongoing order, update the specified order with the new dasherId and status
+    await db.collection('orders').doc(orderId).update({ dasherId, status: 'active_heading' });
+
+    return res.status(200).json({ success: true, message: 'Dasher assigned successfully' });
+  } catch (error) {
+    console.error('Error assigning dasher:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
 
 
 app.get('/api/orders/:uid', async (req, res) => {
@@ -740,6 +876,32 @@ app.get('/api/orders', async (req, res) => {
   }
 });
 
+app.get('/api/incoming-orders/dasher', async (req, res) => {
+  try {
+    const ordersSnapshot = await db.collection('orders').get();
+    
+    if (ordersSnapshot.empty) {
+      return res.status(404).json({ error: 'No orders found' });
+    }
+
+    const activeOrders = [];
+
+    ordersSnapshot.forEach(doc => {
+      const order = doc.data();
+      if (order.status && order.status.startsWith('active_waiting_for_dasher')) {
+        activeOrders.push({ id: doc.id, ...order });
+      }
+    });
+
+    return res.status(200).json(activeOrders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
 app.get('/api/completed-orders', async (req, res) => {
   try {
     const ordersSnapshot = await db.collection('orders').get();
@@ -749,20 +911,25 @@ app.get('/api/completed-orders', async (req, res) => {
     }
 
     const completedOrders = [];
+    const activeOrders = [];
 
     ordersSnapshot.forEach(doc => {
       const order = doc.data();
       if (!order.status || !order.status.startsWith('active')) {
         completedOrders.push({ id: doc.id, ...order });
+      } else {
+        activeOrders.push({ id: doc.id, ...order });
       }
     });
-
-    return res.status(200).json(completedOrders);
+    return res.status(200).json({completedOrders, activeOrders});
   } catch (error) {
     console.error('Error fetching completed orders:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+
 
 
 
