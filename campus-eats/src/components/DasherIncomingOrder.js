@@ -66,7 +66,13 @@ const DasherIncomingOrder = () => {
         alert(response.data.message);
       }
     } catch (error) {
-      console.error('Error assigning dasher:', error);
+      if (error.response && error.response.status === 400 && error.response.data.message === 'This order is already assigned to another dasher.') {
+        alert('This order is already assigned to another dasher. Please Reload the page and try again.');
+      } else if (error.response && error.response.status === 400 && error.response.data.message === 'There is already an ongoing order for this dasher.') {
+        alert('There is already an ongoing order for this dasher. Please complete the current order first.');
+      } else {
+        console.error('Error assigning dasher:', error);
+      }
     }
   };
 

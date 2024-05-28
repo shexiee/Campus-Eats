@@ -797,22 +797,28 @@ app.post('/api/assign-dasher', async (req, res) => {
   try {
     const { orderId, dasherId } = req.body;
 
-    // const ordersAssignedSnapshot = await db.collection('orders')
-    //   .where('dasherId', '!==', null)
-    //   .get();
+    // Check if the order already has a dasher assigned
+    const orderDoc = await db.collection('orders').doc(orderId).get();
+    const orderData = orderDoc.data();
+    
+    if (orderData.dasherId !== null && orderData.dasherId !== dasherId) {
+      console.log('This order is already assigned to another dasher.');
+      return res.status(400).json({ success: false, message: 'This order is already assigned to another dasher.' });
+    }
+
     // Check if there is any order with the current dasherId and a status starting with "active"
     const ordersSnapshot = await db.collection('orders')
       .where('dasherId', '==', dasherId)
       .get();
 
     const ongoingOrder = ordersSnapshot.docs.find(doc => doc.data().status.startsWith('active'));
-    console.log(ongoingOrder);
+    
     if (ongoingOrder) {
       console.log('There is already an ongoing order for this dasher.');
       return res.status(400).json({ success: false, message: 'There is already an ongoing order for this dasher.' });
     }
 
-    // If no ongoing order, update the specified order with the new dasherId and status
+    // If no ongoing order and the order is not assigned to another dasher, update the specified order with the new dasherId and status
     await db.collection('orders').doc(orderId).update({ dasherId, status: 'active_heading' });
 
     return res.status(200).json({ success: true, message: 'Dasher assigned successfully' });
