@@ -11,10 +11,7 @@ const DasherIncomingOrder = () => {
   const { currentUser } = useAuth();
   const [orders, setOrders] = useState([]);
   const [isAccordionOpen, setIsAccordionOpen] = useState({});
-  const [messages, setMessages] = useState({});
-  const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-    const [activeDashers, setActiveDashers] = useState([]);
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -31,9 +28,10 @@ const DasherIncomingOrder = () => {
       }
     };
 
-    
-        fetchOrders();
-  }, []);
+    if (isActive) {
+      fetchOrders();
+    }
+  }, [isActive]);
 
   const toggleAccordion = (orderId) => {
     setIsAccordionOpen((prevState) => ({
@@ -42,37 +40,35 @@ const DasherIncomingOrder = () => {
     }));
   };
 
-
   const handleSubmit = async (orderId) => {
     try {
-      // Make a POST request to check and update the order
       const response = await axios.post('/api/assign-dasher', { orderId, dasherId: currentUser.uid });
-      console.log(response.data.success);
       if (response.data.success) {
         alert('Dasher assigned successfully');
-        // Optionally update local state if needed
         await axios.post('/api/update-order-status', { orderId, status: 'active_heading' });
-        setOrders(prevOrders => {
-          return prevOrders.map(order => {
-            if (order.id === orderId) {
-              return { ...order, dasherId: currentUser.uid, status: 'active_heading' };
-            } else {
-              return order;
-            }
-          });
-        });
+        setOrders(prevOrders => prevOrders.map(order => (
+          order.id === orderId ? { ...order, dasherId: currentUser.uid, status: 'active_heading' } : order
+        )));
         window.location.reload();
       } else {
         alert(response.data.message);
       }
     } catch (error) {
-      if (error.response && error.response.status === 400 && error.response.data.message === 'This order is already assigned to another dasher.') {
-        alert('This order is already assigned to another dasher. Please Reload the page and try again.');
-      } else if (error.response && error.response.status === 400 && error.response.data.message === 'There is already an ongoing order for this dasher.') {
-        alert('There is already an ongoing order for this dasher. Please complete the current order first.');
-      } else {
-        console.error('Error assigning dasher:', error);
-      }
+      console.error('Error assigning dasher:', error);
+      alert('An error occurred while assigning the dasher. Please try again.');
+    }
+  };
+
+  const toggleButton = async () => {
+    try {
+      const newStatus = !isActive ? 'active' : 'offline';
+      await axios.post('/api/update-dasher-status', {
+        dasherId: currentUser.uid,
+        status: newStatus
+      });
+      setIsActive(!isActive);
+    } catch (error) {
+      console.error('Error updating dasher status:', error);
     }
   };
 
@@ -80,67 +76,77 @@ const DasherIncomingOrder = () => {
     <>
       <Navbar />
       <div className="ao-body">
-        <div className="ao-title">
-          <h2>Incoming Orders</h2>
-        </div>
-        {orders.length === 0 && <div className="ao-no-orders">No incoming orders...</div>}
-        {orders.map((order) => (
-          <div key={order.id} className="ao-content-current">
-            <div className="ao-card-current ao-card-large">
-              <div className="ao-card-content" onClick={() => toggleAccordion(order.id)}>
-                <div className="ao-order-img-holder">
-                  <img src='/Assets/Panda.png' alt="food" className="ao-order-img" />
+        <div className="j-card-large">
+          <div className="ao-title">
+            <h2>Incoming Orders</h2>
+          </div>
+          {!isActive && <div className="ao-no-orders">Turn on your active status to receive incoming orders...</div>}
+          {isActive && orders.length === 0 && <div className="ao-no-orders">No incoming orders...</div>}
+          {orders.map((order) => (
+            <div key={order.id} className="ao-content-current">
+              <div className="ao-card-current ao-card-large">
+                <div className="ao-card-content" onClick={() => toggleAccordion(order.id)}>
+                  <div className="ao-order-img-holder">
+                    <img src='/Assets/Panda.png' alt="food" className="ao-order-img" />
+                  </div>
+                  <div className="ao-card-text">
+                    <h3>{`${order.firstName} ${order.lastName}`}</h3>
+                    <p>{`Order #${order.id}`}</p>
+                  </div>
+                  <div className="ao-buttons">
+                    <button className="i-save-button" onClick={() => handleSubmit(order.id)}>Accept Order</button>
+                  </div>
+                  <div className="ao-toggle-content">
+                    <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen[order.id] ? 180 : 0} />
+                  </div>
                 </div>
-                <div className="ao-card-text">
-                  <h3>{`${order.firstName} ${order.lastName}`}</h3>
-                  <p>{`Order #${order.id}`}</p>
-                </div>
-                <div className="ao-buttons">
-                  
-                  <button className="i-save-button" onClick={() => handleSubmit(order.id)}>Accept Order</button>
-                </div>
-                <div className="ao-toggle-content">
-                  <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen[order.id] ? 180 : 0} />
-                </div>
-              </div>
-              {isAccordionOpen[order.id] && (
-                <div className="ao-accordion">
-                <div className="o-order-summary">
-                <h3>Order Summary</h3>
-                {order.items.map((item, index) => (
-                    <div className="o-order-summary-item" key={index}>
-                        <div className="o-order-summary-item-header">
+                {isAccordionOpen[order.id] && (
+                  <div className="ao-accordion">
+                    <div className="o-order-summary">
+                      <h3>Order Summary</h3>
+                      {order.items.map((item, index) => (
+                        <div className="o-order-summary-item" key={index}>
+                          <div className="o-order-summary-item-header">
                             <p>{item.quantity}x</p>
                             <p>{item.name}</p>
+                          </div>
+                          <p>₱{item.price}</p>
                         </div>
-                        <p>₱{item.price}</p>
+                      ))}
+                      <div className="o-order-summary-total-container">
+                        <div className="o-order-summary-subtotal">
+                          <h4>Subtotal</h4>
+                          <h4>₱{order.totalPrice.toFixed(2)}</h4>
+                        </div>
+                        <div className="o-order-summary-subtotal">
+                          <h4>Delivery Fee</h4>
+                          <h4>₱{order.shopData ? order.shopData.deliveryFee.toFixed(2) : ''}</h4>
+                        </div>
+                        <div className="o-order-summary-total">
+                          <h4>Total</h4>
+                          <h4>₱{order.totalPrice && order.shopData ? (order.totalPrice + order.shopData.deliveryFee).toFixed(2) : ''}</h4>
+                        </div>
+                      </div>
                     </div>
-                ))}
-                <div className="o-order-summary-total-container">
-                    <div className="o-order-summary-subtotal">
-                        <h4>Subtotal</h4>
-                        <h4>₱{order.totalPrice.toFixed(2)}</h4>
-                    </div>
-                    <div className="o-order-summary-subtotal">
-                        <h4>Delivery Fee</h4>
-                        <h4>₱{order.shopData ? order.shopData.deliveryFee.toFixed(2) : ''}</h4>
-                    </div>
-                    <div className="o-order-summary-total">
-                        <h4>Total</h4>
-                        <h4>
-                        ₱{order.totalPrice && order.shopData ? (order.totalPrice + order.shopData.deliveryFee).toFixed(2) : ''}
-                        </h4>
-                    </div>
-                </div>
+                  </div>
+                )}
+              </div>
             </div>
-            </div>
-              )}
+          ))}
+        </div>
+
+        <div className="j-card-current-j-card-small">
+          <h5>Dasher Status</h5>
+          <div className="j-active-buton">
+            <button onClick={toggleButton} className={isActive ? 'button-active' : 'button-inactive'}></button>
+            <div className="j-button-text">
+              {isActive ? 'Active' : 'Not Active'}
             </div>
           </div>
-        ))}
+        </div>
       </div>
     </>
   );
-}
+};
 
 export default DasherIncomingOrder;

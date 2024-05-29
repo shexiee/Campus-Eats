@@ -25,7 +25,7 @@ const AdminAcceptDasherModal = ({ isOpen, closeModal, googleLink, shopId }) => {
         }
 
         try {
-            await axios.post('/api/update-shop-status', { shopId, status: 'accept' });
+            await axios.post('/api/update-shop-status', { shopId, status: 'active' });
             window.location.reload();
         } catch (error) {
             console.error('Error updating shop df:', error);

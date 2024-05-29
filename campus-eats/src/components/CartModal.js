@@ -46,7 +46,7 @@ const CartModal = ({ showModal, onClose }) => {
                 }
             }
         };
-
+        console.log(cartData);
         fetchShopData();
     }, [cartData]);
 
@@ -86,7 +86,7 @@ const CartModal = ({ showModal, onClose }) => {
 
     const handleItemRemove = (item) => {
         if (window.confirm(`Are you sure you want to remove ${item.name} from your cart?`)) {
-            
+            updateCartItem(item.id, 'remove');
         }
     };
 

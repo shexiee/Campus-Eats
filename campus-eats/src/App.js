@@ -26,6 +26,7 @@ import UpdateShop from './components/UpdateShop';
 import AdminShopList from './components/AdminShopList';
 import DasherRoute from './components/DasherRoute';
 import DasherIncomingOrder from './components/DasherIncomingOrder';
+import DasherHome from './components/DasherHome';
 
 
 function App() {
@@ -66,7 +67,7 @@ function App() {
 
         <Routes>
           <Route path="/dasher-incoming-order" element={<DasherRoute Component={DasherIncomingOrder} />} />
-          
+          <Route path="/dasher-orders" element={<DasherRoute Component={DasherHome} />} />
         </Routes>
       </Router>
     </AuthProvider>

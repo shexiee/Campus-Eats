@@ -383,6 +383,38 @@ app.get('/api/shop-lists', async (req, res) => {
   }
 });
 
+app.post('/confirm-order-completion', async (req, res) => {
+  try {
+      const { orderId, dasherId, shopId, userId, paymentMethod, deliveryFee, totalPrice } = req.body;
+
+      // Update order status to 'completed'
+      await db.collection('orders').doc(orderId).update({ status: 'completed' });
+
+      // Add delivery fee to the order collection
+      await db.collection('orders').doc(orderId).update({ deliveryFee });
+
+      // Create a payment record
+      const paymentData = {
+          orderId,
+          dasherId,
+          shopId,
+          userId,
+          paymentMethod,
+          completedDateTime: new Date(),
+          deliveryFee,
+          totalPrice,
+          // Add other payment details as needed
+      };
+      await db.collection('payments').add(paymentData);
+      console.log('Payment record created successfully');
+
+      return res.status(200).json({ message: 'Order completion confirmed successfully' });
+  } catch (error) {
+      console.error('Error confirming order completion:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.post('/api/update-shop-status', async (req, res) => {
   try {
     const { shopId, status } = req.body;
@@ -673,7 +705,8 @@ app.post('/api/update-cart-item', async (req, res) => {
       return res.status(400).json({ error: 'Missing required data' });
     }
 
-    const cartSnapshot = await db.collection('carts').doc(uid).get();
+    const cartRef = db.collection('carts').doc(uid);
+    const cartSnapshot = await cartRef.get();
     if (!cartSnapshot.exists) {
       return res.status(404).json({ error: 'Cart not found' });
     }
@@ -688,7 +721,6 @@ app.post('/api/update-cart-item', async (req, res) => {
     const itemData = itemSnapshot.data();
 
     const itemIndex = cartData.items.findIndex(item => item.id === itemId);
-
 
     if (itemIndex === -1) {
       return res.status(404).json({ error: 'Item not found in cart' });
@@ -715,9 +747,15 @@ app.post('/api/update-cart-item', async (req, res) => {
       return res.status(400).json({ error: 'Invalid action' });
     }
 
+    if (cartData.items.length === 0) {
+      // If cart is empty after removing the item, delete the entire cart
+      await cartRef.delete();
+      return res.status(200).json({ message: 'Cart deleted successfully' });
+    }
+
     cartData.totalPrice = cartData.items.reduce((total, item) => total + item.price, 0);
 
-    await db.collection('carts').doc(uid).update(cartData);
+    await cartRef.update(cartData);
     return res.status(200).json({ message: 'Cart updated successfully', cartData });
   } catch (error) {
     console.error('Error updating cart:', error);
@@ -793,6 +831,20 @@ app.post('/api/update-order-status', async (req, res) => {
   }
 });
 
+app.post('/api/update-dasher-status', async (req, res) => {
+  try {
+    const { dasherId, status } = req.body;
+
+    // Update the status of the dasher in the Firestore database
+    await db.collection('dashers').doc(dasherId).update({ status });
+
+    return res.status(200).json({ message: 'Dasher status updated successfully' });
+  } catch (error) {
+    console.error('Error updating dasher status:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.post('/api/assign-dasher', async (req, res) => {
   try {
     const { orderId, dasherId } = req.body;
@@ -858,6 +910,8 @@ app.get('/api/orders/:uid', async (req, res) => {
   }
 });
 
+
+
 app.get('/api/orders', async (req, res) => {
   try {
     const ordersSnapshot = await db.collection('orders').get();
@@ -900,6 +954,59 @@ app.get('/api/incoming-orders/dasher', async (req, res) => {
     });
 
     return res.status(200).json(activeOrders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/get-active-orders', async (req, res) => {
+  try {
+    const { uid } = req.body; // Expecting the currentUser.uid to be sent in the request body
+
+    if (!uid) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    const ordersSnapshot = await db.collection('orders')
+      .where('dasherId', '==', uid)
+      .get();
+
+    const activeOrders = ordersSnapshot.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter(order => order.status.startsWith('active'));
+
+    return res.status(200).json(activeOrders);
+  } catch (error) {
+    console.error('Error fetching active orders:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/api/orders-dasher/:uid', async (req, res) => {
+  const { uid } = req.params;
+  try {
+    const ordersSnapshot = await db.collection('orders').where('dasherId', '==', uid).get();
+    
+    if (ordersSnapshot.empty) {
+      return res.status(404).json({ error: 'No orders found for this user' });
+    }
+
+    const orders = [];
+    const activeOrders = [];
+
+    ordersSnapshot.forEach(doc => {
+      const order = doc.data();
+      if (order.status.startsWith('active')) {
+        activeOrders.push({ id: doc.id, ...order });
+      } else {
+        orders.push({ id: doc.id, ...order });
+      }
+    });
+    console.log(orders);
+    console.log(activeOrders);
+
+    return res.status(200).json({ orders, activeOrders });
   } catch (error) {
     console.error('Error fetching orders:', error);
     return res.status(500).json({ error: 'Internal Server Error' });

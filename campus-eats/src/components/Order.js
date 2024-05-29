@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faClock, faStar } from '@fortawesome/free-regular-svg-icons';
 import Navbar from "./Navbar";
-import ShopDetails from "./ShopDetails";
+import axios from "axios";
+import { set } from "firebase/database";
 
 const Order = () => {
     const { currentUser } = useAuth();
@@ -29,7 +30,7 @@ const Order = () => {
                 
                 const activeOrder = ordersData.activeOrders.length > 0 ? ordersData.activeOrders[0] : null;
                 setActiveOrder(activeOrder);
-                setOrders(ordersData.orders);
+                
                 
                 if(activeOrder.status === 'active_waiting_for_admin' || activeOrder.status === 'active_waiting_for_dasher'){
                     setStatus('Order is being verified');
@@ -39,9 +40,23 @@ const Order = () => {
                     setStatus('Order is on the way');
                 } else if(activeOrder.status === 'active_delivered'){
                     setStatus('Order has been delivered');
+                } else if(activeOrder.status === 'active_completed'){
+                    setStatus('Order has been completed');
+                } else if(activeOrder.status === 'active_pickedUp'){
+                    setStatus('Order has been picked up');
+                } else if(activeOrder.status === 'active_toShop'){
+                    setStatus('Dasher is on the way to the shop');
                 }
-                console.log("Active orders:", ordersData.activeOrders);
-                console.log("All orders:", ordersData.orders);
+
+                const ordersShopData = await Promise.all(
+                    ordersData.orders.map(async (order) => {
+                        const ordersShopDataResponse = await axios.get(`/api/shop/${order.uid}`);
+                        const ordersShop = ordersShopDataResponse.data;
+                        return { ...order, shopData: ordersShop }; // Renamed to userData for clarity
+                    })
+                );
+                setOrders(ordersShopData);
+                console.log("ordersShopData", ordersShopData);
             } catch (error) {
                 console.error("Error fetching orders:", error);
             } finally {
@@ -54,7 +69,6 @@ const Order = () => {
 
     useEffect(() => {
         setLoading(true);
-        console.log('Active orasdfasdfder:', activeOrder);
         if(activeOrder){
             const fetchShopData = async () => {
                 if (activeOrder.shopID) {
@@ -65,7 +79,6 @@ const Order = () => {
                         }
                         const data = await response.json();
                         setShop(data);
-                        console.log('Shop data:', data);
                     } catch (error) {
                         console.error('Error fetching shop data:', error);
                     }
@@ -188,18 +201,19 @@ const Order = () => {
                 {orders.map((order, index) => (
                     <div className="o-card-past" key={index}>
                         <div className="o-past-img-holder">
-                            <img src={order.shopImage ? order.shopImage : '/Assets/Panda.png'} alt="food" className="o-past-img"/>
+                            <img src={order.shopData.shopImage ? order.shopData.shopImage : '/Assets/Panda.png'} alt="food" className="o-past-img"/>
                         </div>
                         <div className="o-past-details">
                             <div className="o-past-text">
                                 <div className="o-past-total">
                                     <div className="o-past-title">
-                                        <ShopDetails shopID={order.shopID} />
+                                        <h3>{order.shopData.shopName}</h3>
+                                        <p>{order.shopData.shopAddress}</p>
                                     </div>
                                     <h4>₱{order.totalPrice.toFixed(2)}</h4>
                                 </div>
                                 <div className="o-past-subtext">
-                                    <p>Delivered on {order.deliveryDate}</p> 
+                                <p>Delivered on {order.createdAt ? new Date(order.createdAt._seconds * 1000).toLocaleDateString() : ''}</p>
                                     <p>Order #{order.id}</p>
                                     <p>{order.paymentMethod ==='cash' ? 'Cash On Delivery': 'GCASH'}</p> 
                                 </div>
