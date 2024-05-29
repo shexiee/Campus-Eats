@@ -44,7 +44,7 @@ const UserProfile = () => {
                       setDob(data.dob || '');
                       setCourseYear(data.course_yr || '');
                       setSchoolId(data.school_id || '');
-                      setAccountType(data.accountType)
+                      setAccountType(data.account_type)
                   } else {
                       console.error('Error fetching user data:', data.error);
                   }

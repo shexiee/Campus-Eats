@@ -341,11 +341,11 @@ app.post('/api/update-dasher-status', async (req, res) => {
 
 app.post('/api/update-account-type', async (req, res) => {
   try {
-    const { uid, accountType } = req.body;
+    const { uid, account_type } = req.body;
     console.log('uid:', uid);
-    console.log('accountType:', accountType);
+    console.log('accountType:', account_type);
     // Update the status of the order in the Firestore database
-    await db.collection('users').doc(uid).update({ accountType });
+    await db.collection('users').doc(uid).update({ account_type });
     console.log('account type updated successfully');
     return res.status(200).json({ message: 'user account type status updated successfully' });
   } catch (error) {

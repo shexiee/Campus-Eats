@@ -269,7 +269,7 @@ const Navbar = () => {
                                 </div>
                             </Link>
                         </li>
-                        <li className={`nb-icon ${location.pathname === '/dasher-order-history' ? 'active' : ''}`}>
+                        <li className={`nb-icon ${location.pathname === '/dasher-orders' ? 'active' : ''}`}>
                             <Link to="/dasher-order-history">
                                 <div className="svg-container">
                                     <img src={'/Assets/orders.svg'} alt="Orders" className={`nb-image ${location.pathname === '/dasher-order-history' ? 'active' : ''}`} />

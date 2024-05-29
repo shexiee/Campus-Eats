@@ -24,17 +24,7 @@ const AdminShopList = () => {
                 alert('Error updating shop status');
             }
 
-            try {
-                console.log("shopId", shopId)
-                await axios.post('/api/update-account-type', { uid: shopId, accountType: 'shop'});
-                alert('account type updated successfully');
-                window.location.reload();
             
-            }catch(error){
-                console.error('Error updating account type:', error);
-                alert('Error updating account type');
-            
-            }
         }
     };
 

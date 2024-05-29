@@ -35,7 +35,7 @@ const AdminDasherList = () => {
 
             try {
                 console.log("dasherid: ", dasherId)
-                await axios.post('/api/update-account-type', { uid: dasherId, accountType: 'dasher'});
+                await axios.post('/api/update-account-type', { uid: dasherId, account_type: 'dasher'});
                 alert('account type updated successfully');
                 window.location.reload();
             

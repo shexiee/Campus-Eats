@@ -7,6 +7,8 @@ const AdminAcceptDasherModal = ({ isOpen, closeModal, googleLink, shopId }) => {
 
     if (!isOpen) return null;
 
+    //put limit on delivery fee
+
     const confirmAccept = async () => {
         // Implement your accept logic here
         console.log("Delivery Fee:", deliveryFee);
@@ -26,10 +28,23 @@ const AdminAcceptDasherModal = ({ isOpen, closeModal, googleLink, shopId }) => {
 
         try {
             await axios.post('/api/update-shop-status', { shopId, status: 'active' });
-            window.location.reload();
+            
         } catch (error) {
             console.error('Error updating shop df:', error);
             alert('Error updating shop df');
+        }
+
+        try {
+            console.log("shopId", shopId)
+            await axios.post('/api/update-account-type', { uid: shopId, account_type: 'shop'});
+            alert('account type updated successfully');
+            window.location.reload()
+            
+        
+        }catch(error){
+            console.error('Error updating account type:', error);
+            alert('Error updating account type');
+        
         }
 
     };
