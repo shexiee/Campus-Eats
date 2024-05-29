@@ -45,9 +45,9 @@ const DasherIncomingOrder = () => {
       const response = await axios.post('/api/assign-dasher', { orderId, dasherId: currentUser.uid });
       if (response.data.success) {
         alert('Dasher assigned successfully');
-        await axios.post('/api/update-order-status', { orderId, status: 'active_heading' });
+        await axios.post('/api/update-order-status', { orderId, status: 'active_toShop' });
         setOrders(prevOrders => prevOrders.map(order => (
-          order.id === orderId ? { ...order, dasherId: currentUser.uid, status: 'active_heading' } : order
+          order.id === orderId ? { ...order, dasherId: currentUser.uid, status: 'active_toShop' } : order
         )));
         window.location.reload();
       } else {
