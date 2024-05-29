@@ -10,7 +10,7 @@ const { getStorage, ref, uploadBytes, getDownloadURL } = require('firebase/stora
  
 const app = express();
  
-const serviceAccount = require("D:\\3rd Yr @nd Sem\\capstone\\campus-eats-7db76-firebase-adminsdk-2uijc-87ecb35284.json");
+const serviceAccount = require(process.env.SERVICE_ACCOUNT_KEY_PATH);
  
 app.use(cors());
 app.use(express.json());
