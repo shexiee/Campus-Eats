@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./css/AdminOrders.css";
+import "./css/DasherOrders.css";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "./Navbar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import DeclineOrderModal from './AdminDeclineOrderModal';
 
 const DasherIncomingOrder = () => {
   const { currentUser } = useAuth();
@@ -75,33 +74,33 @@ const DasherIncomingOrder = () => {
   return (
     <>
       <Navbar />
-      <div className="ao-body">
+      <div className="do-body">
         <div className="j-card-large">
-          <div className="ao-title">
+          <div className="do-title">
             <h2>Incoming Orders</h2>
           </div>
-          {!isActive && <div className="ao-no-orders">Turn on your active status to receive incoming orders...</div>}
-          {isActive && orders.length === 0 && <div className="ao-no-orders">No incoming orders...</div>}
+          {!isActive && <div className="do-no-orders">Turn on your active status to receive incoming orders...</div>}
+          {isActive && orders.length === 0 && <div className="do-no-orders">No incoming orders...</div>}
           {orders.map((order) => (
-            <div key={order.id} className="ao-content-current">
-              <div className="ao-card-current ao-card-large">
-                <div className="ao-card-content" onClick={() => toggleAccordion(order.id)}>
-                  <div className="ao-order-img-holder">
-                    <img src='/Assets/Panda.png' alt="food" className="ao-order-img" />
+            <div key={order.id} className="do-content-current">
+              <div className="do-card-current do-card-large">
+                <div className="do-card-content" onClick={() => toggleAccordion(order.id)}>
+                  <div className="do-order-img-holder">
+                    <img src='/Assets/Panda.png' alt="food" className="do-order-img" />
                   </div>
-                  <div className="ao-card-text">
+                  <div className="do-card-text">
                     <h3>{`${order.firstName} ${order.lastName}`}</h3>
                     <p>{`Order #${order.id}`}</p>
                   </div>
-                  <div className="ao-buttons">
+                  <div className="do-buttons">
                     <button className="i-save-button" onClick={() => handleSubmit(order.id)}>Accept Order</button>
                   </div>
-                  <div className="ao-toggle-content">
+                  <div className="do-toggle-content">
                     <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen[order.id] ? 180 : 0} />
                   </div>
                 </div>
                 {isAccordionOpen[order.id] && (
-                  <div className="ao-accordion">
+                  <div className="do-accordion">
                     <div className="o-order-summary">
                       <h3>Order Summary</h3>
                       {order.items.map((item, index) => (
