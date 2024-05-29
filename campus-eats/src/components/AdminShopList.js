@@ -18,11 +18,22 @@ const AdminShopList = () => {
         if (window.confirm("Are you sure you want to decline this shop?")) {
             try {
                 await axios.post('/api/update-shop-status', { shopId, status: 'declined' });
-                alert('Order status updated successfully');
-                window.location.reload();
+                
             } catch (error) {
                 console.error('Error updating shop status:', error);
                 alert('Error updating shop status');
+            }
+
+            try {
+                console.log("shopId", shopId)
+                await axios.post('/api/update-account-type', { uid: shopId, accountType: 'shop'});
+                alert('account type updated successfully');
+                window.location.reload();
+            
+            }catch(error){
+                console.error('Error updating account type:', error);
+                alert('Error updating account type');
+            
             }
         }
     };

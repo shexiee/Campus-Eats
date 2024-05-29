@@ -28,10 +28,21 @@ const AdminDasherList = () => {
             try {
                 await axios.post('/api/update-dasher-status', { dasherId, status: 'active' });
                 alert('Order status updated successfully');
-                window.location.reload();
             } catch (error) {
                 console.error('Error updating dasher status:', error);
                 alert('Error updating dasher status');
+            }
+
+            try {
+                console.log("dasherid: ", dasherId)
+                await axios.post('/api/update-account-type', { uid: dasherId, accountType: 'dasher'});
+                alert('account type updated successfully');
+                window.location.reload();
+            
+            }catch(error){
+                console.error('Error updating account type:', error);
+                alert('Error updating account type');
+            
             }
         }
     };

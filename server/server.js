@@ -339,6 +339,23 @@ app.post('/api/update-dasher-status', async (req, res) => {
   }
 });
 
+app.post('/api/update-account-type', async (req, res) => {
+  try {
+    const { uid, accountType } = req.body;
+    console.log('uid:', uid);
+    console.log('accountType:', accountType);
+    // Update the status of the order in the Firestore database
+    await db.collection('users').doc(uid).update({ accountType });
+    console.log('account type updated successfully');
+    return res.status(200).json({ message: 'user account type status updated successfully' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
 
 
 app.get('/api/dasher/:dasherId', async (req, res) => {
@@ -871,7 +888,7 @@ app.post('/api/assign-dasher', async (req, res) => {
     }
 
     // If no ongoing order and the order is not assigned to another dasher, update the specified order with the new dasherId and status
-    await db.collection('orders').doc(orderId).update({ dasherId, status: 'active_heading' });
+    await db.collection('orders').doc(orderId).update({ dasherId, status: 'active_toShop' });
 
     return res.status(200).json({ success: true, message: 'Dasher assigned successfully' });
   } catch (error) {

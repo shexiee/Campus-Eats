@@ -25,6 +25,7 @@ const UserProfile = () => {
     const [courseYear, setCourseYear] = useState('');
     const [schoolId, setSchoolId] = useState('');
     const [oldPwd, setOldPwd] = useState('');
+    const [accountType, setAccountType] = useState('');
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
     useEffect(() => {
@@ -43,6 +44,7 @@ const UserProfile = () => {
                       setDob(data.dob || '');
                       setCourseYear(data.course_yr || '');
                       setSchoolId(data.school_id || '');
+                      setAccountType(data.accountType)
                   } else {
                       console.error('Error fetching user data:', data.error);
                   }
@@ -328,7 +330,7 @@ const UserProfile = () => {
                             <div className="p-content">
                                 <div className="p-upgrade-text">
                                     <h3>Account Type</h3>
-                                    <h4>Regular</h4>
+                                    <h4>{accountType ? accountType :''}</h4>
                                 </div>
                             </div>
                             <div className="p-info">

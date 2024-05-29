@@ -81,7 +81,15 @@ const DasherHome = () => {
                 setLoading(false);
             }
         };
-    
+        console.log(activeOrder);
+        // if(activeOrder && activeOrder.status === 'active_dasher_accepted') {
+        //     console.log('dasehr_accepted', activeOrder);
+        //     setCurrentStatus('toShop');
+        //     setButtonClicked(prevState => ({
+        //         ...prevState,
+        //         toShop: true
+        //     }));
+        // }else 
         if (activeOrder && activeOrder.status) {
             setCurrentStatus(activeOrder.status.replace("active_", ""));
             setButtonClicked(prevState => ({

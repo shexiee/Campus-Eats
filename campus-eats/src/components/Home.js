@@ -27,7 +27,8 @@ const Home = () => {
             }
             const data = await response.json();
             setShops(data);
-            console.log("shops", data);
+            console.log("shops", data.shopImage);
+
         } catch (error) {
             console.error('Error fetching shops:', error);
         }
