@@ -20,7 +20,7 @@ const UserProfile = () => {
     const [confirmpwd, setConfirmpwd] = useState('');
     const [pwd, setPwd] = useState('');
     const [editMode, setEditMode] = useState(false);
-    const [username, setUsername] = useState('Lexianna');
+    const [username, setUsername] = useState('');
     const [editUsername, setEditUsername] = useState(false);
     const [courseYear, setCourseYear] = useState('');
     const [schoolId, setSchoolId] = useState('');

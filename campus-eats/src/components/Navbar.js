@@ -181,13 +181,7 @@ const Navbar = () => {
                             </div>
                         </Link>
                     </li>
-                    <li className={`nb-icon ${location.pathname === '/shop' ? 'active' : ''}`}>
-                        <Link to="/shop">
-                            <div className="svg-container">
-                                <img src={'/Assets/shop.svg'} alt="Shop" className={`nb-image ${location.pathname === '/shop' ? 'active' : ''}`} />
-                            </div>
-                        </Link>
-                    </li>
+                    
                 </ul>
             </div>
         </div>
