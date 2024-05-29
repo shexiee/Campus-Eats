@@ -27,36 +27,38 @@ const Order = () => {
                 }
                 
                 const ordersData = await ordersResponse.json();
-                
+                console.log(ordersData.activeOrders.length )
                 const activeOrder = ordersData.activeOrders.length > 0 ? ordersData.activeOrders[0] : null;
                 setActiveOrder(activeOrder);
-                
-                
-                if(activeOrder.status === 'active_waiting_for_admin' || activeOrder.status === 'active_waiting_for_dasher'){
-                    setStatus('Order is being verified');
-                } else if(activeOrder.status === 'active_preparing'){
-                    setStatus('Order is being prepared');
-                } else if(activeOrder.status === 'active_on_the_way'){
-                    setStatus('Order is on the way');
-                } else if(activeOrder.status === 'active_delivered'){
-                    setStatus('Order has been delivered');
-                } else if(activeOrder.status === 'active_completed'){
-                    setStatus('Order has been completed');
-                } else if(activeOrder.status === 'active_pickedUp'){
-                    setStatus('Order has been picked up');
-                } else if(activeOrder.status === 'active_toShop'){
-                    setStatus('Dasher is on the way to the shop');
+                if(ordersData.activeOrders.length>0){
+                    if(activeOrder.status === 'active_waiting_for_admin' || activeOrder.status === 'active_waiting_for_dasher'){
+                        setStatus('Order is being verified');
+                    } else if(activeOrder.status === 'active_preparing'){
+                        setStatus('Order is being prepared');
+                    } else if(activeOrder.status === 'active_onTheWay'){
+                        setStatus('Order is on the way');
+                    } else if(activeOrder.status === 'active_delivered'){
+                        setStatus('Order has been delivered');
+                    } else if(activeOrder.status === 'active_completed'){
+                        setStatus('Order has been completed');
+                    } else if(activeOrder.status === 'active_pickedUp'){
+                        setStatus('Order has been picked up');
+                    } else if(activeOrder.status === 'active_toShop'){
+                        setStatus('Dasher is on the way to the shop');
+                    }
                 }
 
                 const ordersShopData = await Promise.all(
                     ordersData.orders.map(async (order) => {
-                        const ordersShopDataResponse = await axios.get(`/api/shop/${order.uid}`);
+                        const ordersShopDataResponse = await axios.get(`/api/shop/${order.shopID}`);
                         const ordersShop = ordersShopDataResponse.data;
-                        return { ...order, shopData: ordersShop }; // Renamed to userData for clarity
+                        return { ...order, shopData: ordersShop }; 
                     })
                 );
-                setOrders(ordersShopData);
+
                 console.log("ordersShopData", ordersShopData);
+                setOrders(ordersShopData);
+                
             } catch (error) {
                 console.error("Error fetching orders:", error);
             } finally {
