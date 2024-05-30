@@ -14,7 +14,7 @@ const AdminIncomingOrder = () => {
   const [messages, setMessages] = useState({});
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-    const [activeDashers, setActiveDashers] = useState([]);
+  const [activeDashers, setActiveDashers] = useState([]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -25,33 +25,28 @@ const AdminIncomingOrder = () => {
           const shopData = shopDataResponse.data;
           return { ...order, shopData };
         }));
-        // const ordersWithDasherData = await Promise.all(ordersWithShopData.map(async order => {
-        //     const dasherDataResponse = await axios.get(`/api/dasher/${order.shopID}`);
-        //     const shopData = shopDataResponse.data;
-        //     return { ...order, shopData };
-        //   }));
         setOrders(ordersWithShopData);
       } catch (error) {
         console.error('Error fetching orders:', error);
       }
     };
 
-    
     const fetchActiveDashers = async () => {
-        try {
-          const response = await axios.get('/api/active-dashers');
-          const dasherUser = await Promise.all(response.data.map(async dasher => {
-            const dasherUserResponse = await axios.get(`/api/user/${dasher.dasherId}`);
-            const dasherData = dasherUserResponse.data;
-            return { ...dasher, dasherData };
-          }));
-          setActiveDashers(dasherUser);
-        } catch (error) {
-          console.error('Error fetching active dashers:', error);
-        }
-      };
-        fetchOrders();
-      fetchActiveDashers();
+      try {
+        const response = await axios.get('/api/active-dashers');
+        const dasherUser = await Promise.all(response.data.map(async dasher => {
+          const dasherUserResponse = await axios.get(`/api/user/${dasher.dasherId}`);
+          const dasherData = dasherUserResponse.data;
+          return { ...dasher, dasherData };
+        }));
+        setActiveDashers(dasherUser);
+      } catch (error) {
+        console.error('Error fetching active dashers:', error);
+      }
+    };
+    
+    fetchOrders();
+    fetchActiveDashers();
   }, []);
 
   const toggleAccordion = (orderId) => {
@@ -60,13 +55,6 @@ const AdminIncomingOrder = () => {
       [orderId]: !prevState[orderId]
     }));
   };
-
-//   const handleMessageChange = (orderId, event) => {
-//     setMessages((prevState) => ({
-//       ...prevState,
-//       [orderId]: event.target.value
-//     }));
-//   };
 
   const handleDeclineClick = (orderId) => {
     setSelectedOrder(orderId);
@@ -133,61 +121,60 @@ const AdminIncomingOrder = () => {
               </div>
               {isAccordionOpen[order.id] && (
                 <div className="ao-accordion">
-                <div className="o-order-summary">
-                <h3>Order Summary</h3>
-                {order.items.map((item, index) => (
-                    <div className="o-order-summary-item" key={index}>
+                  <div className="o-order-summary">
+                    <h3>Order Summary</h3>
+                    {order.items.map((item, index) => (
+                      <div className="o-order-summary-item" key={index}>
                         <div className="o-order-summary-item-header">
-                            <p>{item.quantity}x</p>
-                            <p>{item.name}</p>
+                          <p>{item.quantity}x</p>
+                          <p>{item.name}</p>
                         </div>
                         <p>₱{item.price}</p>
-                    </div>
-                ))}
-                <div className="o-order-summary-total-container">
-                    <div className="o-order-summary-subtotal">
+                      </div>
+                    ))}
+                    <div className="o-order-summary-total-container">
+                      <div className="o-order-summary-subtotal">
                         <h4>Subtotal</h4>
                         <h4>₱{order.totalPrice.toFixed(2)}</h4>
-                    </div>
-                    <div className="o-order-summary-subtotal">
+                      </div>
+                      <div className="o-order-summary-subtotal">
                         <h4>Delivery Fee</h4>
                         <h4>₱{order.shopData ? order.shopData.deliveryFee.toFixed(2) : ''}</h4>
-                    </div>
-                    <div className="o-order-summary-total">
+                      </div>
+                      <div className="o-order-summary-total">
                         <h4>Total</h4>
                         <h4>
-                        ₱{order.totalPrice && order.shopData ? (order.totalPrice + order.shopData.deliveryFee).toFixed(2) : ''}
+                          ₱{order.totalPrice && order.shopData ? (order.totalPrice + order.shopData.deliveryFee).toFixed(2) : ''}
                         </h4>
+                      </div>
                     </div>
+                  </div>
                 </div>
-            </div>
-            </div>
               )}
             </div>
           </div>
         ))}
 
         <div className="ao-progress-modal">
-            <h3 className="ao-modal-title">Active Dashers</h3>
-            <div className="ao-modal-body">
-                <div className="ao-items">
-                {activeDashers.map((dasher, index) => (
-                    <div key={index} className="ao-item">
-                    <div className="ao-item-left">
-                        <div className="ao-item-title">
-                        <h4>{dasher.dasherData.firstname} &nbsp; {dasher.dasherData.lastname}</h4>
-                        <p>{dasher.status}</p>
-                        </div>
+          <h3 className="ao-modal-title">Active Dashers</h3>
+          <div className="ao-modal-body">
+            <div className="ao-items">
+              {activeDashers.map((dasher, index) => (
+                <div key={index} className="ao-item">
+                  <div className="ao-item-left">
+                    <div className="ao-item-title">
+                      <h4>{dasher.dasherData.firstname} {dasher.dasherData.lastname}</h4>
+                      <p>{dasher.status}</p>
                     </div>
-                    <div className="cm-item-right">
-                        {/* Additional content for right side if needed */}
-                    </div>
-                    </div>
-                ))}
+                  </div>
+                  <div className="cm-item-right">
+                    {/* Additional content for right side if needed */}
+                  </div>
                 </div>
+              ))}
             </div>
-            </div>
-
+          </div>
+        </div>
 
         <DeclineOrderModal 
           isOpen={isDeclineModalOpen}
