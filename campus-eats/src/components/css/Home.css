@@ -7,26 +7,28 @@
 
 .h-content {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(252px, 1fr)); /* Adjust the minimum size to the card width */
-    gap: 15px; /* Add some gap between cards */
+    grid-template-columns: repeat(auto-fill, minmax(252px, 1fr)); 
+    gap: 15px; 
     justify-content: center;
     margin-top: 30px;
     box-sizing: border-box;
 }
 
 .h-card {
-    width: 100%; /* Ensure the card takes the full width allocated by the grid */
-    height: 265px;
+    width: 100%; 
+    height: auto;
     background: #FFFAF1;
     border-radius: 30px;
     box-shadow: 7px 7px 22px #bbb4a7, -7px -7px 22px #FFFAF1;
     transition: 0.2s ease-in-out;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column; 
 }
 
 .h-img {
     width: 100%;
-    height: 50%;
+    height: 150px;
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     background: linear-gradient(#d15d61, #BC4A4D);
@@ -64,17 +66,20 @@
 }
 
 .h-text {
-    margin: 20px;
+    margin: 15px 20px; /* Adjusted margin to ensure space within the card */
     display: flex;
     flex-direction: column;
-    align-items: space-around;
+    justify-content: space-between; /* Distribute space between items */
+    flex-grow: 1;
 }
 
-.h-subtext {
+.h-category {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-bottom: auto;
 }
+
 
 .h-save .h-svg {
     transition: 0.2s ease-in-out;
@@ -97,8 +102,12 @@
 
 .h-text .h-p {
     font-family: 'Poppins', sans-serif;
-    color: #999999;
+    color: #333; 
     font-size: 13px;
+    margin: 2px 5px; 
+    padding: 2px 5px;
+    background-color: #f5f5f5; 
+    border-radius: 5px; 
 }
 
 .h-card:hover {
@@ -110,6 +119,7 @@
     transform: scale(1.1) rotate(10deg);
 }
 
-.h-details {
-    margin-top: 25px;
+.h-desc {
+    font-size: 12px;
+    margin-bottom: 10px;
 }

@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faClock, faStar } from '@fortawesome/free-regular-svg-icons';
 import Navbar from "./Navbar";
- 
+
 const Home = () => {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
     const [shops, setShops] = useState([]);
- 
+
     useEffect(() => {
         if (!currentUser) {
             navigate('/login');
@@ -18,7 +18,7 @@ const Home = () => {
             fetchShops(); // Fetch shops when component mounts
         }
     }, [currentUser]);
- 
+
     const fetchShops = async () => {
         try {
             const response = await fetch('/api/shops'); // Assuming this is your endpoint
@@ -33,12 +33,12 @@ const Home = () => {
             console.error('Error fetching shops:', error);
         }
     };
- 
+
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if(hour < 6){
+        if (hour < 6) {
             return "Good Midnight";
-        }else if (hour < 12) {
+        } else if (hour < 12) {
             return "Good Morning";
         } else if (hour < 18) {
             return "Good Afternoon";
@@ -46,11 +46,17 @@ const Home = () => {
             return "Good Evening";
         }
     };
- 
+
     const handleCardClick = (shopId) => {
         navigate(`/shop/${shopId}`);
     };
- 
+
+    const renderCategories = (categories) => {
+        return categories.map((category, index) => (
+            <p className="h-p" key={index}>{category}</p>
+        ));
+    };
+
     return (
         <>
             <Navbar />
@@ -63,19 +69,15 @@ const Home = () => {
                     {shops.map((shop, index) => (
                         <div key={index} className="h-card" onClick={() => handleCardClick(shop.shopId)}>
                             <div className="h-img">
-                            <img src={shop.shopImage} className="h-image-cover" alt="store" />
+                                <img src={shop.shopImage} className="h-image-cover" alt="store" />
                             </div>
                             <div className="h-text">
                                 <p className="h-h3">{shop.shopName}</p>
-                                <div className="h-subtext">
-                                    <p className="h-p">{shop.category}</p>
+                                <p className="h-desc">{shop.shopDesc}</p>
+                                <div className="h-category">
+                                    {renderCategories(shop.categories)}
                                 </div>
-                                <div className="h-subtext h-details">
-                                    <FontAwesomeIcon className="h-svg2" icon={faClock} />
-                                    <p className="h-p">{shop.deliveryFee}</p>
-                                    <FontAwesomeIcon className="h-svg2" icon={faStar} />
-                                    <p className="h-p">{shop.shopOpen}</p>
-                                </div>
+
                             </div>
                         </div>
                     ))}
@@ -84,5 +86,5 @@ const Home = () => {
         </>
     );
 }
- 
+
 export default Home;
