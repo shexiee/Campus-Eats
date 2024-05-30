@@ -94,7 +94,9 @@ const DasherApplication = () => {
     }
 
     const formData = new FormData();
-    formData.append("days", JSON.stringify(days));
+    const selectedDays = Object.keys(days).filter(day => days[day]);
+    console.log(selectedDays);
+    formData.append("days", JSON.stringify(selectedDays));
     formData.append("image", imageFile);
     formData.append("uid", currentUser.uid);
     formData.append("availableStartTime", availableStartTime);

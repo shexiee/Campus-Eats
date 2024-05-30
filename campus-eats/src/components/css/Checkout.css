@@ -4,16 +4,16 @@ body{
     font-family: 'Poppins', sans-serif;
     background-color: #DFD6C5;
 }
-.o-body{
+.co-body{
     height: 100%;
-    padding: 70px 50px 0 120px;
+    padding: 70px 200px 100px 270px;
 }
 
-.o-title{
+.co-title{
     padding-top: 30px;
 }
 
-.o-text {
+.co-text {
     margin: 30px 40px;
     display: flex;
     flex-direction: column;
@@ -24,7 +24,7 @@ body{
 
 /* active order */
 
-.o-content-current {
+.co-content-current {
     display: flex;
     justify-content: center;
     margin-top: 30px;
@@ -32,7 +32,7 @@ body{
     align-items: flex-start;
 }
 
-.o-card-current {
+.co-card-current {
     background: #FFFAF1;
     border-radius: 30px;
     box-shadow: 7px 7px 22px #bbb4a7, -7px -7px 22px #FFFAF1;
@@ -41,45 +41,46 @@ body{
     justify-content: space-between;
 }
 
-.o-card-current:hover {
+.co-card-current:hover {
     box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
 }
 
-.o-card-small {
+.co-card-small {
     width: 30%; /* Adjust this value to your desired width */
+    flex-direction: column;
 }
 
-.o-card-large {
+.co-card-large {
     width: 70%; /* Adjust this value to your desired width */
 }
 
 
 
-.o-subtext-current{
+.co-subtext-current{
     display: flex;
     align-items: center;
     gap: 6px
 
 }
 
-.o-subtext-current h4{
+.co-subtext-current h4{
    color: #999999;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 300;
 }
 
 
-.o-left-current-img{
+.co-left-current-img{
     width: 200px;
   }
 
-.o-order-content {
+.co-order-content {
     display: flex;
     gap: 20px; /* Adjust the gap as needed */
     margin-top: 20px;
 }
 
-.o-order-img-holder {
+.co-order-img-holder {
     width: 300px;
     height: 200px;
     overflow: hidden;
@@ -90,99 +91,98 @@ body{
     align-items: center;
 }
 
-.o-order-img {
+.co-order-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.o-order-text {
+.co-order-text {
     display: flex;
     flex-direction: column;
-    padding: 10px;
 }
 
-.o-order-text h3 {
+.co-order-text h4 {
     margin: 0;
-    font-size: 18px; /* Adjust as needed */
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: normal;
 }
 
-.o-order-text p {
+.co-order-text p {
     margin: 0;
     color: #999999;
-    font-size: 14px; /* Adjust as needed */
+    font-size: 12px; /* Adjust as needed */
 }
 
-.o-order-subtext{
+.co-order-subtext{
     margin-top: 10px;
     
 }
 
-.o-order-subtext p{
+.co-order-subtext p{
     font-weight: 600;
     font-size: 10px;
 }
-.o-order-subtext h4{
+.co-order-subtext h4{
     font-weight: 600;
     font-size: 14px;
     color: #515050;
     
 }
 
-.o-order-title{
+.co-order-title{
     display: flex;
     gap: 10px;
     align-items: baseline;
 }
 
-.o-order-details{
+.co-order-details{
     display: flex;
     justify-content: space-between;
     width: 100%;
 }
 
-.o-order-summary{
+.co-order-summary{
     display: flex;
     justify-content: space-between;
     flex-direction: column;
     width: 100%;
-    margin-top: 20px;
-    border-top: 1px solid #cfcece;
-    padding: 20px 0;
+    padding: 40px;
+    border-bottom: 2px solid #cfcece;
 }
 
-.o-order-summary-item{
+.co-order-summary-item{
     display: flex;
     justify-content: space-between;
     margin-top: 10px;
     font-size: 15px;
     font-weight: 500;
+    align-items: center;
 }
 
-.o-order-summary-item-header{
+.co-order-summary-item-header{
     display: flex;
     justify-content: space-between;
-    margin: 5px 0 10px 0;
+    margin: 10px 0;
     gap: 50px;
 }
 
-.o-order-summary-subtotal{
+.co-order-summary-subtotal{
     display: flex;
     justify-content: space-between;
     font-size: 15px;
     color: #515050;
 }
 
-.o-order-summary-total-container{
+.co-order-summary-total-container{
     border-top: 1px solid #cfcece;
     padding: 20px 0 0 0;
 }
 
-.o-order-summary-total{
+.co-order-summary-total{
     display: flex;
     justify-content: space-between;
-    font-weight: 600;
+    font-weight: 300;
     font-size: 20px;
     color: #000000;
     margin-top: 10px;
@@ -194,7 +194,7 @@ body{
 
 /* past orders */
 
-.o-content-past {
+.co-content-past {
     display: flex;
     /* margin-top: 30px; */
     gap: 20px;
@@ -203,14 +203,14 @@ body{
     margin: 30px 0 60px 0;
 }
 
-.o-card-container {
+.co-card-container {
     display: flex;
     flex-wrap: wrap; /* Allow cards to wrap onto multiple rows */
     gap: 50px; /* Adjust spacing between cards */
     justify-content: center; /* Center cards horizontally */
 }
 
-.o-card-past {
+.co-card-past {
     background: #FFFAF1;
     border-radius: 30px;
     box-shadow: 7px 7px 22px #bbb4a7, -7px -7px 22px #FFFAF1;
@@ -220,14 +220,14 @@ body{
     justify-content: space-between;
 }
 
-.o-card-past:hover {
+.co-card-past:hover {
     box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
 }
 
 
 
 
-.o-past-img-holder {
+.co-past-img-holder {
     width: 120px;
     height: 100px;
     margin: 20px;
@@ -239,63 +239,173 @@ body{
     align-items: center;
 }
 
-.o-past-img {
+.co-past-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     
 }
 
-.o-past-details{
+.co-past-details{
     display: flex;
     justify-content: space-between;
 }
 
-.o-past-text {
+.co-past-text {
     display: flex;
     flex-direction: column;
     padding: 20px 30px 20px 0;
 }
 
-.o-past-text h3 {
+.co-past-text h3 {
     margin: 0;
     font-size: 18px; /* Adjust as needed */
     font-weight: bold;
 }
 
-.o-past-text p {
+.co-past-text p {
     margin: 0;
     color: #999999;
     font-size: 14px; /* Adjust as needed */
 }
 
-.o-past-subtext{
+.co-past-subtext{
     margin-top: 10px;
     
 }
 
-.o-past-subtext p{
+.co-past-subtext p{
     font-weight: 600;
     font-size: 10px;
 }
-.o-past-subtext h4{
+.co-past-subtext h4{
     font-weight: 600;
     font-size: 14px;
     color: #515050;
     
 }
 
-.o-past-total{
+.co-past-total{
     display: flex;
     justify-content: space-between;
     width: 300px;
 }
 
+.co-field-two {
+  display: flex;
+  padding: 18px;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  border-bottom: solid 1px #dad9d9;
+}
+
+/* Add the necessary CSS for the payment method section */
+.payment-method {
+  margin: 30px 0;
+}
+
+.payment-options {
+  display: flex;
+  gap: 20px;
+  
+  padding: 18px;
+}
+
+.payment-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.payment-card {
+  padding: 10px 20px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.payment-option input[type="radio"] {
+  display: none;
+}
+
+.payment-option.selected .payment-card {
+  border: 2px solid #000;
+}
+
+.change-for-input {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.change-for-input label {
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.change-for-input input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
 
+.co-save-button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.co-label-two {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.co-label-two h3 {
+  font-weight: 600;
+  font-size: 12px;
+  color: #777676;
+  margin-bottom: 10px;
+}
+.co-label-two textarea {
+  width: 100%;
+  min-height: 40px;
+  max-height: 200px; /* Set a maximum height */
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f0f0f0;
+  resize: vertical; /* Allow vertical resizing */
+}
 
 
+.info-icon {
+  margin-left: 5px;
+  cursor: pointer;
+}
 
+.tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  z-index: 9999; /* Ensure tooltip is above other elements */
+  white-space: nowrap; /* Prevent tooltip from wrapping */
+}
+
+/* Adjust tooltip position */
+.tooltip.beside {
+
+  left: calc(100% + 20px); /* Adjust the distance from the icon */
+}
 
 
 
