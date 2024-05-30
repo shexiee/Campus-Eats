@@ -12,6 +12,7 @@ import ShopApplication from './components/ShopApplication';
 import DasherApplication from './components/DasherApplication';
 import AdminDasherList from './components/AdminDasherList';
 import AdminDashboard from './components/AdminDashboard';
+import AdminShopList from './components/AdminShopList';
 import AdminIncomingOrder from './components/AdminIncomingOrder';
 import AdminOrderHistory from './components/AdminOrderHistory';
 import PrivateRoute from './components/PrivateRoute';
@@ -35,8 +36,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/forgot-password" element={<PublicRoute Component={ForgotPassword} />} />
-          <Route path="/login" element={<PublicRoute Component={LoginSignUp} />} />
-          <Route path="/signup" element={<PublicRoute Component={LoginSignUp} />} />
+          <Route path="/login" element={<LoginSignUp />} />
+          <Route path="/signup" element={<LoginSignUp />} />
           <Route path="/" element={<LandingPage/>} />
           <Route path="/orders" element={<PrivateRoute Component={Order} />} />
           <Route path="/home" element={<PrivateRoute Component={Home} />} />
@@ -56,6 +57,7 @@ function App() {
           <Route path="/admin-dashboard" element={<AdminRoute Component={AdminDashboard} />} />
           <Route path="/admin-incoming-order" element={<AdminRoute Component={AdminIncomingOrder} />} />
           <Route path="/admin-order-history" element={<AdminRoute Component={AdminOrderHistory} />} />
+          <Route path="/admin-shops" element={<AdminRoute Component={AdminShopList} />} />
         </Routes>
 
         <Routes>
