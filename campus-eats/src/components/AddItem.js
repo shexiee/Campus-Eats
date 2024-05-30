@@ -41,10 +41,6 @@ const AddItem = () => {
   const [loading, setLoading] = useState(false);
 
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        processFile(file);
-    };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setImageFile(file);
@@ -60,12 +56,6 @@ const AddItem = () => {
         setDragOver(false);
     };
 
-    const handleDrop = (e) => {
-        e.preventDefault();
-        setDragOver(false);
-        const file = e.dataTransfer.files[0];
-        processFile(file);
-    };
   const handleDrop = (e) => {
     e.preventDefault();
     setDragOver(false);
