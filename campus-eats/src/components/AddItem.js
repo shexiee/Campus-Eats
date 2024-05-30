@@ -1,6 +1,6 @@
 import "./css/AddItem.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTimes, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
@@ -47,14 +47,14 @@ const AddItem = () => {
     processFile(file);
   };
 
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        setDragOver(true);
-    };
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
 
-    const handleDragLeave = () => {
-        setDragOver(false);
-    };
+  const handleDragLeave = () => {
+    setDragOver(false);
+  };
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -64,22 +64,22 @@ const AddItem = () => {
     processFile(file);
   };
 
-    const processFile = (file) => {
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setUploadedImage(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+  const processFile = (file) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUploadedImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-    const handleCategoryChange = (category) => {
-        setCategories({
-            ...categories,
-            [category]: !categories[category],
-        });
-    };
+  const handleCategoryChange = (category) => {
+    setCategories({
+      ...categories,
+      [category]: !categories[category],
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -164,6 +164,9 @@ const AddItem = () => {
           breakfast: false,
           others: false
         });
+
+        navigate("/shop-manage-item");
+    
     } catch (error) {
         console.error("Error making an item:", error.response.data.error);
         alert(error.response.data.error || "An error occurred. Please try again.");
@@ -317,7 +320,7 @@ const AddItem = () => {
                         </div>
                     </div>
                 </div>
-
+                
             </div>
         </>
     );

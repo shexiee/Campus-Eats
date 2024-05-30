@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./css/ShopApplication.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
-const DasherApplication = () => {
+const DasherUpdate = () => {
   const { currentUser } = useAuth();
   const [uploadedImage, setUploadedImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [dragOver, setDragOver] = useState(false);
-  const [availableStartTime, setAvailableStartTime] = useState(null);
-  const [availableEndTime, setAvailableEndTime] = useState(null);
+  const [availableStartTime, setAvailableStartTime] = useState("");
+  const [availableEndTime, setAvailableEndTime] = useState("");
   const [GCASHName, setGCASHName] = useState("");
   const [GCASHNumber, setGCASHNumber] = useState("");
   const [days, setDays] = useState({
@@ -67,11 +67,34 @@ const DasherApplication = () => {
     });
   };
 
+  useEffect(() => {
+    const fetchDasherData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/dasher/${currentUser.uid}`);
+        const data = response.data;
+        setAvailableStartTime(data.availableStartTime);
+        setAvailableEndTime(data.availableEndTime);
+        setGCASHName(data.GCASHName);
+        setGCASHNumber(data.GCASHNumber);
+        setDays((prevDays) => {
+          const updatedDays = { ...prevDays };
+          response.data.daysAvailable.forEach(day => {
+              updatedDays[day] = true;
+          });
+          return updatedDays;
+        });
+        setUploadedImage(data.schoolId);
+      } catch (error) {
+        console.error("Error fetching dasher data:", error);
+      }
+    };
+
+    fetchDasherData();
+  }, [currentUser.uid]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const hasCategorySelected = Object.values(days).some(
-      (selected) => selected
-    );
+    const hasCategorySelected = Object.values(days).some(selected => selected);
 
     if (!hasCategorySelected) {
       alert("Please select at least one day.");
@@ -83,19 +106,18 @@ const DasherApplication = () => {
       return;
     }
 
-    if (!GCASHNumber.startsWith('9') || GCASHNumber.length !== 10) {
+    if (!GCASHNumber.startsWith('9')) {
       alert("Please provide a valid GCASH Number.");
       return;
     }
 
     if (availableStartTime >= availableEndTime) {
-      alert("Shop close time must be later than shop open time.");
+      alert("Available end time must be later than start time.");
       return;
     }
 
     const formData = new FormData();
     const selectedDays = Object.keys(days).filter(day => days[day]);
-    console.log(selectedDays);
     formData.append("days", JSON.stringify(selectedDays));
     formData.append("image", imageFile);
     formData.append("uid", currentUser.uid);
@@ -103,10 +125,9 @@ const DasherApplication = () => {
     formData.append("availableEndTime", availableEndTime);
     formData.append("GCASHName", GCASHName);
     formData.append("GCASHNumber", GCASHNumber);
-    formData.append("displayName", currentUser.displayName);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/dasher-application", formData, {
+      const response = await axios.put(`http://localhost:5000/api/dasher-update/${currentUser.uid}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -114,25 +135,19 @@ const DasherApplication = () => {
       alert(response.data.message);
       navigate("/profile");
     } catch (error) {
-        if (error.response && error.response.data.error === 'You have already submitted a dasher application') {
-            alert('You have already submitted a dasher application.');
-            return;
-        }
-
-        if (error.response && error.response.data.error === 'You have already submitted a shop application') {
-            alert('You have already submitted a shop application.');
-            return;
-        }else {
-            console.error("Error submitting form:", error);
-            alert("Error submitting form");
-        }
+      if (error.response && error.response.data.error === 'Dasher not found') {
+        alert('Dasher not found.');
+        return;
+      } else {
+        console.error("Error updating dasher:", error);
+        alert("Error updating dasher.");
+      }
     }
   };
 
   return (
     <>
       <Navbar />
-
       <div className="p-body">
         <div className="p-content-current">
           <div className="p-card-current">
@@ -140,15 +155,11 @@ const DasherApplication = () => {
               <div className="p-content">
                 <div className="p-text">
                   <h3>Dasher Application</h3>
-                  <h4>
-                    Partner with CampusEats to help drive growth and take your
-                    business to the next level.
-                  </h4>
+                  <h4>Partner with CampusEats to help drive growth and take your business to the next level.</h4>
                 </div>
               </div>
               <div className="p-info">
                 <form onSubmit={handleSubmit}>
-
                   <div className="p-two">
                     <div className="p-field-two">
                       <div className="p-label-two">
@@ -176,7 +187,7 @@ const DasherApplication = () => {
                           />
                         </div>
                       </div>
-                      </div>
+                    </div>
                   </div>
                   <div className="p-two">
                     <div className="p-field-two">
@@ -210,9 +221,7 @@ const DasherApplication = () => {
                         <h3>School ID</h3>
                       </div>
                       <div
-                        className={`sa-upload-container ${
-                          dragOver ? "drag-over" : ""
-                        }`}
+                        className={`sa-upload-container ${dragOver ? "drag-over" : ""}`}
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
@@ -244,8 +253,7 @@ const DasherApplication = () => {
                                   className="sa-upload-icon"
                                 />
                                 <p>
-                                  Drag and Drop or click here <br /> to upload
-                                  image
+                                  Drag and Drop or click here <br /> to upload image
                                 </p>
                               </>
                             )}
@@ -259,9 +267,7 @@ const DasherApplication = () => {
                         {Object.keys(days).map((day, index) => (
                           <div
                             key={index}
-                            className={`sa-category-item ${
-                              days[day] ? "selected" : ""
-                            }`}
+                            className={`sa-category-item ${days[day] ? "selected" : ""}`}
                             onClick={() => handleCategoryChange(day)}
                           >
                             {day}
@@ -292,4 +298,4 @@ const DasherApplication = () => {
   );
 };
 
-export default DasherApplication;
+export default DasherUpdate;

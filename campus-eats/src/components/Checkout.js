@@ -96,6 +96,13 @@ const Checkout = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!mobileNum.startsWith('9') || mobileNum.length !== 10) {
+            alert("Please provide a valid Mobile Number.");
+            setLoading(false);
+            return;
+        }
+
         if(changeFor<cart.totalPrice){
             alert("Change for must be greater than or equal to the total price");
             setLoading(false);
