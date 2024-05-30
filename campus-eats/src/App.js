@@ -35,8 +35,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/forgot-password" element={<PublicRoute Component={ForgotPassword} />} />
-          <Route path="/login" element={<PublicRoute Component={LoginSignUp} />} />
-          <Route path="/signup" element={<PublicRoute Component={LoginSignUp} />} />
+          <Route path="/login" element={<LoginSignUp />} />
+          <Route path="/signup" element={<LoginSignUp />} />
           <Route path="/" element={<LandingPage/>} />
           <Route path="/orders" element={<PrivateRoute Component={Order} />} />
           <Route path="/home" element={<PrivateRoute Component={Home} />} />
