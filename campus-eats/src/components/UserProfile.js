@@ -316,6 +316,7 @@ const UserProfile = () => {
                                         </>
                                     )}
                                 </div>
+                    
                                 <div className="p-buttons">
                                     <button className="p-logout-button" onClick={logout}>Logout</button>
                                     <button className="p-save-button" onClick={handleSave} disabled={!isFormChanged()}>Save</button>
@@ -324,26 +325,26 @@ const UserProfile = () => {
                         </div>
                     </div>
                 </div>
-                <div className="p-content-current p-content-current-small">
-                    <div className="p-card-current">
-                        <div className="p-upgrade-container">
-                            <div className="p-content">
-                                <div className="p-upgrade-text">
-                                    <h3>Account Type</h3>
-                                    <h4>{accountType ? accountType :''}</h4>
+                {accountType !== 'admin' && accountType !== 'dasher' && accountType !== 'shop' &&(
+                    <div className="p-content-current p-content-current-small">
+                        <div className="p-card-current">
+                            <div className="p-upgrade-container">
+                                <div className="p-content">
+                                    <div className="p-upgrade-text">
+                                        <h3>Account Type</h3>
+                                        <h4>{accountType ? accountType : ''}</h4>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="p-info">
-                                <div className="p-upgrade-buttons">
-
-                                    <button onClick={() => navigate('/dasher-application')} className="p-upgrade-button">Be a Dasher</button>
-                                    <button onClick={() => navigate('/shop-application')} className="p-upgrade-button">Add a Shop</button>
-                                
+                                <div className="p-info">
+                                    <div className="p-upgrade-buttons">
+                                        <button onClick={() => navigate('/dasher-application')} className="p-upgrade-button">Be a Dasher</button>
+                                        <button onClick={() => navigate('/shop-application')} className="p-upgrade-button">Add a Shop</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </>
     );
