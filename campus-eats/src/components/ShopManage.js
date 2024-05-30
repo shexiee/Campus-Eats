@@ -3,41 +3,41 @@ import "./css/Shop.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
 import AddToCartModal from "./AddToCartModal";
 
-const Shop = () => {
+const ShopManage = () => {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
-    const { shopId } = useParams(); // Get shopId from URL parameters
     const [shop, setShop] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null); // Add state for selected item
 
-    const fetchShop = async (shopId) => {
+    const fetchShop = async () => {
         try {
-            const response = await fetch(`/api/shop/${shopId}`); // Assuming this is your endpoint for fetching a single shop
+            const response = await fetch(`/api/shop/${currentUser.uid}`); // Assuming this is your endpoint for fetching a single shop
             if (!response.ok) {
                 throw new Error('Failed to fetch shop');
             }
             const data = await response.json();
             setShop(data);
+            console.log("shop", data);
         } catch (error) {
             console.error('Error fetching shop:', error);
         }
     };
 
-    const fetchShopItems = async (shopId) => {
+    const fetchShopItems = async () => {
         try {
-            const response = await fetch(`/api/shop/${shopId}/items`);
+            const response = await fetch(`/api/shop/${currentUser.uid}/items`);
             if (!response.ok) {
                 throw new Error('Failed to fetch shop items');
             }
             const data = await response.json();
             setItems(data);
-            console.log("items", data);
+            
         } catch (error) {
             console.error('Error fetching shop items:', error);
         }
@@ -47,26 +47,18 @@ const Shop = () => {
         if (!currentUser) {
             navigate('/login');
         } else {
-            fetchShop(shopId);
-            fetchShopItems(shopId);
+            fetchShop();
+            fetchShopItems();
         }
-    }, [currentUser, shopId]);
-
-    const CloseShowModal = () => {
-        setShowModal(false);
-    }
-
-    const openModalWithItem = (item) => {
-        setSelectedItem(item);
-        setShowModal(true);
-    }
+    }, [currentUser]);
 
     if (!shop) {
-        return <div>Loading...</div>; // Show a loading state while fetching the shop
+        return <div>Loading...</div>;
     }
 
     const renderCategories = (categories) => {
         return Object.keys(categories).map((category) => (
+            console.log(category),
             <h4 key={category}>{category}</h4>
         ));
     };
@@ -80,6 +72,7 @@ const Shop = () => {
                         <div className="s-photo">
                             <img src={shop.shopImage} alt="store" className="s-photo-image" />
                         </div>
+                        
                         <div className="s-title">
                             <h2>{shop.shopName}</h2>
                             <p>{shop.shopAddress}</p>
@@ -90,14 +83,19 @@ const Shop = () => {
                                 <h4>${shop.deliveryFee}</h4>
                                 <p>Reviews</p>
                                 <h4>4.7 (100+)</h4>
+                                
                             </div>
+                            
+                        </div>
+                        <div className="sm-plus-icon" onClick={() => navigate(`/edit-shop`)}>
+                                <FontAwesomeIcon icon={faPen} />
                         </div>
                     </div>
                     <div className="s-items-container">
                         <h2>Items</h2>
                         <div className="s-content">
                             {items.map(item => (
-                                <div key={item.id} className="s-card" onClick={() => openModalWithItem(item)}>
+                                <div key={item.id} className="s-card">
                                     <div className="s-img">
                                         <img src={item.imageUrl || '/Assets/Panda.png'} className="s-image-cover" alt="store" />
                                     </div>
@@ -107,8 +105,8 @@ const Shop = () => {
                                             <p className="s-p">{item.description}</p>
                                         </div>
                                         <h3>₱{item.price.toFixed(2)}</h3>
-                                        <div className="s-plus-icon">
-                                            <FontAwesomeIcon icon={faPlus} />
+                                        <div className="s-plus-icon"  onClick={() => navigate(`/edit-item/${item.id}`)}>
+                                            <FontAwesomeIcon icon={faPen} />
                                         </div>
                                     </div>
                                 </div>
@@ -116,10 +114,9 @@ const Shop = () => {
                         </div>
                     </div>
                 </div>
-                {showModal && <AddToCartModal item={selectedItem} showModal={showModal} onClose={CloseShowModal} />}
             </div>
         </>
     );
 }
 
-export default Shop;
+export default ShopManage;
