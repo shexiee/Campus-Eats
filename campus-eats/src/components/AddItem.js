@@ -164,6 +164,9 @@ const AddItem = () => {
           breakfast: false,
           others: false
         });
+
+        navigate("/shop-manage-item");
+    
     } catch (error) {
         console.error("Error making an item:", error.response.data.error);
         alert(error.response.data.error || "An error occurred. Please try again.");
