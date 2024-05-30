@@ -2,6 +2,8 @@
   height: 100%;
   padding: 70px 50px 0 120px;
   display: flex;
+  flex-direction: column; /* Change to column layout */
+  align-items: flex-start; /* Align items to the left */
 }
 
 .ao-title {
@@ -14,14 +16,14 @@
   right: 0;
   top: 70px;
   height: calc(100% - 70px); /* Adjust the height to fit within the view */
-  width: 500px;
+  width: 400px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   z-index: 1000; /* Ensure it stays above other content */
 }
 
-.ao-modal-title{
+.ao-modal-title {
   margin-top: 15px;
 }
 
@@ -34,7 +36,7 @@
   -ms-overflow-style: none; 
 }
 
-.ao-items{
+.ao-items {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -49,8 +51,7 @@
   margin-right: 20px;
 }
 
-
-.ao-item{
+.ao-item {
   background-color: #FFFAF1;
   padding: 15px 15px 15px 15px;
   border-radius: 7px;
@@ -60,14 +61,14 @@
   margin-bottom: 15px;
 }
 
-.ao-item-left{
+.ao-item-left {
   display: flex;
   align-items: center;
-  gap: 10px;
-
+  gap: 20px;
+  white-space: nowrap;
 }
 
-.ao-item-title h4{
+.ao-item-title h4 {
   color: #535353;
   font-size: 0.9rem;
   font-weight: bold;
@@ -75,7 +76,8 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
-.ao-item-title p{
+
+.ao-item-title p {
   color: #535353;
   font-size: 0.6rem;
   max-width: 100px; /* Adjust the value as needed */
@@ -83,23 +85,24 @@
   overflow-wrap: break-word;
 }
 
-
-
 .ao-content-current {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; /* Align content to the left */
   margin-top: 30px;
-  margin-left: -30px;
+  width: 100%; /* Ensure the container takes full width */
 }
-
 
 .ao-card-current {
   background: #FFFAF1;
   border-radius: 30px;
   box-shadow: 7px 7px 22px #bbb4a7, -7px -7px 22px #FFFAF1;
   transition: 0.2s ease-in-out;
-  width: 100%;
-  margin-right: 500px;
+  width: 100%; /* Ensure the card takes full width */
+  max-width: 800px; /* Set a max width for the card */
+}
+
+.ao-card-large {
+  margin-top: 20px;
 }
 
 .ao-card-current:hover {
@@ -126,7 +129,6 @@
 }
 
 .ao-card-text {
-  margin-top: -40px;
   margin-left: 20px;
 }
 
@@ -146,8 +148,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-top: -50px;
-  margin-left: auto;  
+  margin-left: auto;
 }
 
 .ao-decline, .ao-acceptorder {
@@ -177,12 +178,11 @@
 }
 
 .ao-toggle-content {
-  margin-top: -30px; 
   margin-left: 10px;
 }
 
 .ao-accordion {
-  padding: 0 40px;  /* Adjust margin as needed to align with the buttons */
+  padding: 0 40px;  /* Adjust padding as needed to align with the buttons */
 }
 
 .message-box {
@@ -191,7 +191,6 @@
   border-radius: 5px;
   background-color: #EDECEC;
   margin-bottom: 10px;
-  margin-right: 35px;
   max-height: 100px; /* Adjust the max-height as needed */
 }
 
@@ -218,7 +217,6 @@
 
 .ao-location {
   margin-top: 13px;
-  margin-left: 50px;
   font-size: 15px;
 }
 
@@ -245,7 +243,6 @@
 .ao-order-title {
   display: flex;
   justify-content: space-between;
-  margin-left: 50px;
   margin-bottom: -10px;
   color: #535353;
 }
@@ -258,7 +255,6 @@
 .ao-order-title h5:nth-child(2) {
   margin-right: 60px;
   margin-top: 10px;
-
 }
 
 .ao-order-total {
@@ -273,13 +269,11 @@
 .ao-order-total h5:nth-child(2) {
   margin-right: 60px;
   margin-top: 10px;
-
 }
 
 .ao-subtotal {
   display: flex;
   justify-content: space-between;
-  margin-left: 50px;
 }
 
 .ao-subtotal h4 {
@@ -287,8 +281,12 @@
   margin-right: 10px;
 }
 
-.ao-order-summary h5{
+.ao-order-summary h5 {
   display: flex;
   justify-content: space-between;
   margin-left: 5px;
+}
+
+.ao-no-orders {
+  margin-top: 80px;
 }
