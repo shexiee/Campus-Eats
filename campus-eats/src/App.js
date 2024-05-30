@@ -55,7 +55,7 @@ function App() {
         <Routes>
           <Route path="/admin-dashers" element={<AdminRoute Component={AdminDasherList} />} />
           <Route path="/admin-shops" element={<AdminRoute Component={AdminShopList} />} />
-          <Route path="/admin-dashboard" element={<AdminRoute Component={AdminDashboard} />} />
+          {/* <Route path="/admin-dashboard" element={<AdminRoute Component={AdminDashboard} />} /> */}
           <Route path="/admin-incoming-order" element={<AdminRoute Component={AdminIncomingOrder} />} />
           <Route path="/admin-order-history" element={<AdminRoute Component={AdminOrderHistory} />} />
           <Route path="/admin-shops" element={<AdminRoute Component={AdminShopList} />} />

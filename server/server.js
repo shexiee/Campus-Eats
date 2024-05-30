@@ -749,24 +749,26 @@ app.put('/api/dasher-update/:dasherId', upload.single('image'), async (req, res)
   }
 });
 
-
 app.get('/api/shop/:shopId/items', async (req, res) => {
-  const { shopId } = req.params;
-
+  const shopId = req.params.shopId;
   try {
     const itemsSnapshot = await db.collection('items').where('shopID', '==', shopId).get();
     if (itemsSnapshot.empty) {
-      return res.status(404).json({ error: 'No items found for this shop.' });
+      return res.status(404).json({ error: 'No items found for this shop' });
     }
 
     const items = [];
     itemsSnapshot.forEach(doc => {
-      items.push({ id: doc.id, ...doc.data() });
+      const itemData = doc.data();
+      if (itemData.quantity > 0) {
+        items.push({ id: doc.id, ...itemData });
+      }
     });
-    return res.status(200).json(items);
+
+    res.status(200).json(items);
   } catch (error) {
     console.error('Error fetching shop items:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
