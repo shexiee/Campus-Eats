@@ -1056,9 +1056,50 @@ app.get('/api/completed-orders', async (req, res) => {
     console.error('Error fetching completed orders:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
+
 });
 
+// Endpoint to create GCash payment
+app.post("/api/create-gcash-payment", async (req, res) => {
+  const { amount, description } = req.body;
+  const secretKey = process.env.PAYMONGO_SECRET_KEY || 'sk_test_dAye3rYrDM8EZzv6jAtFfiEp';
 
+  try {
+      const response = await fetch("https://api.paymongo.com/v1/links", {
+          method: "POST",
+          headers: {
+              "Authorization": `Basic ${Buffer.from(secretKey).toString('base64')}`,
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+              data: {
+                  attributes: {
+                      amount: amount,
+                      redirect: {
+                          success: "http://localhost:3000/success", // Adjust this to your front-end success URL
+                          failed: "http://localhost:3000/failed",  // Adjust this to your front-end failed URL
+                      },
+                      type: "gcash",
+                      currency: "PHP",
+                      description: description,
+                  },
+              },
+          }),
+      });
+
+      const data = await response.json();
+      console.log("PayMongo Response:", data);
+
+      if (!response.ok) {
+          throw new Error(data.errors[0].detail);
+      }
+
+      res.json({ checkout_url: data.data.attributes.checkout_url });
+  } catch (error) {
+      console.error("Error creating GCash payment:", error);
+      res.status(500).json({ error: error.message });
+  }
+});
 
 
 

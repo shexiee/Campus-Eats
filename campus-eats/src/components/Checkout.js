@@ -5,8 +5,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { set } from "firebase/database";
-
 
 const Checkout = () => {
     const { currentUser } = useAuth();
@@ -24,7 +22,8 @@ const Checkout = () => {
     const [showTooltip, setShowTooltip] = useState(false);
     const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
     const [loading, setLoading] = useState(false);
-
+    const [paymongoLink, setPaymongoLink] = useState("");
+    const [gcashPaymentInitiated, setGcashPaymentInitiated] = useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -42,8 +41,6 @@ const Checkout = () => {
                 console.error("Error fetching user data:", error);
             }
         };
-
-        
 
         const fetchCartData = async () => {
             try {
@@ -68,7 +65,6 @@ const Checkout = () => {
         setTooltipPosition({ x: e.clientX, y: e.clientY });
     };
 
-    // Function to handle mouse leave event
     const handleMouseLeave = () => {
         setShowTooltip(false);
     };
@@ -96,13 +92,44 @@ const Checkout = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(changeFor<cart.totalPrice){
-            alert("Change for must be greater than or equal to the total price");
-            setLoading(false);
-            return;
-        }
         setLoading(true);
-        console.log("Submitting order...");
+    
+        if (paymentMethod === "cash") {
+            if (changeFor < cart.totalPrice) {
+                alert("Change for must be greater than or equal to the total price");
+                setLoading(false);
+                return;
+            }
+        } else if (paymentMethod === "gcash" && !gcashPaymentInitiated) {
+            try {
+                const response = await fetch("/api/create-gcash-payment", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        amount: cart.totalPrice * 100, // PayMongo expects the amount in cents
+                        description: `Payment for order by ${firstName} ${lastName}`,
+                    }),
+                });
+                const data = await response.json();
+                console.log("GCash Payment Link:", data.checkout_url); // Log the payment link
+                if (response.ok) {
+                    setPaymongoLink(data.checkout_url);
+                    setGcashPaymentInitiated(true);
+                    setLoading(false);
+                    return;
+                } else {
+                    alert(`Error: ${data.error}`);
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error("Error creating GCash payment:", error);
+                setLoading(false);
+            }
+        }
+    
+        // Proceed with order submission if GCash payment has already been initiated
         const order = {
             uid: currentUser.uid,
             shopID: cart.shopID,
@@ -124,7 +151,7 @@ const Checkout = () => {
                 },
                 body: JSON.stringify(order),
             });
-            if(response.status === 400){
+            if (response.status === 400) {
                 alert("An active order already exists for this user");
                 setLoading(false);
                 return;
@@ -135,9 +162,8 @@ const Checkout = () => {
             console.log("Order placed:", data);
         } catch (error) {
             console.error("Error placing order:", error);
-            
         }
-
+    
         try {
             const response = await fetch('/api/remove-cart', {
                 method: 'DELETE',
@@ -146,21 +172,22 @@ const Checkout = () => {
                 },
                 body: JSON.stringify({ uid: currentUser.uid })
             });
-
+    
             if (!response.ok) {
                 alert(`Error: ${response.statusText}`);
                 return;
             }
-
+    
             const data = await response.json();
             setCart(null);
         } catch (error) {
             console.error('Error removing cart:', error);
         }
-
+    
         navigate("/orders");
         setLoading(false);
     };
+    
 
     return (
         <>
@@ -296,12 +323,18 @@ const Checkout = () => {
                                             />
                                             <div className="payment-card">
                                                 GCASH
+                                                {paymentMethod === "gcash" && paymongoLink && (
+                                                    <div className="gcash-payment-link">
+                                                        <p>Please click this link to pay: <a href={paymongoLink} target="_blank" rel="noopener noreferrer">{paymongoLink}</a></p>
+                                                        <p>After payment, please click "Place Order".</p>
+                                                    </div>
+                                                )}
                                             </div>
                                         </label>
                                     </div>
                                 </div>
                                 <div className="p-buttons">
-                                    <button onClick={()=>navigate('/home')}className="p-logout-button">Cancel</button>
+                                    <button onClick={()=>navigate('/home')} className="p-logout-button">Cancel</button>
                                     <button type="submit" className="p-save-button" disabled={loading}>Place Order</button>
                                 </div>
                             </form>
