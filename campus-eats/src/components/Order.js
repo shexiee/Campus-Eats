@@ -17,79 +17,87 @@ const Order = () => {
     const [orders, setOrders] = useState([]);
     const [status, setStatus] = useState(null);
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const ordersResponse = await fetch(`/api/orders/${currentUser.uid}`);
-                
-                if (!ordersResponse.ok) {
-                    throw new Error("Failed to fetch orders");
-                }
-                
-                const ordersData = await ordersResponse.json();
-                
-                const activeOrder = ordersData.activeOrders.length > 0 ? ordersData.activeOrders[0] : null;
-                setActiveOrder(activeOrder);
-                
-                
-                if(activeOrder.status === 'active_waiting_for_admin' || activeOrder.status === 'active_waiting_for_dasher'){
+    const fetchOrders = async () => {
+        try {
+            const ordersResponse = await fetch(`/api/orders/${currentUser.uid}`);
+            
+            if (!ordersResponse.ok) {
+                throw new Error("Failed to fetch orders");
+            }
+            
+            const ordersData = await ordersResponse.json();
+            console.log(ordersData.activeOrders.length );
+            const activeOrder = ordersData.activeOrders.length > 0 ? ordersData.activeOrders[0] : null;
+            setActiveOrder(activeOrder);
+            if(ordersData.activeOrders.length > 0) {
+                if(activeOrder.status === 'active_waiting_for_admin' || activeOrder.status === 'active_waiting_for_dasher') {
                     setStatus('Order is being verified');
-                } else if(activeOrder.status === 'active_preparing'){
+                } else if(activeOrder.status === 'active_preparing') {
                     setStatus('Order is being prepared');
-                } else if(activeOrder.status === 'active_on_the_way'){
+                } else if(activeOrder.status === 'active_onTheWay') {
                     setStatus('Order is on the way');
-                } else if(activeOrder.status === 'active_delivered'){
+                } else if(activeOrder.status === 'active_delivered') {
                     setStatus('Order has been delivered');
-                } else if(activeOrder.status === 'active_completed'){
+                } else if(activeOrder.status === 'active_completed') {
                     setStatus('Order has been completed');
-                } else if(activeOrder.status === 'active_pickedUp'){
+                } else if(activeOrder.status === 'active_pickedUp') {
                     setStatus('Order has been picked up');
-                } else if(activeOrder.status === 'active_toShop'){
+                } else if(activeOrder.status === 'active_toShop') {
                     setStatus('Dasher is on the way to the shop');
                 }
-
-                const ordersShopData = await Promise.all(
-                    ordersData.orders.map(async (order) => {
-                        const ordersShopDataResponse = await axios.get(`/api/shop/${order.uid}`);
-                        const ordersShop = ordersShopDataResponse.data;
-                        return { ...order, shopData: ordersShop }; // Renamed to userData for clarity
-                    })
-                );
-                setOrders(ordersShopData);
-                console.log("ordersShopData", ordersShopData);
-            } catch (error) {
-                console.error("Error fetching orders:", error);
-            } finally {
-                setLoading(false);
             }
-        };
-    
+
+            const ordersShopData = await Promise.all(
+                ordersData.orders.map(async (order) => {
+                    const ordersShopDataResponse = await axios.get(`/api/shop/${order.shopID}`);
+                    const ordersShop = ordersShopDataResponse.data;
+                    return { ...order, shopData: ordersShop }; 
+                })
+            );
+
+            console.log("ordersShopData", ordersShopData);
+            setOrders(ordersShopData);
+            
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchShopData = async (shopID) => {
+        try {
+            const response = await fetch(`/api/shop/${shopID}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch shop data');
+            }
+            const data = await response.json();
+            setShop(data);
+        } catch (error) {
+            console.error('Error fetching shop data:', error);
+        }
+    };
+
+    useEffect(() => {
         fetchOrders();
     }, [currentUser.uid]);
 
     useEffect(() => {
         setLoading(true);
-        if(activeOrder){
-            const fetchShopData = async () => {
-                if (activeOrder.shopID) {
-                    try {
-                        const response = await fetch(`/api/shop/${activeOrder.shopID}`);
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch shop data');
-                        }
-                        const data = await response.json();
-                        setShop(data);
-                    } catch (error) {
-                        console.error('Error fetching shop data:', error);
-                    }
-                }
-            };
-    
-            fetchShopData();
+        if (activeOrder && activeOrder.shopID) {
+            fetchShopData(activeOrder.shopID);
         }
-        
         setLoading(false);
     }, [activeOrder]);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            fetchOrders();
+            console.log("Fetching orders...");
+        }, 10000); // Fetch every 30 seconds
+
+        return () => clearInterval(intervalId); // Clear interval on unmount
+    }, [currentUser.uid]);
 
     return (
         <>

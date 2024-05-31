@@ -62,14 +62,16 @@ const AddToCartModal = ({ showModal, onClose, item }) => {
                     shopID: item.shopID
                 })
             });
+
             if (!response.ok) {
-                throw new Error('Failed to add item to cart');
-            }
-            onClose();
-            window.location.reload();
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to add item to cart');
+              }
+              onClose();
+              window.location.reload();
         } catch (error) {
             console.error('Error adding item to cart:', error);
-            // Handle error
+            alert(error.message); // Display the error message
         }
     };
 

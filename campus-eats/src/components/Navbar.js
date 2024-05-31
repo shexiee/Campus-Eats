@@ -131,15 +131,18 @@ const Navbar = () => {
                             </li>
                         </ul>
                     </div>
-                    <div className='nb-cart' onClick={() => setShowModal(!showModal)}>
-                        <div className='nb-cart-icon'>
-                            <img src={'/Assets/cart.png'} alt="Cart" className="nb-image-cart" />
-                        </div>
-                        <div className='nb-cart-count'>
-                            <span>{cartData ? cartData.items.length : 0}</span>
+                    
+                    {userAccountType === 'regular' &&(
+                        <div className='nb-cart' onClick={() => setShowModal(!showModal)}>
+                            <div className='nb-cart-icon'>
+                                <img src={'/Assets/cart.png'} alt="Cart" className="nb-image-cart" />
+                            </div>
+                            <div className='nb-cart-count'>
+                                <span>{cartData ? cartData.items.length : 0}</span>
 
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </>
             ) : (
                 <div className="navbar-buttons">
@@ -181,13 +184,6 @@ const Navbar = () => {
                             </div>
                         </Link>
                     </li>
-                    <li className={`nb-icon ${location.pathname === '/shop' ? 'active' : ''}`}>
-                        <Link to="/shop">
-                            <div className="svg-container">
-                                <img src={'/Assets/shop.svg'} alt="Shop" className={`nb-image ${location.pathname === '/shop' ? 'active' : ''}`} />
-                            </div>
-                        </Link>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -201,16 +197,8 @@ const Navbar = () => {
                 </Link>
                 
                 </div>
-                <p>{userAccountType}</p>
                 <div className='nav'>
                     <ul>
-                        <li className={`nb-icon ${location.pathname === '/admin-dashboard' ? 'active' : ''}`}>
-                            <Link to="/admin-dashboard">
-                                <div className="svg-container">
-                                    <img src={'/Assets/dashboard-icon.svg'} alt="Dashboard" className="nb-image" />
-                                </div>
-                            </Link>
-                        </li>
                         <li className={`nb-icon ${location.pathname === '/admin-incoming-order' ? 'active' : ''}`}>
                             <Link to="/admin-incoming-order">
                                 <div className="svg-container">
@@ -255,13 +243,6 @@ const Navbar = () => {
                 <p>{userAccountType}</p>
                 <div className='nav'>
                     <ul>
-                        <li className={`nb-icon ${location.pathname === '/dasher-dashboard' ? 'active' : ''}`}>
-                            <Link to="/dasher-dashboard">
-                                <div className="svg-container">
-                                    <img src={'/Assets/dashboard-icon.svg'} alt="Dashboard" className="nb-image" />
-                                </div>
-                            </Link>
-                        </li>
                         <li className={`nb-icon ${location.pathname === '/dasher-incoming-order' ? 'active' : ''}`}>
                             <Link to="/dasher-incoming-order">
                                 <div className="svg-container">
@@ -270,9 +251,9 @@ const Navbar = () => {
                             </Link>
                         </li>
                         <li className={`nb-icon ${location.pathname === '/dasher-orders' ? 'active' : ''}`}>
-                            <Link to="/dasher-order-history">
+                            <Link to="/dasher-orders">
                                 <div className="svg-container">
-                                    <img src={'/Assets/orders.svg'} alt="Orders" className={`nb-image ${location.pathname === '/dasher-order-history' ? 'active' : ''}`} />
+                                    <img src={'/Assets/orders.svg'} alt="Orders" className={`nb-image ${location.pathname === '/dasher-orders' ? 'active' : ''}`} />
                                 </div>
                             </Link>
                         </li>
@@ -291,13 +272,6 @@ const Navbar = () => {
                 </div>
                 <div className='nav'>
                     <ul>
-                        <li className={`nb-icon ${location.pathname === '/shop-dashboard' ? 'active' : ''}`}>
-                            <Link to="/shop-dashboard">
-                                <div className="svg-container">
-                                    <img src={'/Assets/dashboard-icon.svg'} alt="Dashboard" className="nb-image" />
-                                </div>
-                            </Link>
-                        </li>
                         <li className={`nb-icon ${location.pathname === '/shop-add-item' ? 'active' : ''}`}>
                             <Link to="/shop-add-item">
                                 <div className="svg-container">
@@ -316,6 +290,8 @@ const Navbar = () => {
                 </div>
             </div>
         }
+
+        
         
       {showModal && <CartModal showModal={showModal} onClose={CloseShowModal} />}
     </div>

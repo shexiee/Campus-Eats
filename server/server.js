@@ -173,6 +173,66 @@ app.post('/api/shop-application', upload.single('image'), async (req, res) => {
   }
 });
 
+app.put('/api/shop-update/:shopId', upload.single('image'), async (req, res) => {
+  const { shopId } = req.params;
+  const {
+    shopName,
+    shopDesc,
+    shopAddress,
+    googleLink,
+    categories,
+    shopOpen,
+    shopClose,
+    GCASHName,
+    GCASHNumber,
+    uid
+  } = req.body;
+  const file = req.file;
+
+
+  if (!uid) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  try {
+    const shopRef = db.collection('shops').doc(shopId);
+    const shopSnapshot = await shopRef.get();
+    if (!shopSnapshot.exists) {
+      return res.status(404).json({ error: 'Shop not found.' });
+    }
+
+    let imageURL = shopSnapshot.data().imageUrl;
+
+    if (file) {
+      const fileName = `shop/images/${uid}_${shopName}.png`;
+      const fileRef = ref(storage, fileName);
+
+      const snapshot = await uploadBytes(fileRef, file.buffer);
+      imageURL = await getDownloadURL(snapshot.ref);
+    }
+
+    const updatedShopData = {
+      shopName,
+      shopDesc,
+      shopAddress,
+      googleLink,
+      categories: JSON.parse(categories),
+      shopOpen,
+      shopClose,
+      GCASHName,
+      GCASHNumber,
+      updatedAt: new Date(),
+    };
+
+    await shopRef.update(updatedShopData);
+
+    return res.status(200).json({ message: 'Shop updated successfully', shopId: shopId });
+  } catch (error) {
+    console.error('Error updating shop:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.post('/api/shop-update/:uid', upload.single('image'), async (req, res) => {
   const {
     shopName,
@@ -285,6 +345,51 @@ app.post('/api/dasher-application', upload.single('image'), async (req, res) => 
     return res.status(200).json({ message: 'Dasher created successfully' });
   } catch (error) {
     console.error('Error creating dasher:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.put('/api/dasher-update/:dasherId', upload.single('image'), async (req, res) => {
+  const { dasherId } = req.params;
+  const { availableStartTime, availableEndTime, GCASHName, GCASHNumber, days, uid, displayName } = req.body;
+  const file = req.file;
+
+  if (!uid) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  try {
+    const dasherRef = db.collection('dashers').doc(dasherId);
+    const dasherSnapshot = await dasherRef.get();
+
+    if (!dasherSnapshot.exists) {
+      return res.status(404).json({ error: 'Dasher not found.' });
+    }
+
+    let imageURL = dasherSnapshot.data().schoolIDImage;
+
+    if (file) {
+      const fileName = `dasher/schoolID/${displayName}_${uid}.png`;
+      const fileRef = ref(storage, fileName);
+
+      const snapshot = await uploadBytes(fileRef, file.buffer);
+      imageURL = await getDownloadURL(snapshot.ref);
+    }
+
+    const updatedDasherData = {
+      availableStartTime,
+      availableEndTime,
+      GCASHName,
+      GCASHNumber,
+      daysAvailable: JSON.parse(days),
+      updatedAt: new Date(),
+    };
+
+    await dasherRef.update(updatedDasherData);
+
+    return res.status(200).json({ message: 'Dasher updated successfully', dasherId: dasherId });
+  } catch (error) {
+    console.error('Error updating dasher:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -402,35 +507,45 @@ app.get('/api/shop-lists', async (req, res) => {
 
 app.post('/confirm-order-completion', async (req, res) => {
   try {
-      const { orderId, dasherId, shopId, userId, paymentMethod, deliveryFee, totalPrice } = req.body;
+    const { orderId, dasherId, shopId, userId, paymentMethod, deliveryFee, totalPrice, items } = req.body;
 
-      // Update order status to 'completed'
-      await db.collection('orders').doc(orderId).update({ status: 'completed' });
+    // Update order status to 'completed'
+    await db.collection('orders').doc(orderId).update({ status: 'completed' });
 
-      // Add delivery fee to the order collection
-      await db.collection('orders').doc(orderId).update({ deliveryFee });
+    // Add delivery fee to the order collection
+    await db.collection('orders').doc(orderId).update({ deliveryFee });
+    console.log('items: ', items)
+    // Deduct item quantities from the items collection
+    for (const item of items) {
+      const itemDoc = await db.collection('items').doc(item.id).get();
+      if (itemDoc.exists) {
+        const newQuantity = itemDoc.data().quantity - item.quantity;
+        await db.collection('items').doc(item.id).update({ quantity: newQuantity });
+      }
+    }
 
-      // Create a payment record
-      const paymentData = {
-          orderId,
-          dasherId,
-          shopId,
-          userId,
-          paymentMethod,
-          completedDateTime: new Date(),
-          deliveryFee,
-          totalPrice,
-          // Add other payment details as needed
-      };
-      await db.collection('payments').add(paymentData);
-      console.log('Payment record created successfully');
+    // Create a payment record
+    const paymentData = {
+      orderId,
+      dasherId,
+      shopId,
+      userId,
+      paymentMethod,
+      completedDateTime: new Date(),
+      deliveryFee,
+      totalPrice,
+      // Add other payment details as needed
+    };
+    await db.collection('payments').add(paymentData);
+    console.log('Payment record created successfully');
 
-      return res.status(200).json({ message: 'Order completion confirmed successfully' });
+    return res.status(200).json({ message: 'Order completion confirmed successfully' });
   } catch (error) {
-      console.error('Error confirming order completion:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error confirming order completion:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 app.post('/api/update-shop-status', async (req, res) => {
   try {
@@ -587,24 +702,73 @@ app.post('/api/shop-update-item/:itemId', upload.single('image'), async (req, re
   }
 });
 
+app.put('/api/dasher-update/:dasherId', upload.single('image'), async (req, res) => {
+  const { dasherId } = req.params;
+  const { availableStartTime, availableEndTime, GCASHName, GCASHNumber, days, uid, displayName } = req.body;
+  const file = req.file;
+
+  if (!uid) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  try {
+    const dasherRef = doc(db, 'dashers', dasherId);
+    const dasherSnapshot = await getDoc(dasherRef);
+
+    if (!dasherSnapshot.exists()) {
+      return res.status(404).json({ error: 'Dasher not found.' });
+    }
+
+    let imageURL = dasherSnapshot.data().schoolIDImage;
+
+    if (file) {
+      const fileName = `dashers/${uid}/schoolID.png`;
+      const fileRef = ref(storage, fileName);
+
+      const snapshot = await uploadBytes(fileRef, file.buffer);
+      imageURL = await getDownloadURL(snapshot.ref);
+    }
+
+    const updatedDasherData = {
+      availableStartTime,
+      availableEndTime,
+      GCASHName,
+      GCASHNumber,
+      days: JSON.parse(days),
+      schoolIDImage: imageURL,
+      displayName,
+      updatedAt: new Date(),
+    };
+
+    await updateDoc(dasherRef, updatedDasherData);
+
+    return res.status(200).json({ message: 'Dasher updated successfully', dasherId: dasherId });
+  } catch (error) {
+    console.error('Error updating dasher:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 app.get('/api/shop/:shopId/items', async (req, res) => {
-  const { shopId } = req.params;
-
+  const shopId = req.params.shopId;
   try {
     const itemsSnapshot = await db.collection('items').where('shopID', '==', shopId).get();
     if (itemsSnapshot.empty) {
-      return res.status(404).json({ error: 'No items found for this shop.' });
+      return res.status(404).json({ error: 'No items found for this shop' });
     }
 
     const items = [];
     itemsSnapshot.forEach(doc => {
-      items.push({ id: doc.id, ...doc.data() });
+      const itemData = doc.data();
+      if (itemData.quantity > 0) {
+        items.push({ id: doc.id, ...itemData });
+      }
     });
-    return res.status(200).json(items);
+
+    res.status(200).json(items);
   } catch (error) {
     console.error('Error fetching shop items:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

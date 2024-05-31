@@ -6,7 +6,6 @@ const DasherCompletedModal = ({ isOpen, closeModal, shopData, orderData }) => {
 
     if (!isOpen) return null;
 
-    // disable button if loading
 
     const confirmAccept = async () => {
         try {
@@ -18,7 +17,8 @@ const DasherCompletedModal = ({ isOpen, closeModal, shopData, orderData }) => {
                 userId: orderData.uid,
                 paymentMethod: orderData.paymentMethod,
                 deliveryFee: shopData.deliveryFee,
-                totalPrice: orderData.totalPrice
+                totalPrice: orderData.totalPrice,
+                items: orderData.items
             };
 
             // Call the backend endpoint to confirm order completion

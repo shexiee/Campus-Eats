@@ -4,11 +4,13 @@ import { useAuth } from "../context/AuthContext";
 import LoginSignUp from "./LoginSignUp";
 import Home from "./Home";
 
-const PrivateRoute = ({Component}) => {
+const PublicRoute = ({Component}) => {
     const {currentUser} = useAuth();
     // const navigate = useNavigate();
-
+    if(currentUser){
+        console.log("navigating to home", currentUser);
+    }
     return currentUser ? <Home /> : <Component/>
 }
 
-export default PrivateRoute;
+export default PublicRoute;
