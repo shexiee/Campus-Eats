@@ -98,16 +98,16 @@ const DasherIncomingOrder = () => {
   return (
     <>
       <Navbar />
-      <div className="ao-body">
-        <div className="dio-card-current j-card-large">
+      <div className="dio-body">
+        <div className="j-card-large">
           <div className="ao-title">
             <h2>Incoming Orders</h2>
           </div>
-          {!isActive && <div className="ao-no-orders">Turn on your active status to receive incoming orders...</div>}
-          {isActive && orders.length === 0 && <div className="ao-no-orders">No incoming orders...</div>}
+          {!isActive && <div>Turn on your active status to receive incoming orders...</div>}
+          {isActive && orders.length === 0 && <div>No incoming orders...</div>}
           {orders.map((order) => (
-            <div key={order.id} className="ao-content-current">
-              <div className="ao-card-current ao-card-large">
+            <div key={order.id} className="dio-content-current">
+              <div className="dio-card-current ao-card-large">
                 <div className="ao-card-content" onClick={() => toggleAccordion(order.id)}>
                   <div className="ao-order-img-holder">
                     <img src='/Assets/Panda.png' alt="food" className="ao-order-img" />
@@ -115,6 +115,8 @@ const DasherIncomingOrder = () => {
                   <div className="ao-card-text">
                     <h3>{`${order.firstName} ${order.lastName}`}</h3>
                     <p>{`Order #${order.id}`}</p>
+                    <p>{order.paymentMethod=== 'gcash'? 'Online Payment' : 'Cash on Delivery'}</p>
+                    <p>Change for: ₱{order.changeFor ? order.changeFor : ''}</p>
                   </div>
                   <div className="ao-buttons">
                     <button className="p-save-button" onClick={() => handleSubmit(order.id)}>Accept Order</button>
@@ -123,6 +125,7 @@ const DasherIncomingOrder = () => {
                     <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen[order.id] ? 180 : 0} />
                   </div>
                 </div>
+                
                 {isAccordionOpen[order.id] && (
                   <div className="ao-accordion">
                     <div className="o-order-summary">

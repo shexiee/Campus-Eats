@@ -1,7 +1,16 @@
+.dio-body {
+  height: 100%;
+  padding: 70px 50px 0 120px;
+  display: flex;
+  
+}
+
 .ao-body {
   height: 100%;
   padding: 70px 50px 0 120px;
   display: flex;
+  flex-direction: column; /* Change to column layout */
+  align-items: flex-start;
 }
 
 .ao-title {
@@ -14,7 +23,7 @@
   right: 0;
   top: 70px;
   height: calc(100% - 70px); /* Adjust the height to fit within the view */
-  width: 500px;
+  width: 400px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -31,6 +40,7 @@
   overflow-y: auto;
   max-height: calc(100vh - 400px);
   scrollbar-width: none; 
+  padding-top: 10px;
   -ms-overflow-style: none; 
 }
 
@@ -63,7 +73,8 @@
 .ao-item-left{
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
+  white-space: nowrap;
 
 }
 
@@ -88,10 +99,27 @@
 .ao-content-current {
   display: flex;
   margin-top: 30px;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.dio-content-current {
+  display: flex;
+  margin-top: 30px;
 }
 
 
 .ao-card-current {
+  background: #FFFAF1;
+  border-radius: 30px;
+  box-shadow: 7px 7px 22px #bbb4a7, -7px -7px 22px #FFFAF1;
+  transition: 0.2s ease-in-out;
+  width: 100%; /* Ensure the card takes full width */
+  max-width: 800px;
+}
+
+
+.dio-card-current {
   background: #FFFAF1;
   border-radius: 30px;
   box-shadow: 7px 7px 22px #bbb4a7, -7px -7px 22px #FFFAF1;
@@ -123,7 +151,6 @@
 }
 
 .ao-card-text {
-  margin-top: -40px;
   margin-left: 20px;
 }
 
@@ -143,7 +170,6 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-top: -50px;
   margin-left: auto;  
 }
 
@@ -174,13 +200,13 @@
 }
 
 .ao-toggle-content {
-  margin-top: -30px; 
   margin-left: 10px;
 }
 
 .ao-accordion {
   padding: 0 40px;  /* Adjust margin as needed to align with the buttons */
 }
+
 
 .message-box {
   padding: 10px;

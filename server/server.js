@@ -480,6 +480,7 @@ app.get('/api/dasher/:dasherId', async (req, res) => {
 });
 
 app.get('/api/shop-lists', async (req, res) => {
+  console.log('fetching shop lists');
   try {
     const shopsSnapshot = await db.collection('shops').get();
     

@@ -78,9 +78,27 @@ const AdminIncomingOrder = () => {
     setSelectedOrder(null);
   };
 
-  const confirmDecline = () => {
+  const confirmDecline = async () => {
     // Handle decline order logic here
-    closeModal();
+    try {
+      console.log('Declining order:', selectedOrder);
+      // Make a POST request to update the order status
+      await axios.post('/api/update-order-status', { orderId: selectedOrder, status: 'declined' });
+      // Optionally, you can also update the local state if needed
+      setOrders(prevOrders => {
+        return prevOrders.map(order => {
+          if (order.id === selectedOrder) {
+            return { ...order, status: 'declined' };
+          } else {
+            return order;
+          }
+        });
+      });
+      alert('Order status declined successfully');
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating order status:', error);
+    }
   };
 
   const handleSubmit = async (orderId) => {
@@ -122,10 +140,11 @@ const AdminIncomingOrder = () => {
                 <div className="ao-card-text">
                   <h3>{`${order.firstName} ${order.lastName}`}</h3>
                   <p>{`Order #${order.id}`}</p>
+                  <p>{order.paymentMethod=== 'gcash'? 'Online Payment' : 'Cash on Delivery'}</p>
                 </div>
                 <div className="ao-buttons">
-                  <button className="i-logout-button" onClick={() => handleDeclineClick(order.id)}>Decline</button>
-                  <button className="i-save-button" onClick={() => handleSubmit(order.id)}>Accept Order</button>
+                  <button className="p-logout-button" onClick={() => handleDeclineClick(order.id)}>Decline</button>
+                  <button className="p-save-button" onClick={() => handleSubmit(order.id)}>Accept Order</button>
                 </div>
                 <div className="ao-toggle-content">
                   <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen[order.id] ? 180 : 0} />
@@ -169,7 +188,9 @@ const AdminIncomingOrder = () => {
 
         <div className="ao-progress-modal">
             <h3 className="ao-modal-title">Active Dashers</h3>
+            
             <div className="ao-modal-body">
+            {activeDashers.length === 0 && <div>No active dashers...</div>}
                 <div className="ao-items">
                 {activeDashers.map((dasher, index) => (
                     <div key={index} className="ao-item">

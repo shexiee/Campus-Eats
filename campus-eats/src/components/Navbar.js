@@ -50,7 +50,7 @@ const Navbar = () => {
             }
         };
 
-        if (currentUser) {
+        if (currentUser && userAccountType === 'regular') {
             fetchCartData();
         }
     }, [currentUser]);
