@@ -87,9 +87,7 @@
 
 .ao-content-current {
   display: flex;
-  justify-content: center;
   margin-top: 30px;
-  margin-left: -30px;
 }
 
 
@@ -98,8 +96,7 @@
   border-radius: 30px;
   box-shadow: 7px 7px 22px #bbb4a7, -7px -7px 22px #FFFAF1;
   transition: 0.2s ease-in-out;
-  width: 100%;
-  margin-right: 500px;
+  width: 90%;
 }
 
 .ao-card-current:hover {

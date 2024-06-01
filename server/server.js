@@ -1117,6 +1117,67 @@ app.get('/api/orders', async (req, res) => {
   }
 });
 
+app.post("/api/create-gcash-payment", async (req, res) => {
+  const { amount, description, orderId } = req.body;
+  const secretKey = process.env.PAYMONGO_SECRET;
+
+  if (!orderId) {
+    return res.status(400).json({ error: 'User ID (uid) is required' });
+  }
+
+  // Fetch orders with the same uid
+  const existingOrdersSnapshot = await db.collection('orders')
+    .where('uid', '==', orderId)
+    .get();
+
+  // Check if there's an order with status that starts with "active"
+  const activeOrder = existingOrdersSnapshot.docs.find(doc => doc.data().status.startsWith('active'));
+
+  if (activeOrder) {
+    return res.status(401).json({ error: 'An active order already exists for this user' });
+  }
+
+  try {
+      const response = await fetch("https://api.paymongo.com/v1/links", {
+          method: "POST",
+          headers: {
+              "Authorization": `Basic ${Buffer.from(secretKey).toString('base64')}`,
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+              data: {
+                  attributes: {
+                      amount: amount,
+                      redirect: {
+                          success: "http://localhost:3000/success", // Adjust this to your front-end success URL
+                          failed: "http://localhost:3000/failed",  // Adjust this to your front-end failed URL
+                      },
+                      type: "gcash",
+                      currency: "PHP",
+                      description: description,
+                  },
+              },
+          }),
+      });
+
+      const data = await response.json();
+      console.log("PayMongo Response:", data);
+
+      if (!response.ok) {
+          throw new Error(data.errors[0].detail);
+      }
+
+      res.json({
+          checkout_url: data.data.attributes.checkout_url,
+          id: data.data.id
+      });
+  } catch (error) {
+      console.error("Error creating GCash payment:", error);
+      res.status(500).json({ error: error.message });
+  }
+});
+
+
 app.get('/api/incoming-orders/dasher', async (req, res) => {
   try {
     const ordersSnapshot = await db.collection('orders').get();
