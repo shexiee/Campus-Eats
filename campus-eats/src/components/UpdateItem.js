@@ -1,4 +1,4 @@
-import "./css/AddItem.css";
+import "./css/UpdateItem.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
@@ -171,16 +171,16 @@ const UpdateItem = () => {
         <>
             <Navbar />
 
-            <div className="i-body">
-                <div className="i-content-current">
-                    <div className="i-card-current">
-                        <div className="i-container">
+            <div className="ui-body">
+                <div className="ui-content-current">
+                    <div className="ui-card-current">
+                        <div className="ui-container">
                             <form onSubmit={handleSubmit}>
-                                <div className="i-info">
+                                <div className="ui-info">
                                     <h1>Update Item</h1>
-                                    <div className="i-two">
-                                        <div className="i-field-two i-field-desc">
-                                            <div className="i-label-two">
+                                    <div className="ui-two">
+                                        <div className="ui-field-two ui-field-desc">
+                                            <div className="ui-label-two">
                                                 <h3>Item Name</h3>
                                                 <input
                                                     type="text"
@@ -191,8 +191,8 @@ const UpdateItem = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="i-field-two i-field-desc">
-                                            <div className="i-label-two">
+                                        <div className="ui-field-two ui-field-desc">
+                                            <div className="ui-label-two">
                                                 <h3>Item Price</h3>
                                                 <input
                                                     type="number"
@@ -203,8 +203,8 @@ const UpdateItem = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="i-field-two i-field-desc">
-                                            <div className="i-label-two">
+                                        <div className="ui-field-two ui-field-desc">
+                                            <div className="ui-label-two">
                                                 <h3>Item Quantity</h3>
                                                 <input
                                                     type="number"
@@ -216,9 +216,9 @@ const UpdateItem = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="i-two">
-                                        <div className="i-field-two i-field-desc">
-                                            <div className="i-label-two">
+                                    <div className="ui-two">
+                                        <div className="ui-field-two ui-field-desc">
+                                            <div className="ui-label-two">
                                                 <h3>Item Description</h3>
                                                 <textarea
                                                     className="item-desc"
@@ -227,25 +227,25 @@ const UpdateItem = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="i-upload">
-                                            <div className="i-label-upload">
+                                        <div className="ui-upload">
+                                            <div className="ui-label-upload">
                                                 <h3>Item Picture</h3>
                                             </div>
                                             <div
-                                                className={`i-upload-container ${dragOver ? "drag-over" : ""}`}
+                                                className={`ui-upload-container ${dragOver ? "drag-over" : ""}`}
                                                 onDragOver={handleDragOver}
                                                 onDragLeave={handleDragLeave}
                                                 onDrop={handleDrop}
                                             >
-                                                <label htmlFor="i-govID" className="i-drop-area">
+                                                <label htmlFor="ui-govID" className="ui-drop-area">
                                                     <input
                                                         type="file"
                                                         hidden
-                                                        id="i-govID"
-                                                        className="i-govID-input"
+                                                        id="ui-govID"
+                                                        className="ui-govID-input"
                                                         onChange={handleFileChange}
                                                     />
-                                                    <div className="i-img-view">
+                                                    <div className="ui-img-view">
                                                         {uploadedImage ? (
                                                             <img
                                                                 src={uploadedImage}
@@ -261,7 +261,7 @@ const UpdateItem = () => {
                                                             <>
                                                                 <FontAwesomeIcon
                                                                     icon={faUpload}
-                                                                    className="i-upload-icon"
+                                                                    className="ui-upload-icon"
                                                                 />
                                                                 <p>
                                                                     Drag and Drop or click here <br /> to upload image
@@ -272,14 +272,14 @@ const UpdateItem = () => {
                                                 </label>
                                             </div>
                                         </div>
-                                        <div className="i-field-two">
-                                            <div className="i-shop-categories">
+                                        <div className="ui-field-two">
+                                            <div className="ui-shop-categories">
                                                 <h3>Shop Categories</h3>
-                                                <div className="i-category-checkboxes">
+                                                <div className="ui-category-checkboxes">
                                                     {Object.keys(categories).map((category, index) => (
                                                         <div
                                                             key={index}
-                                                            className={`i-category-item ${categories[category] ? "selected" : ""}`}
+                                                            className={`ui-category-item ${categories[category] ? "selected" : ""}`}
                                                             onClick={() => handleCategoryChange(category)}
                                                         >
                                                             {category}
@@ -289,9 +289,9 @@ const UpdateItem = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="i-buttons">
-                                        <button className="i-logout-button" onClick={() => navigate('/shop-manage-item')}>Cancel</button>
-                                        <button type="submit" className="i-save-button" disabled={loading}>
+                                    <div className="ui-buttons">
+                                        <button className="ui-cancel-button" onClick={() => navigate('/shop-manage-item')}>Cancel</button>
+                                        <button type="submit" className="ui-save-button" disabled={loading}>
                                             {loading ? "Saving..." : "Save"}
                                         </button>
                                     </div>
