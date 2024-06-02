@@ -130,7 +130,7 @@ app.post('/api/shop-application', upload.single('image'), async (req, res) => {
   }
  
   try {
-    // Check if the user has already submitted a dasher or shop application
+    // checkExistingApplications(uid);
     const dasherDoc = await db.collection('dashers').doc(uid).get();
     if (dasherDoc.exists) {
       return res.status(400).json({ error: 'You have already submitted a dasher application' });
@@ -140,16 +140,15 @@ app.post('/api/shop-application', upload.single('image'), async (req, res) => {
     if (shopDoc.exists) {
       return res.status(400).json({ error: 'You have already submitted a shop application' });
     }
- 
-    // Upload image to Firebase Storage under shop/govID folder
+    
+    // uploadToStorage(file, uid, shopName);
     const fileName = `shop/images/${uid}_${shopName}.png`;
     const fileRef = ref(storage, fileName);
  
-    // Upload the file
     const snapshot = await uploadBytes(fileRef, file.buffer);
     const imageURL = await getDownloadURL(snapshot.ref);
  
-    // Store shop data in Firestore
+    // saveShopData(data);
     await db.collection('shops').doc(uid).set({
       shopName,
       shopDesc,
