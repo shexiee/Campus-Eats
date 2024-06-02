@@ -5,6 +5,8 @@ import Home from "./Home";
 import axios from 'axios';
 import LandingPage from "./LandingPage";
 import AdminDashboard from "./AdminDashboard";
+import DasherHome from "./DasherHome";
+import AdminOrderHistory from "./AdminOrderHistory";
 
 const ShopRoute = ({ Component }) => {
   const { currentUser } = useAuth();
@@ -46,13 +48,10 @@ const ShopRoute = ({ Component }) => {
     return <Home />;
   }
 
-  if (accountType === 'dasher') {
-    // return <AdminDashboard />;
+  if (accountType === 'dasher' || accountType === 'admin') {
+    return <DasherHome />
   }
 
-  if (accountType === 'admin') {
-    return <AdminDashboard />;
-  }
 
   return <Home />;
 };

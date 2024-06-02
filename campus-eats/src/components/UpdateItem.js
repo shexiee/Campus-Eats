@@ -90,8 +90,8 @@ const UpdateItem = () => {
                 const data = await response.json();
                 setItemName(data.name);
                 setPrice(data.price);
-                setQuantity(data.qty);
-                setDescription(data.desc);
+                setQuantity(data.quantity);
+                setDescription(data.description);
                 setUploadedImage(data.imageUrl);
                 setCategories((prevCategories) => {
                     const updatedCategories = { ...prevCategories };

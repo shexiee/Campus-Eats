@@ -5,12 +5,15 @@ import { useAuth } from "../context/AuthContext";
 import Navbar from "./Navbar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import DeclineOrderModal from './AdminDeclineOrderModal';
+import { useNavigate } from "react-router-dom";
 
 const DasherIncomingOrder = () => {
   const { currentUser } = useAuth();
   const [orders, setOrders] = useState([]);
   const [isAccordionOpen, setIsAccordionOpen] = useState({});
   const [isActive, setIsActive] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -30,6 +33,24 @@ const DasherIncomingOrder = () => {
     if (isActive) {
       fetchOrders();
     }
+
+    const fetchDasherData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/dasher/${currentUser.uid}`);
+        const data = response.data;
+        console.log(data.status);
+        if(data.status === 'active'){
+          setIsActive(true);
+        } else if(data.status === 'offline'){
+          setIsActive(false);
+        }
+        
+      } catch (error) {
+        console.error("Error fetching dasher data:", error);
+      }
+    };
+
+    fetchDasherData();
   }, [isActive]);
 
   const toggleAccordion = (orderId) => {
@@ -48,7 +69,7 @@ const DasherIncomingOrder = () => {
         setOrders(prevOrders => prevOrders.map(order => (
           order.id === orderId ? { ...order, dasherId: currentUser.uid, status: 'active_toShop' } : order
         )));
-        window.location.reload();
+        navigate('/dasher-orders')
       } else {
         alert(response.data.message);
       }
@@ -66,6 +87,9 @@ const DasherIncomingOrder = () => {
         status: newStatus
       });
       setIsActive(!isActive);
+      if(newStatus === 'offline'){
+        setOrders([]);
+      }
     } catch (error) {
       console.error('Error updating dasher status:', error);
     }
@@ -91,6 +115,8 @@ const DasherIncomingOrder = () => {
                   <div className="do-card-text">
                     <h3>{`${order.firstName} ${order.lastName}`}</h3>
                     <p>{`Order #${order.id}`}</p>
+                    <p>{order.paymentMethod=== 'gcash'? 'Online Payment' : 'Cash on Delivery'}</p>
+                    <p>Change for: ₱{order.changeFor ? order.changeFor : ''}</p>
                   </div>
                   <div className="do-buttons">
                     <button className="i-save-button" onClick={() => handleSubmit(order.id)}>Accept Order</button>
@@ -99,6 +125,7 @@ const DasherIncomingOrder = () => {
                     <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen[order.id] ? 180 : 0} />
                   </div>
                 </div>
+                
                 {isAccordionOpen[order.id] && (
                   <div className="do-accordion">
                     <div className="o-order-summary">

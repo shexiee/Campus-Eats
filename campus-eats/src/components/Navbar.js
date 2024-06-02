@@ -50,7 +50,7 @@ const Navbar = () => {
             }
         };
 
-        if (currentUser) {
+        if (currentUser && userAccountType === 'regular') {
             fetchCartData();
         }
     }, [currentUser]);
@@ -184,13 +184,6 @@ const Navbar = () => {
                             </div>
                         </Link>
                     </li>
-                    <li className={`nb-icon ${location.pathname === '/shop' ? 'active' : ''}`}>
-                        <Link to="/shop">
-                            <div className="svg-container">
-                                <img src={'/Assets/shop.svg'} alt="Shop" className={`nb-image ${location.pathname === '/shop' ? 'active' : ''}`} />
-                            </div>
-                        </Link>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -204,16 +197,8 @@ const Navbar = () => {
                 </Link>
                 
                 </div>
-                <p>{userAccountType}</p>
                 <div className='nav'>
                     <ul>
-                        <li className={`nb-icon ${location.pathname === '/admin-dashboard' ? 'active' : ''}`}>
-                            <Link to="/admin-dashboard">
-                                <div className="svg-container">
-                                    <img src={'/Assets/dashboard-icon.svg'} alt="Dashboard" className="nb-image" />
-                                </div>
-                            </Link>
-                        </li>
                         <li className={`nb-icon ${location.pathname === '/admin-incoming-order' ? 'active' : ''}`}>
                             <Link to="/admin-incoming-order">
                                 <div className="svg-container">
@@ -287,13 +272,6 @@ const Navbar = () => {
                 </div>
                 <div className='nav'>
                     <ul>
-                        <li className={`nb-icon ${location.pathname === '/shop-dashboard' ? 'active' : ''}`}>
-                            <Link to="/shop-dashboard">
-                                <div className="svg-container">
-                                    <img src={'/Assets/dashboard-icon.svg'} alt="Dashboard" className="nb-image" />
-                                </div>
-                            </Link>
-                        </li>
                         <li className={`nb-icon ${location.pathname === '/shop-add-item' ? 'active' : ''}`}>
                             <Link to="/shop-add-item">
                                 <div className="svg-container">

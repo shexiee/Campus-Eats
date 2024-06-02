@@ -249,6 +249,8 @@ const UserProfile = () => {
                                         </div>
                                     </div>
                                 </div>
+
+                                
                                 <div className="p-two">
                                     {editMode && (
                                       <div className={editMode ? "p-field-two" : "p-field"}>
@@ -325,7 +327,7 @@ const UserProfile = () => {
                         </div>
                     </div>
                 </div>
-                {accountType !== 'admin' && accountType !== 'dasher' && accountType !== 'shop' &&(
+                
                     <div className="p-content-current p-content-current-small">
                         <div className="p-card-current">
                             <div className="p-upgrade-container">
@@ -335,16 +337,38 @@ const UserProfile = () => {
                                         <h4>{accountType ? accountType : ''}</h4>
                                     </div>
                                 </div>
+                            {accountType === 'shop' ? (
+                                <div className="p-info">
+                                    <div className="p-upgrade-buttons">
+                                        <button onClick={() => navigate('/shop-update')} className="p-upgrade-button">Edit Shop</button>
+                                    </div>
+                                </div>
+                            ): accountType === 'dasher' ? (
+                                <div className="p-info">
+                                    <div className="p-upgrade-buttons">
+                                        <button onClick={() => navigate('/dasher-update')} className="p-upgrade-button">Edit Dasher Profile</button>
+                                    </div>
+                                </div>
+                            ): accountType === 'admin' ? (
+                                <>
+
+                                </>
+                            ): (
+                        
+                                <>
                                 <div className="p-info">
                                     <div className="p-upgrade-buttons">
                                         <button onClick={() => navigate('/dasher-application')} className="p-upgrade-button">Be a Dasher</button>
                                         <button onClick={() => navigate('/shop-application')} className="p-upgrade-button">Add a Shop</button>
                                     </div>
                                 </div>
+                                </>
+                                 
+                            )}
                             </div>
                         </div>
                     </div>
-                )}
+                
             </div>
         </>
     );

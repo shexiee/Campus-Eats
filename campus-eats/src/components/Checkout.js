@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import "./css/Checkout.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { set } from "firebase/database";
-
 
 const Checkout = () => {
     const { currentUser } = useAuth();
@@ -24,7 +23,9 @@ const Checkout = () => {
     const [showTooltip, setShowTooltip] = useState(false);
     const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
     const [loading, setLoading] = useState(false);
-
+    const [waitingForPayment, setWaitingForPayment] = useState(false);
+    const [paymentLinkId, setPaymentLinkId] = useState("");
+    let pollInterval;
 
     useEffect(() => {
         setLoading(true);
@@ -42,8 +43,6 @@ const Checkout = () => {
                 console.error("Error fetching user data:", error);
             }
         };
-
-        
 
         const fetchCartData = async () => {
             try {
@@ -68,7 +67,6 @@ const Checkout = () => {
         setTooltipPosition({ x: e.clientX, y: e.clientY });
     };
 
-    // Function to handle mouse leave event
     const handleMouseLeave = () => {
         setShowTooltip(false);
     };
@@ -94,15 +92,102 @@ const Checkout = () => {
         setLoading(false);
     }, [cart]);
 
+    const pollPaymentStatus = async (linkId) => {
+        const options = {
+            method: 'GET',
+            url: `https://api.paymongo.com/v1/links/${linkId}`,
+            headers: {
+                accept: 'application/json',
+                authorization: 'Basic c2tfdGVzdF83SGdhSHFBWThORktEaEVHZ2oxTURxMzU6'
+            }
+        };
+
+        try {
+            const response = await axios.request(options);
+            console.log("Payment status:", response.data);
+            const paymentStatus = response.data.data.attributes.status;
+            console.log("Payment status:", paymentStatus);
+            if (paymentStatus === 'paid') {
+                setWaitingForPayment(false);
+                handleOrderSubmission();
+            } else {
+                console.log("Payment not yet completed. Retrying...");
+            }
+        } catch (error) {
+            console.error("Error checking payment status:", error);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(changeFor<cart.totalPrice){
-            alert("Change for must be greater than or equal to the total price");
+        setLoading(true);
+
+        if(mobileNum.length !== 10 && mobileNum.startsWith('9')) {
+            alert("Please enter a valid mobile number");
             setLoading(false);
             return;
         }
-        setLoading(true);
-        console.log("Submitting order...");
+    
+        if (paymentMethod === "cash") {
+            if (changeFor < cart.totalPrice) {
+                alert("Change for must be greater than or equal to the total price");
+                setLoading(false);
+                return;
+            } else {
+                handleOrderSubmission();
+            }
+        } else if (paymentMethod === "gcash") {
+            try {
+                const response = await fetch("/api/create-gcash-payment", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        amount: cart.totalPrice * 100, // PayMongo expects the amount in cents
+                        description: `to ${shop.shopName} payment by ${firstName} ${lastName}`,
+                        orderId: currentUser.uid,
+                    }),
+                });
+    
+                const data = await response.json();
+                console.log("GCash Payment Link:", data.checkout_url); // Log the payment link
+                
+                if (response.ok) {
+                    // Open the GCash payment link in a new tab
+                    window.open(data.checkout_url, "_blank");
+                    setPaymentLinkId(data.id);
+                    setWaitingForPayment(true);
+                    setLoading(false);
+    
+                    // Start polling the payment status
+                    pollInterval = setInterval(() => {
+                        pollPaymentStatus(data.id);
+                    }, 10000);
+    
+                    // Stop polling when payment is completed or user navigates away
+                    return () => clearInterval(pollInterval);
+                } else {
+                    if (response.status === 400) {
+                        alert("An active order already exists for this user");
+                        setLoading(false);
+                        return;
+                    } else {
+                        alert(`Error: ${data.error}`);
+                        setLoading(false);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.error("Error creating GCash payment:", error);
+                setLoading(false);
+                return;
+            }
+        }
+    };
+    
+
+    const handleOrderSubmission = async () => {
         const order = {
             uid: currentUser.uid,
             shopID: cart.shopID,
@@ -124,43 +209,53 @@ const Checkout = () => {
                 },
                 body: JSON.stringify(order),
             });
-            if(response.status === 400){
-                alert("An active order already exists for this user");
-                setLoading(false);
-                return;
-            } else if (!response.ok) {
-                throw new Error("Failed to place order");
+            
+            
+            if (!response.ok) {
+                if (response.status === 400) {
+                    alert("An active order already exists for this user");
+                    setLoading(false);
+                    return;
+                }else {
+                    throw new Error("Failed to place order");
+                }
+                
             }
             const data = await response.json();
             console.log("Order placed:", data);
-        } catch (error) {
-            console.error("Error placing order:", error);
-            
-        }
-
-        try {
-            const response = await fetch('/api/remove-cart', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ uid: currentUser.uid })
-            });
-
-            if (!response.ok) {
-                alert(`Error: ${response.statusText}`);
-                return;
+    
+            // If order placed successfully, remove the cart and navigate to orders
+            try {
+                const removeCartResponse = await fetch('/api/remove-cart', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ uid: currentUser.uid })
+                });
+    
+                if (!removeCartResponse.ok) {
+                    alert(`Error: ${removeCartResponse.statusText}`);
+                    return;
+                }
+    
+                const removeCartData = await removeCartResponse.json();
+                setCart(null);
+                clearInterval(pollInterval);
+                console.log("interval cleared:");
+            } catch (error) {
+                console.error('Error removing cart:', error);
             }
-
-            const data = await response.json();
-            setCart(null);
+            
+            navigate('/orders');
+            
         } catch (error) {
-            console.error('Error removing cart:', error);
+            console.log("Error placing order:", error);
         }
-
-        navigate("/orders");
+        
         setLoading(false);
     };
+    
 
     return (
         <>
@@ -286,6 +381,7 @@ const Checkout = () => {
                                                 )}
                                             </div>
                                         </label>
+                                        {cart && (cart.totalPrice >100) ? (
                                         <label className={`payment-option ${paymentMethod === 'gcash' ? 'selected' : ''}`}>
                                             <input
                                                 type="radio"
@@ -295,14 +391,19 @@ const Checkout = () => {
                                                 onChange={() => setPaymentMethod("gcash")}
                                             />
                                             <div className="payment-card">
-                                                GCASH
+                                                Online Payment
                                             </div>
                                         </label>
+                                        ): (
+                                            <></>
+                                            )}
                                     </div>
                                 </div>
                                 <div className="p-buttons">
-                                    <button onClick={()=>navigate('/home')}className="p-logout-button">Cancel</button>
-                                    <button type="submit" className="p-save-button" disabled={loading}>Place Order</button>
+                                    <button onClick={()=>navigate('/home')} className="p-logout-button">Cancel</button>
+                                    <button type="submit" className="p-save-button" disabled={loading || waitingForPayment}>
+                                        {waitingForPayment ? "Waiting for Payment" : "Place Order"}
+                                    </button>
                                 </div>
                             </form>
                         </div>

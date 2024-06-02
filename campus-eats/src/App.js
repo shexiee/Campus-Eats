@@ -12,7 +12,6 @@ import ShopApplication from './components/ShopApplication';
 import DasherApplication from './components/DasherApplication';
 import AdminDasherList from './components/AdminDasherList';
 import AdminDashboard from './components/AdminDashboard';
-import AdminShopList from './components/AdminShopList';
 import AdminIncomingOrder from './components/AdminIncomingOrder';
 import AdminOrderHistory from './components/AdminOrderHistory';
 import PrivateRoute from './components/PrivateRoute';
@@ -28,6 +27,8 @@ import AdminShopList from './components/AdminShopList';
 import DasherRoute from './components/DasherRoute';
 import DasherIncomingOrder from './components/DasherIncomingOrder';
 import DasherHome from './components/DasherHome';
+import ShopUpdate from './components/ShopUpdate';
+import DasherUpdate from './components/DasherUpdate';
 
 
 function App() {
@@ -54,13 +55,14 @@ function App() {
         <Routes>
           <Route path="/admin-dashers" element={<AdminRoute Component={AdminDasherList} />} />
           <Route path="/admin-shops" element={<AdminRoute Component={AdminShopList} />} />
-          <Route path="/admin-dashboard" element={<AdminRoute Component={AdminDashboard} />} />
+          {/* <Route path="/admin-dashboard" element={<AdminRoute Component={AdminDashboard} />} /> */}
           <Route path="/admin-incoming-order" element={<AdminRoute Component={AdminIncomingOrder} />} />
           <Route path="/admin-order-history" element={<AdminRoute Component={AdminOrderHistory} />} />
           <Route path="/admin-shops" element={<AdminRoute Component={AdminShopList} />} />
         </Routes>
 
         <Routes>
+          <Route path="/shop-update" element={<ShopRoute Component={ShopUpdate} />} />
           <Route path="/shop-add-item" element={<ShopRoute Component={AddItem} />} />
           <Route path="/shop-manage-item" element={<ShopRoute Component={ShopManage} />} />
           <Route path="/edit-shop" element={<ShopRoute Component={UpdateShop} />} />
@@ -70,6 +72,7 @@ function App() {
         <Routes>
           <Route path="/dasher-incoming-order" element={<DasherRoute Component={DasherIncomingOrder} />} />
           <Route path="/dasher-orders" element={<DasherRoute Component={DasherHome} />} />
+          <Route path="/dasher-update" element={<DasherRoute Component={DasherUpdate} />} />
         </Routes>
       </Router>
     </AuthProvider>

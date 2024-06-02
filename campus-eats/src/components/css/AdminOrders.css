@@ -1,3 +1,10 @@
+.dio-body {
+  height: 100%;
+  padding: 70px 50px 0 120px;
+  display: flex;
+  
+}
+
 .ao-body {
   height: 100%;
   padding: 70px 50px 0 120px;
@@ -17,6 +24,7 @@
   top: 70px;
   height: calc(100% - 70px); /* Adjust the height to fit within the view */
   width: 400px;
+  width: 400px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -33,6 +41,7 @@
   overflow-y: auto;
   max-height: calc(100vh - 400px);
   scrollbar-width: none; 
+  padding-top: 10px;
   -ms-overflow-style: none; 
 }
 
@@ -184,6 +193,7 @@
 .ao-accordion {
   padding: 0 40px;  /* Adjust padding as needed to align with the buttons */
 }
+
 
 .message-box {
   padding: 10px;

@@ -1,6 +1,6 @@
 import "./css/AddItem.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTimes, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
@@ -47,14 +47,14 @@ const AddItem = () => {
     processFile(file);
   };
 
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        setDragOver(true);
-    };
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
 
-    const handleDragLeave = () => {
-        setDragOver(false);
-    };
+  const handleDragLeave = () => {
+    setDragOver(false);
+  };
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -64,22 +64,22 @@ const AddItem = () => {
     processFile(file);
   };
 
-    const processFile = (file) => {
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setUploadedImage(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+  const processFile = (file) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUploadedImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-    const handleCategoryChange = (category) => {
-        setCategories({
-            ...categories,
-            [category]: !categories[category],
-        });
-    };
+  const handleCategoryChange = (category) => {
+    setCategories({
+      ...categories,
+      [category]: !categories[category],
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -164,6 +164,9 @@ const AddItem = () => {
           breakfast: false,
           others: false
         });
+
+        navigate("/shop-manage-item");
+    
     } catch (error) {
         console.error("Error making an item:", error.response.data.error);
         alert(error.response.data.error || "An error occurred. Please try again.");
@@ -180,17 +183,17 @@ const AddItem = () => {
         <>
             <Navbar />
 
-            <div className="i-body">
-                <div className="i-content-current">
-                    <div className="i-card-current">
-                        <div className="i-container">
+            <div className="ai-body">
+                <div className="ai-content-current">
+                    <div className="ai-card-current">
+                        <div className="ai-container">
                         <form onSubmit={handleSubmit}>
-                            <div className="i-info">
+                            <div className="ai-info">
                                 
                                 <h1>Add Item</h1>
-                                <div className="i-two">
-                                    <div className="i-field-two i-field-desc">
-                                        <div className="i-label-two">
+                                <div className="ai-two">
+                                    <div className="ai-field-two ai-field-desc">
+                                        <div className="ai-label-two">
                                             <h3>Item Name</h3>
                                             <input
                                                 type="text"
@@ -201,8 +204,8 @@ const AddItem = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="i-field-two i-field-desc">
-                                        <div className="i-label-two">
+                                    <div className="ai-field-two ai-field-desc">
+                                        <div className="ai-label-two">
                                             <h3>Item Price</h3>
                                             <input
                                                 type="number"
@@ -213,8 +216,8 @@ const AddItem = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="i-field-two i-field-desc">
-                                        <div className="i-label-two">
+                                    <div className="ai-field-two ai-field-desc">
+                                        <div className="ai-label-two">
                                             <h3>Item Quantity</h3>
                                             <input
                                                 type="number"
@@ -227,9 +230,9 @@ const AddItem = () => {
                                     </div>
                                     
                                 </div>
-                                <div className="i-two">
-                                <div className="i-field-two i-field-desc">
-                                        <div className="i-label-two">
+                                <div className="ai-two">
+                                <div className="ai-field-two ai-field-desc">
+                                        <div className="ai-label-two">
                                             <h3>Item Description</h3>
                                             <textarea
                                                 className="item-desc"
@@ -238,27 +241,27 @@ const AddItem = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="i-upload">
-                                        <div className="i-label-upload">
+                                    <div className="ai-upload">
+                                        <div className="ai-label-upload">
                                             <h3>Item Picture</h3>
                                         </div>
                                         <div
-                                            className={`i-upload-container ${
+                                            className={`ai-upload-container ${
                                             dragOver ? "drag-over" : ""
                                             }`}
                                             onDragOver={handleDragOver}
                                             onDragLeave={handleDragLeave}
                                             onDrop={handleDrop}
                                         >
-                                            <label htmlFor="i-govID" className="i-drop-area">
+                                            <label htmlFor="ai-govID" className="ai-drop-area">
                                             <input
                                                 type="file"
                                                 hidden
-                                                id="i-govID"
-                                                className="i-govID-input"
+                                                id="ai-govID"
+                                                className="ai-govID-input"
                                                 onChange={handleFileChange}
                                             />
-                                            <div className="i-img-view">
+                                            <div className="ai-img-view">
                                                 {uploadedImage ? (
                                                 <img
                                                     src={uploadedImage}
@@ -274,7 +277,7 @@ const AddItem = () => {
                                                 <>
                                                     <FontAwesomeIcon
                                                     icon={faUpload}
-                                                    className="i-upload-icon"
+                                                    className="ai-upload-icon"
                                                     />
                                                     <p>
                                                     Drag and Drop or click here <br /> to upload
@@ -286,14 +289,14 @@ const AddItem = () => {
                                             </label>
                                         </div>
                                     </div>
-                                    <div className="i-field-two">
-                                        <div className="i-shop-categories">
-                                            <h3>Shop Categories</h3>
-                                            <div className="i-category-checkboxes">
+                                    <div className="ai-field-two">
+                                        <div className="ai-shop-categories">
+                                            <h3>Item Categories</h3>
+                                            <div className="ai-category-checkboxes">
                                             {Object.keys(categories).map((category, index) => (
                                                 <div
                                                 key={index}
-                                                className={`i-category-item ${
+                                                className={`ai-category-item ${
                                                     categories[category] ? "selected" : ""
                                                 }`}
                                                 onClick={() => handleCategoryChange(category)}
@@ -306,9 +309,9 @@ const AddItem = () => {
                                     </div>
                                 </div>
                                 
-                                <div className="i-buttons">
-                                    <button className="i-logout-button">Cancel</button>
-                                    <button type="submit" className="i-save-button" disabled={loading}>
+                                <div className="ai-buttons">
+                                    <button className="p-logout-button">Cancel</button>
+                                    <button type="submit" className="ai-save-button" disabled={loading}>
                                         {loading ? "Saving..." : "Save"}
                                     </button>
                                 </div>
@@ -317,7 +320,7 @@ const AddItem = () => {
                         </div>
                     </div>
                 </div>
-
+                
             </div>
         </>
     );
