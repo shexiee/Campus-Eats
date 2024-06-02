@@ -1,14 +1,14 @@
 .aei-content-current {
     display: flex;
     justify-content: center;
-    margin: 120px 0 50px 0;
     align-items: flex-start;
     width: 100%;
+    margin-top: 70px; /* Adjusted margin to position below navbar */
 }
 
 .aei-body {
     display: flex;
-    padding: 0 50px 0 120px;
+    padding: 0 50px; /* Removed right padding to prevent overflow */
 }
 
 .aei-card-current {
@@ -16,12 +16,13 @@
     border-radius: 20px;
     transition: 0.2s ease-in-out;
     display: flex;
-    justify-content: space-between;
-    width: 95%;
+    flex-direction: column; /* Ensure content stacks vertically */
+    width: 100%; /* Adjusted width to prevent overflow */
+    max-width: 800px; /* Added max-width to maintain reasonable size */
 }
 
 .aei-container {
-    margin: 20px 60px;
+    margin: 20px; /* Adjusted margin for consistent spacing */
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -40,7 +41,7 @@
     display: flex;
     padding: 18px;
     align-items: center;
-    width: 50%;
+    width: 100%; /* Adjusted width for full width */
     justify-content: space-between;
     border-bottom: solid 1px #dad9d9;
 }
@@ -150,23 +151,22 @@
     display: flex;
     padding: 18px;
     align-items: center;
-    width: 50%;
+    width: 100%;
     justify-content: space-between;
 }
 
 .aei-quantity-button {
     background-color: transparent;
     border: none;
-    color: #333; /* Default icon color */
+    color: #333;
     cursor: pointer;
-    font-size: 16px; /* Adjust size as needed */
-    padding: 5px; /* Adjust padding as needed */
+    font-size: 16px;
+    padding: 5px;
     transition: color 0.3s ease;
 }
 
 .aei-quantity-button:hover {
-    color: #a14447; /* Color on hover */
+    color: #a14447;
     background-color: var(--secondary-light-2);
     box-shadow: var(--shadow);
 }
-

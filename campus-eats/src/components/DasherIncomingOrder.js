@@ -119,7 +119,7 @@ const DasherIncomingOrder = () => {
                     <p>Change for: ₱{order.changeFor ? order.changeFor : ''}</p>
                   </div>
                   <div className="do-buttons">
-                    <button className="i-save-button" onClick={() => handleSubmit(order.id)}>Accept Order</button>
+                    <button className="do-acceptorder" onClick={() => handleSubmit(order.id)}>Accept Order</button>
                   </div>
                   <div className="do-toggle-content">
                     <FontAwesomeIcon icon={faAngleDown} rotation={isAccordionOpen[order.id] ? 180 : 0} />

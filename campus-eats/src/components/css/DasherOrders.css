@@ -134,7 +134,7 @@
   }
   
   .do-card-text {
-    margin-top: -40px;
+    margin-top: -10px;
     margin-left: 20px;
   }
   
@@ -154,8 +154,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-top: -50px;
-    margin-left: auto;  
+    margin-left: auto;
   }
   
   .do-decline, .do-acceptorder {
