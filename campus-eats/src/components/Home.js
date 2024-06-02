@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./css/Home.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faClock, faStar } from '@fortawesome/free-regular-svg-icons';
 import Navbar from "./Navbar";
 
 const Home = () => {
@@ -28,7 +26,6 @@ const Home = () => {
             const data = await response.json();
             setShops(data);
             console.log("shops", data.shopImage);
-
         } catch (error) {
             console.error('Error fetching shops:', error);
         }
@@ -77,9 +74,8 @@ const Home = () => {
                                 <div className="h-category">
                                     {renderCategories(shop.categories)}
                                 </div>
-
                             </div>
-                        </div>
+                        </div>  
                     ))}
                 </div>
             </div>

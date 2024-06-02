@@ -184,7 +184,7 @@ const AdminIncomingOrder = () => {
                     <div key={index} className="ao-item">
                     <div className="ao-item-left">
                         <div className="ao-item-title">
-                        <h4>{dasher.dasherData.firstname} &nbsp; {dasher.dasherData.lastname}</h4>
+                        <h4>{dasher.dasherData.firstname} {dasher.dasherData.lastname}</h4>
                         <p>{dasher.status}</p>
                         </div>
                     </div>
