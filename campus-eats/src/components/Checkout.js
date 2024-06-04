@@ -344,7 +344,7 @@ const Checkout = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="i-field-two i-field-desc">
+                                    <div className="sa-field-two i-field-desc">
                                         <div className="co-label-two">
                                             <h3>Delivery Note</h3>
                                             <textarea

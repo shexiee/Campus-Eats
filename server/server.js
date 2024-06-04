@@ -793,16 +793,16 @@ app.post('/api/add-to-cart', async (req, res) => {
   try {
     const { item, totalPrice, userQuantity, uid, shopID } = req.body;
 
-    // Check if all required data is provided
+    
     if (!item || !totalPrice || !userQuantity || !shopID) {
       return res.status(400).json({ error: 'Missing required data' });
     }
-
+    //checkShopExists(shopID: string)
     const shopSnapshot = await db.collection('shops').doc(shopID).get();
     if (!shopSnapshot.exists) {
       return res.status(404).json({ error: 'Shop not found' });
     }
-
+    
     const cartSnapshot = await db.collection('carts').doc(uid).get();
     let cartData;
     let cartRef = db.collection('carts').doc(uid); // Get reference to the cart document

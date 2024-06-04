@@ -28,6 +28,7 @@ const CartModal = ({ showModal, onClose }) => {
 
         if (showModal && currentUser) {
             fetchCartData();
+            console.log("sadf",cartData);
         }
     }, [showModal, currentUser]);
 
